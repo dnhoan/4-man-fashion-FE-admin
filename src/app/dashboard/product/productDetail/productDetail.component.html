@@ -1,0 +1,26 @@
+<button nz-button nzType="primary">Save</button>
+<ng-container *ngIf="product">
+  <div>
+    <div>
+      <h6>Tên sản phẩm</h6>
+      <input
+        id="productName"
+        nz-input
+        placeholder="Tên sản phẩm"
+      />
+    </div>
+    <nz-divider></nz-divider>
+    <div class="uploadImage">
+      <div class="clearfix">
+        <h6>Ảnh</h6>
+        <div class="upload-btn-wrapper">
+          <button nz-button>Tải ảnh lên</button>
+        </div>
+        <br />
+        <div style="display: flex; justify-content: start">
+        </div>
+      </div>
+    </div>
+    <nz-divider></nz-divider>
+  </div>
+</ng-container>

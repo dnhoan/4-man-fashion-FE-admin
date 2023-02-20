@@ -1,0 +1,170 @@
+<div class="bg-white mt-4 p-3">
+  <div class="d-flex justify-content-between p-3">
+    <div>
+      <button nz-button [nzType]="'primary'" (click)="showModal()">
+        <span>Thêm mới</span>
+      </button>
+      <nz-modal
+        [(nzVisible)]="isVisible"
+        (nzOnCancel)="handleCancel()"
+        (nzOnOk)="handleOk()"
+      >
+        <ng-container *nzModalContent>
+          <form nz-form [formGroup]="formCategory">
+            <nz-form-item>
+              <nz-form-label
+                [nzSm]="6"
+                [nzXs]="24"
+                nzRequired
+                nzFor="categoryName"
+                >Loại sản phẩm</nz-form-label
+              >
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input
+                  nz-input
+                  type="text"
+                  formControlName="categoryName"
+                  id="categoryName"
+                />
+                <small
+                  class="col alert text-danger col-12"
+                  role="alert"
+                  *ngIf="formCategory.get('categoryName')?.errors?.['required'] && formCategory.get('categoryName')?.touched || submit && formCategory.get('categoryName')?.errors?.['required'] "
+                >
+                  Loại sản phẩm không được để trống!
+                </small>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="status"
+                >Trạng thái</nz-form-label
+              >
+              <nz-radio-group formControlName="status" nzName="status">
+                <label nz-radio [nzValue]="1">Active</label>
+                <label nz-radio [nzValue]="0">InActive</label>
+              </nz-radio-group>
+            </nz-form-item>
+          </form>
+        </ng-container>
+      </nz-modal>
+    </div>
+    <div>
+      <div>
+        <nz-select
+          nzAllowClear
+          class="selectStatus"
+          nzPlaceHolder="Lọc theo trạng thái"
+          [(ngModel)]="status"
+        >
+          <nz-option nzValue="" nzLabel="Tất cả"></nz-option>
+          <nz-option nzValue="1" nzLabel="Active"></nz-option>
+          <nz-option nzValue="0" nzLabel="InActive"></nz-option>
+        </nz-select>
+      </div>
+      <form nz-form [formGroup]="formSearch" class="formSearch">
+        <div>
+          <div>
+            <nz-form-item>
+              <nz-form-control>
+                <input
+                  nz-input
+                  type="text"
+                  formControlName="valueSearch"
+                  id="valueSearch"
+                  placeholder="Nhập loại sản phẩm để có thể tìm kiếm!"
+                />
+              </nz-form-control>
+              <button
+                class="btnSearch"
+                nz-button
+                (click)="timkiem()"
+                [nzType]="'primary'"
+              >
+                <span>Tìm kiếm</span>
+              </button>
+            </nz-form-item>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!--  ---------------------------------  -->
+  <ng-template #noResult></ng-template>
+  <nz-table *ngIf="category" [nzNoResult]="noResult">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Loại sản phẩm</th>
+        <!-- <th>Trạng thái</th> -->
+        <th colSpan="2">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of datas">
+        <td>{{ item.id }}</td>
+        <td>{{ item.categoryName }}</td>
+        <!-- <td *ngIf="item.status">Active</td>
+        <td *ngIf="!item.status">InActive</td> -->
+        <td style="text-align: center">
+          <span
+            class="btnUpdate"
+            nz-icon
+            nzType="edit"
+            (click)="getInfoCategory(item.id)"
+            nzTheme="outline"
+          ></span>
+          <span
+            class="btnDelete"
+            nz-icon
+            nzType="delete"
+            (click)="deleteCategory(item.id)"
+            nzTheme="outline"
+          ></span>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <!-- <div class="footer">
+    <div>
+      <nav class="mr-3" aria-label="..." *ngIf="Page">
+        <ul class="pagination justify-content-end">
+          <select
+            style="width: 100px; margin-right: 10px"
+            class="form-select"
+            aria-label="Default select example"
+            #selectSize
+            (change)="pageItem(selectSize.value)"
+          >
+            <option selected>5</option>
+            <option>10</option>
+            <option>15</option>
+            <option>20</option>
+            <option>25</option>
+            <option>30</option>
+          </select>
+          <li class="page-item" [ngClass]="offset == 0 ? 'disabled' : ''">
+            <a class="page-link" (click)="preNextPage('pre')">Previous</a>
+          </li>
+
+          <li
+            *ngFor="
+              let Page of [].constructor(Page['totalPages']);
+              let i = index
+            "
+            class="page-item"
+            [ngClass]="offset == i ? 'active' : ''"
+          >
+            <a class="page-link" (click)="pagination(i)">{{ i + 1 }}</a>
+          </li>
+
+          <li
+            class="page-item"
+            [ngClass]="Page['totalPages'] - 1 == offset ? 'disabled' : ''"
+          >
+            <a class="page-link" (click)="preNextPage('next')">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div> -->
+</div>
