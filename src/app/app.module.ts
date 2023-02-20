@@ -5,12 +5,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { en_US } from 'ng-zorro-antd/i18n';
-import { registerLocaleData } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
-import { FormsModule } from '@angular/forms';
+import { ToastrModule } from 'ngx-toastr';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgZorroAntdModule } from './share_modules/ng-add-ng-zorro-antd.module';
 import {
   JwtHelperService,
   JwtInterceptor,
@@ -20,17 +20,31 @@ import { CommonConstants } from './constants/common-constants';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthService } from './common-services/auth.service';
 import { JwtService } from './common-services/jwt.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NgZorroAntdModule } from './share_modules/ng-add-ng-zorro-antd.module';
 
 registerLocaleData(en);
+
+
+const configToast: any = {
+  timeOut: 3000,
+  positionClass: 'toast-top-right',
+  preventDuplicates: true,
+  progressBar: true,
+  progressAnimation: 'increasing',
+};
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    BrowserModule,
-    FormsModule,
     AppRoutingModule,
-    NgZorroAntdModule,
+    BrowserModule,
+    CommonModule,
     HttpClientModule,
+    ReactiveFormsModule,
+    NgZorroAntdModule,
+    FormsModule,
+    ToastrModule.forRoot(configToast),
     BrowserAnimationsModule,
     JwtModule.forRoot({
       config: {
@@ -40,6 +54,7 @@ registerLocaleData(en);
       },
     }),
   ],
+
   providers: [
     AuthGuard,
     AuthService,

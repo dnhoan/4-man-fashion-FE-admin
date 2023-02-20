@@ -1,1 +1,103 @@
-<p>dashboard works!</p>
+<nz-layout style="min-height: 100%">
+  <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+    <div class="logo"></div>
+    <ul nz-menu nzTheme="dark" nzMode="inline">
+      <li nz-submenu nzTitle="Người dùng" nzIcon="user">
+        <ul>
+          <li nz-menu-item>
+            <a nz-button nzType="link" routerLink="account">Tài khoản</a>
+          </li>
+          <li nz-menu-item>
+            <a nz-button nzType="link" routerLink="employee">Nhân viên</a>
+          </li>
+          <li nz-menu-item>
+            <a nz-button nzType="link" routerLink="customer">Khách hàng</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu nzTitle="Sản phẩm" nzIcon="bank">
+        <ul>
+          <li nz-menu-item>
+            <a nz-button nzType="link" routerLink="product">Sản phâm</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu nzTitle="Thuộc tính" nzIcon="property-safety">
+        <ul>
+          <li nz-menu-item>
+            <a nz-button nzType="link" routerLink="color">Màu sắc</a>
+          </li>
+          <li nz-menu-item>
+            <a nz-button nzType="link" routerLink="size">Size</a>
+          </li>
+          <li nz-menu-item>
+            <a nz-button nzType="link" routerLink="material">Chất liệu</a>
+          </li>
+          <li nz-menu-item>
+            <a nz-button nzType="link" routerLink="model">Kiểu dáng</a>
+          </li>
+          <li nz-menu-item>
+            <a nz-button nzType="link" routerLink="category">Phân loại</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu nzTitle="Đơn hàng" nzIcon="shop">
+        <ul>
+          <li nz-menu-item>
+            <a nz-button nzType="link" routerLink="createOrder">Tạo đơn hàng</a>
+          </li>
+          <li nz-menu-item>
+            <a nz-button nzType="link" routerLink="orders">Đơn hàng</a>
+          </li>
+          <li nz-menu-item>
+            <a nz-button nzType="link" routerLink="exchangeOrders">Đổi trả</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu nzTitle="Thống kê" nzIcon="area-chart">
+        <ul>
+          <li nz-menu-item>
+            <a nz-button nzType="link" routerLink="statistic/income"
+              >Doanh thu</a
+            >
+          </li>
+          <li nz-menu-item>
+            <a nz-button nzType="link" routerLink="statistic/orders"
+              >Đơn hàng</a
+            >
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header class="d-flex justify-content-between align-items-center">
+      <span
+        class="trigger"
+        nz-icon
+        [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+        (click)="isCollapsed = !isCollapsed"
+      ></span>
+      <a
+        style="float: right"
+        nz-button
+        nzType="link"
+        nz-dropdown
+        [nzDropdownMenu]="menu"
+      >
+        <span nz-icon nzType="user"></span>
+        Hello Admin
+      </a>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item routerLink="profile">Thông tin cá nhân</li>
+          <li nz-menu-item>Đăng xuất</li>
+        </ul>
+      </nz-dropdown-menu>
+    </nz-header>
+    <nz-content>
+      <router-outlet></router-outlet>
+    </nz-content>
+    <nz-footer></nz-footer>
+  </nz-layout>
+</nz-layout>

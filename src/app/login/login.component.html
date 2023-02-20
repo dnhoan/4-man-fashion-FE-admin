@@ -1,49 +1,35 @@
-<h1>Login</h1>
-<form
-  nz-form
-  [formGroup]="formLogin"
-  class="login-form"
-  (ngSubmit)="loginForm()"
->
-  <nz-form-item>
-    <nz-form-control nzErrorTip="Please input your Email or Phone number!">
-      <nz-input-group nzPrefixIcon="user">
-        <input
-          type="text"
-          nz-input
-          formControlName="account"
-          placeholder="Email or Phone number"
-        />
-      </nz-input-group>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-control nzErrorTip="Please input your Password!">
-      <nz-input-group nzPrefixIcon="lock">
-        <input
-          type="password"
-          nz-input
-          formControlName="password"
-          placeholder="Password"
-        />
-      </nz-input-group>
-    </nz-form-control>
-  </nz-form-item>
-  <div nz-row class="login-form-margin">
-    <div nz-col [nzSpan]="12">
-      <label nz-checkbox formControlName="remember">
-        <span>Remember me</span>
-      </label>
-    </div>
-    <div nz-col [nzSpan]="12">
-      <a class="login-form-forgot">Forgot password</a>
+<div class="container" id="container">
+  <div class="form-container sign-in-container">
+    <form
+      nz-form
+      [formGroup]="formLogin"
+      class="login-form"
+      (ngSubmit)="loginForm()"
+    >
+      <h1 class="juntify-content-center">Đăng nhập</h1>
+      <label class="mt-5">Email</label>
+      <input
+        type="text"
+        nz-input
+        formControlName="account"
+        placeholder="Email or Phone number"
+      />
+      <label>Password</label>
+      <input
+        type="password"
+        nz-input
+        formControlName="password"
+        placeholder="Password"
+      />
+      <button class="mt-5">Đăng nhập</button>
+    </form>
+  </div>
+  <div class="overlay-container">
+    <div class="overlay">
+      <div class="overlay-panel overlay-right">
+        <h1>Xin chào bạn!</h1>
+        <p>Chào mừng bạn đến với 4ManFashion!</p>
+      </div>
     </div>
   </div>
-  <button
-    nz-button
-    class="login-form-button login-form-margin"
-    [nzType]="'primary'"
-  >
-    Log in
-  </button>
-</form>
+</div>
