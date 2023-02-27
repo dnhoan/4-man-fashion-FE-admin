@@ -23,7 +23,6 @@ export interface ProductDetailDTO {
   stock?: number;
   productDetailCode?: string;
   price?: number;
-  colorName?: string;
   sizeName?: string;
   colorName?: string;
   status?: string;

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Category, CategoryDTO } from 'src/app/model/category.model';
 import { CategoryService } from 'src/app/service/category.service';
 
@@ -28,7 +28,7 @@ export class CategoryComponent implements OnInit {
   disable = false;
   constructor(
     private readonly router: Router,
-    private toastr: ToastrService,
+    private message: NzMessageService,
     private categoryService: CategoryService,
     private fb: FormBuilder
   ) {}
@@ -51,7 +51,7 @@ export class CategoryComponent implements OnInit {
   handleOk() {
     this.submit = true;
     if (this.formCategory.valid) {
-      this.saveCategory()
+      this.saveCategory();
     }
   }
 
@@ -86,18 +86,17 @@ export class CategoryComponent implements OnInit {
       });
   }
 
-
   addCategory(category: CategoryDTO) {
     if (this.formCategory.valid) {
       this.addValueCategory();
       this.categoryService.createCategory(category).subscribe(
         (res) => {
           this.getAllCategory();
-          this.toastr.success("Thêm dữ liệu thành công");
+          this.message.success('Thêm dữ liệu thành công');
           this.isVisible = false;
         },
         (error) => {
-          this.toastr.error("Thêm dữ liệu thất bại");
+          this.message.error('Thêm dữ liệu thất bại');
         }
       );
     }
@@ -109,18 +108,17 @@ export class CategoryComponent implements OnInit {
       this.categoryService.updateCategory(this.category).subscribe(
         (res) => {
           this.getAllCategory();
-          this.toastr.success("Cập nhật dữ liệu thành công");
+          this.message.success('Cập nhật dữ liệu thành công');
           this.isVisible = false;
           return;
         },
         (error) => {
-          this.toastr.error("Cập nhật dữ liệu thất bại");
+          this.message.error('Cập nhật dữ liệu thất bại');
         }
       );
     }
     return;
   }
-
 
   deleteCategory(id: any) {
     this.categoryService.deleteCategory(id).subscribe(
@@ -130,15 +128,14 @@ export class CategoryComponent implements OnInit {
             value.status = 0;
             return;
           }
-          this.toastr.success("Xóa dữ liệu thành công");
+          this.message.success('Xóa dữ liệu thành công');
         });
       },
       (error) => {
-        this.toastr.error("Xóa dữ liệu thất bại");
+        this.message.error('Xóa dữ liệu thất bại');
       }
     );
   }
-
 
   getInfoCategory(id: any) {
     this.showModal();

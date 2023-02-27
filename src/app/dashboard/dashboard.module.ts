@@ -6,7 +6,6 @@ import { DashboardComponent } from './dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
-import { ToastrModule } from 'ngx-toastr';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -45,7 +44,6 @@ import { ProductModule } from './product/product.module';
     NzDropDownModule,
     NzIconModule,
     NzTableModule,
-    ToastrModule,
     NzSelectModule,
     NgZorroAntdModule,
     NzDividerModule,
