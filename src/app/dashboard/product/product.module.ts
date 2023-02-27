@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ProductDetailComponent } from './productDetail/productDetail.component';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { CreateProductComponent } from './create-product/create-product.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgZorroAntdModule } from 'src/app/share_modules/ng-add-ng-zorro-antd.module';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    NzDividerModule
-  ],
-  declarations: [ProductDetailComponent]
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgZorroAntdModule],
+  declarations: [ProductDetailComponent, CreateProductComponent],
 })
-export class ProductModule { }
+export class ProductModule {}

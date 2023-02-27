@@ -1,0 +1,254 @@
+<div class="" id="">
+  <div
+    class=""
+    style="
+      background-color: white;
+      margin-top: 20px;
+      border-radius: 5px;
+      padding: 10px;
+    "
+  >
+    <form
+      nz-form
+      [formGroup]="formCreateProduct"
+      class="login-form"
+      (ngSubmit)="submit()"
+    >
+      <div>
+        <label>Tên sản phẩm</label>
+        <input
+          type="text"
+          nz-input
+          formControlName="name"
+          placeholder="Nhập tên sản phẩm"
+        />
+      </div>
+      <nz-divider></nz-divider>
+      <div style="display: flex; justify-content: space-between">
+        <ng-container *ngIf="categories.length">
+          <div>
+            <label>Danh mục</label> <br />
+            <nz-select
+              id="category"
+              nzShowSearch
+              [nzDropdownRender]="renderCategory"
+              formControlName="category"
+              nzPlaceHolder="Chọn danh mục"
+            >
+              <nz-option
+                *ngFor="let category of categories"
+                [nzLabel]="category.categoryName!"
+                [nzValue]="category"
+              ></nz-option>
+            </nz-select>
+            <ng-template #renderCategory>
+              <nz-divider></nz-divider>
+              <div class="container">
+                <input type="text" nz-input #inputElement />
+                <a class="add-item" (click)="insertCategory($event)">
+                  <span nz-icon nzType="plus"></span>
+                </a>
+              </div>
+            </ng-template>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="models.length">
+          <div>
+            <label>Kiểu dáng</label> <br />
+            <nz-select
+              id="model"
+              nzShowSearch
+              [nzDropdownRender]="renderModel"
+              formControlName="model"
+              nzPlaceHolder="Chọn kiểu dáng"
+            >
+              <nz-option
+                *ngFor="let model of models"
+                [nzLabel]="model.modelsName!"
+                [nzValue]="model"
+              ></nz-option>
+            </nz-select>
+            <ng-template #renderModel>
+              <nz-divider></nz-divider>
+              <div class="container">
+                <input type="text" nz-input #inputElement />
+                <a class="add-item" (click)="insertModel($event)">
+                  <span nz-icon nzType="plus"></span>
+                </a>
+              </div>
+            </ng-template>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="materials.length">
+          <div>
+            <label>Chất liệu</label> <br />
+            <nz-select
+              id="material"
+              nzShowSearch
+              [nzDropdownRender]="renderMaterial"
+              formControlName="material"
+              nzPlaceHolder="Chọn chất liệu"
+            >
+              <nz-option
+                *ngFor="let material of materials"
+                [nzLabel]="material.materialName!"
+                [nzValue]="material"
+              ></nz-option>
+            </nz-select>
+            <ng-template #renderMaterial>
+              <nz-divider></nz-divider>
+              <div class="container">
+                <input type="text" nz-input #inputElement />
+                <a class="add-item" (click)="insertMaterial($event)">
+                  <span nz-icon nzType="plus"></span>
+                </a>
+              </div>
+            </ng-template>
+          </div>
+        </ng-container>
+      </div>
+      <nz-divider></nz-divider>
+      <div class="uploadImage">
+        <div class="clearfix">
+          <label>Ảnh</label> <br />
+          <div class="upload-btn-wrapper">
+            <button nz-button>Tải ảnh lên</button>
+            <input type="file" name="myfile" (change)="changeImage($event)" />
+          </div>
+          <br />
+          <div style="display: flex; justify-content: start">
+            <ng-container *ngFor="let img of images; let i = index">
+              <div
+                style="
+                  margin: 5px;
+                  padding: 2px;
+                  border: #c35757;
+                  border-style: dashed;
+                  border-width: 2px;
+                  position: relative;
+                "
+              >
+                <span
+                  style="
+                    background-color: white;
+                    color: red;
+                    position: absolute;
+                    cursor: pointer;
+                  "
+                  nz-icon
+                  nzType="close"
+                  nzTheme="outline"
+                  (click)="removeImage(i)"
+                ></span>
+                <img nz-image width="50px" height="50px" [nzSrc]="img" alt="" />
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <nz-divider></nz-divider>
+      <label for="">Phân loại</label>
+      <div style="display: flex; justify-content: space-between">
+        <div>
+          <ng-container *ngIf="colors.length">
+            <div>
+              <label>Màu sắc</label> <br />
+              <nz-select
+                nzMode="tags"
+                formControlName="color"
+                (ngModelChange)="mapTiers()"
+                [nzDropdownRender]="renderColor"
+                nzPlaceHolder="Chọn màu sắc"
+              >
+                <nz-option
+                  *ngFor="let color of colors"
+                  [nzLabel]="color.colorName!"
+                  [nzValue]="color"
+                ></nz-option>
+              </nz-select>
+              <ng-template #renderColor>
+                <nz-divider></nz-divider>
+                <div class="container">
+                  <input type="text" nz-input #inputElement />
+                  <a class="add-item" (click)="insertColor($event)">
+                    <span nz-icon nzType="plus"></span>
+                  </a>
+                </div>
+              </ng-template>
+            </div>
+          </ng-container>
+        </div>
+        <div>
+          <ng-container *ngIf="sizes.length">
+            <div>
+              <label>Kích thước</label> <br />
+              <nz-select
+                nzMode="tags"
+                formControlName="size"
+                (ngModelChange)="mapTiers()"
+                [nzDropdownRender]="renderSize"
+                nzPlaceHolder="Chọn kích thước"
+              >
+                <nz-option
+                  *ngFor="let size of sizes"
+                  [nzLabel]="size.sizeName!"
+                  [nzValue]="size"
+                ></nz-option>
+              </nz-select>
+              <ng-template #renderSize>
+                <nz-divider></nz-divider>
+                <div class="container">
+                  <input type="text" nz-input #inputElement />
+                  <a class="add-item" (click)="insertSize($event)">
+                    <span nz-icon nzType="plus"></span>
+                  </a>
+                </div>
+              </ng-template>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div>
+        <nz-table
+          #tableName
+          nzBordered
+          [nzShowPagination]="false"
+          nzTitle="Danh sách phân loại hàng"
+          [nzData]="productDetails"
+        >
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th>Tên phân loại</th>
+              <th>Giá</th>
+              <th>Tồn kho</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let productDetail of tableName.data; index as i">
+              <td>{{ i + 1 }}</td>
+              <td>{{ productDetail.colorName! + productDetail.sizeName }}</td>
+              <td>
+                <nz-input-number
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="productDetail.price"
+                  [nzMin]="0"
+                  [nzStep]="1"
+                ></nz-input-number>
+              </td>
+              <td>
+                <nz-input-number
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="productDetail.stock"
+                  [nzMin]="0"
+                  [nzStep]="1"
+                ></nz-input-number>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <button type="submit">Tạo sản phẩm</button>
+    </form>
+  </div>
+</div>

@@ -22,9 +22,11 @@ import { AuthService } from './common-services/auth.service';
 import { JwtService } from './common-services/jwt.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NgZorroAntdModule } from './share_modules/ng-add-ng-zorro-antd.module';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import { environment } from 'src/environments/environment';
 
 registerLocaleData(en);
-
 
 const configToast: any = {
   timeOut: 3000,
@@ -46,6 +48,8 @@ const configToast: any = {
     FormsModule,
     ToastrModule.forRoot(configToast),
     BrowserAnimationsModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireStorageModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => localStorage.getItem(CommonConstants.TOKEN_KEY),

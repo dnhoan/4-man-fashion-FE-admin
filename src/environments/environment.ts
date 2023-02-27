@@ -5,6 +5,14 @@
 export const environment = {
   production: false,
   baseUrl: 'http://localhost:8080',
+  firebase: {
+    apiKey: 'AIzaSyD2YciptLqkxabdkPZW7pvCdX_3G5CMDXo',
+    authDomain: 'fashion-d9d81.firebaseapp.com',
+    projectId: 'fashion-d9d81',
+    storageBucket: 'fashion-d9d81.appspot.com',
+    messagingSenderId: '797168394648',
+    appId: '1:797168394648:web:a9f92e2b47ba45f5c7cbed',
+  },
 };
 
 /*

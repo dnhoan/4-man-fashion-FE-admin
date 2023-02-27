@@ -5,4 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class CommonConstants {
   public static readonly TOKEN_KEY = 'token';
+  public static readonly STATUS = {
+    ACTIVE: 1,
+    INACTIVE: 0,
+  };
 }

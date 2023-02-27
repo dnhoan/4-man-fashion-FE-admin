@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.formLogin = this.fb.group({
-      account: [null, [Validators.required]],
+      phoneOrEmail: [null, [Validators.required]],
       password: [null, [Validators.required]],
       remember: [true],
     });
@@ -30,10 +30,10 @@ export class LoginComponent implements OnInit {
   loginForm() {
     if (this.formLogin.valid) {
       console.log('submit', this.formLogin.value);
-      this.authService.login(
-        this.formLogin.value.account,
-        this.formLogin.value.password
-      );
+      this.authService.login({
+        phoneOrEmail: this.formLogin.value.phoneOrEmail,
+        password: this.formLogin.value.password,
+      });
     } else {
       Object.values(this.formLogin.controls).forEach((control) => {
         if (control.invalid) {
