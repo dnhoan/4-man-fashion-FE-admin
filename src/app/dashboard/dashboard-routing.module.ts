@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
+import { CreateProductComponent } from './product/create-product/create-product.component';
 import { ProductComponent } from './product/product.component';
 import { CategoryComponent } from './property/category/category.component';
 import { ColorComponent } from './property/color/color.component';
@@ -16,6 +17,10 @@ const routes: Routes = [
       {
         path: 'product',
         component: ProductComponent,
+      },
+      {
+        path: 'create-product',
+        component: CreateProductComponent,
       },
       {
         path: 'color',

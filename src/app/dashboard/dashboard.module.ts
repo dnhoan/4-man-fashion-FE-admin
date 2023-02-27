@@ -23,6 +23,7 @@ import { ModelComponent } from './property/models/model.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { ProductModule } from './product/product.module';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
     ColorComponent,
     MaterialComponent,
     SizeComponent,
-    ModelComponent],
+    ModelComponent,
+  ],
   imports: [
     CommonModule,
     DashboardRoutingModule,
@@ -52,9 +54,6 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
     NzBreadCrumbModule,
   ],
 
-
-  providers: [
-    NzMessageService,
-  ],
+  providers: [NzMessageService],
 })
 export class DashboardModule {}

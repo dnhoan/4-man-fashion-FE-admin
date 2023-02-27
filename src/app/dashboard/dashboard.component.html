@@ -91,7 +91,7 @@
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul nz-menu nzSelectable>
           <li nz-menu-item routerLink="profile">Thông tin cá nhân</li>
-          <li nz-menu-item>Đăng xuất</li>
+          <li nz-menu-item (click)="logout()">Đăng xuất</li>
         </ul>
       </nz-dropdown-menu>
     </nz-header>

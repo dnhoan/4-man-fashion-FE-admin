@@ -7,10 +7,11 @@ export interface ProductDetail {
   productId?: ProductDTO;
   size?: SizeDTO;
   color?: ColorDTO;
-  stock?: string;
+  stock?: number;
   productDetailCode?: string;
   price?: number;
   sizeName?: string;
+  colorName?: string;
   status?: string;
 }
 
@@ -19,10 +20,11 @@ export interface ProductDetailDTO {
   productId?: ProductDTO;
   size?: SizeDTO;
   color?: ColorDTO;
-  stock?: string;
+  stock?: number;
   productDetailCode?: string;
   price?: number;
   colorName?: string;
   sizeName?: string;
+  colorName?: string;
   status?: string;
 }
