@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Color, ColorDTO } from 'src/app/model/color.model';
 import { ColorService } from 'src/app/service/color.service';
 
@@ -28,7 +28,7 @@ export class ColorComponent implements OnInit {
   disable = false;
   constructor(
     private readonly router: Router,
-    private toastr: ToastrService,
+    private message: NzMessageService,
     private colorService: ColorService,
     private fb: FormBuilder
   ) {}
@@ -52,7 +52,7 @@ export class ColorComponent implements OnInit {
   handleOk() {
     this.submit = true;
     if (this.formColor.valid) {
-      this.saveColor()
+      this.saveColor();
     }
   }
 
@@ -87,18 +87,17 @@ export class ColorComponent implements OnInit {
       });
   }
 
-
   addColor(color: ColorDTO) {
     if (this.formColor.valid) {
       this.addValueColor();
       this.colorService.createColor(color).subscribe(
         (res) => {
           this.getAllColor();
-          this.toastr.success("Thêm dữ liệu thành công");
+          this.message.success('Thêm dữ liệu thành công');
           this.isVisible = false;
         },
         (error) => {
-          this.toastr.error("Thêm dữ liệu thất bại");
+          this.message.error('Thêm dữ liệu thất bại');
         }
       );
     }
@@ -110,18 +109,17 @@ export class ColorComponent implements OnInit {
       this.colorService.updateColor(this.color).subscribe(
         (res) => {
           this.getAllColor();
-          this.toastr.success("Cập nhật dữ liệu thành công");
+          this.message.success('Cập nhật dữ liệu thành công');
           this.isVisible = false;
           return;
         },
         (error) => {
-          this.toastr.error("Cập nhật dữ liệu thất bại");
+          this.message.error('Cập nhật dữ liệu thất bại');
         }
       );
     }
     return;
   }
-
 
   deleteColor(id: any) {
     this.colorService.deleteColor(id).subscribe(
@@ -131,15 +129,14 @@ export class ColorComponent implements OnInit {
             value.status = 0;
             return;
           }
-          this.toastr.success("Xóa dữ liệu thành công");
+          this.message.success('Xóa dữ liệu thành công');
         });
       },
       (error) => {
-        this.toastr.error("Xóa dữ liệu thất bại");
+        this.message.error('Xóa dữ liệu thất bại');
       }
     );
   }
-
 
   getInfoColor(id: any) {
     this.showModal();

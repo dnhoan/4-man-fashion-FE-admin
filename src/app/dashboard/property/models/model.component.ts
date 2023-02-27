@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Models, ModelsDTO } from 'src/app/model/model.model';
 import { ModelService } from 'src/app/service/model.service';
 
 @Component({
   selector: 'app-model',
   templateUrl: './model.component.html',
-  styleUrls: ['./model.component.scss']
+  styleUrls: ['./model.component.scss'],
 })
 export class ModelComponent implements OnInit {
   formModel!: FormGroup;
@@ -28,7 +28,7 @@ export class ModelComponent implements OnInit {
   disable = false;
   constructor(
     private readonly router: Router,
-    private toastr: ToastrService,
+    private message: NzMessageService,
     private modelService: ModelService,
     private fb: FormBuilder
   ) {}
@@ -56,11 +56,9 @@ export class ModelComponent implements OnInit {
     }
   }
 
-
   handleCancel(): void {
     this.isVisible = false;
   }
-
 
   initFormSearch() {
     this.formSearch! = this.fb.group({
@@ -84,16 +82,17 @@ export class ModelComponent implements OnInit {
       });
   }
 
-
   pagination(page: any) {
     if (page < 0) page = 0;
     this.offset = page;
-    this.modelService.getAllModel(this.offset, this.limit, this.status).subscribe((res) => {
-      console.log(res);
+    this.modelService
+      .getAllModel(this.offset, this.limit, this.status)
+      .subscribe((res) => {
+        console.log(res);
 
-      this.datas = res.data.items;
-      this.Page = res.data;
-    });
+        this.datas = res.data.items;
+        this.Page = res.data;
+      });
   }
 
   addModel(model: ModelsDTO) {
@@ -102,11 +101,11 @@ export class ModelComponent implements OnInit {
       this.modelService.createModel(model).subscribe(
         (res) => {
           this.getAllModel();
-          this.toastr.success("Thêm dữ liệu thành công");
+          this.message.success('Thêm dữ liệu thành công');
           this.isVisible = false;
         },
         (error) => {
-          this.toastr.error("Thêm dữ liệu thất bại");
+          this.message.error('Thêm dữ liệu thất bại');
         }
       );
     }
@@ -118,18 +117,17 @@ export class ModelComponent implements OnInit {
       this.modelService.updateModel(this.models).subscribe(
         (res) => {
           this.getAllModel();
-          this.toastr.success("Cập nhật dữ liệu thành công");
+          this.message.success('Cập nhật dữ liệu thành công');
           this.isVisible = false;
           return;
         },
         (error) => {
-          this.toastr.error("Cập nhật dữ liệu thất bại");
+          this.message.error('Cập nhật dữ liệu thất bại');
         }
       );
     }
     return;
   }
-
 
   deleteModel(id: any) {
     this.modelService.deleteModel(id).subscribe((res: any) =>
@@ -157,7 +155,6 @@ export class ModelComponent implements OnInit {
     this.models.modelsName = this.formModel.value.modelsName;
     this.models.status = this.formModel.value.status;
   }
-
 
   fillValueForm() {
     this.formModel.patchValue({
@@ -187,6 +184,4 @@ export class ModelComponent implements OnInit {
     this.searchWithPage(0);
     this.initFormSearch();
   }
-
-
 }

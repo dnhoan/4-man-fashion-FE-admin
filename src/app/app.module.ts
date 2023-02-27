@@ -7,7 +7,6 @@ import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { en_US } from 'ng-zorro-antd/i18n';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
-import { ToastrModule } from 'ngx-toastr';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -28,14 +27,6 @@ import { environment } from 'src/environments/environment';
 
 registerLocaleData(en);
 
-const configToast: any = {
-  timeOut: 3000,
-  positionClass: 'toast-top-right',
-  preventDuplicates: true,
-  progressBar: true,
-  progressAnimation: 'increasing',
-};
-
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -46,7 +37,6 @@ const configToast: any = {
     ReactiveFormsModule,
     NgZorroAntdModule,
     FormsModule,
-    ToastrModule.forRoot(configToast),
     BrowserAnimationsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireStorageModule,

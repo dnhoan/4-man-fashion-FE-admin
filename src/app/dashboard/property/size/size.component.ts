@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Size, SizeDTO } from 'src/app/model/size.model';
 import { SizeService } from 'src/app/service/size.service';
 
 @Component({
   selector: 'app-size',
   templateUrl: './size.component.html',
-  styleUrls: ['./size.component.scss']
+  styleUrls: ['./size.component.scss'],
 })
 export class SizeComponent implements OnInit {
   formSize!: FormGroup;
@@ -28,7 +28,7 @@ export class SizeComponent implements OnInit {
   disable = false;
   constructor(
     private readonly router: Router,
-    private toastr: ToastrService,
+    private message: NzMessageService,
     private sizeService: SizeService,
     private fb: FormBuilder
   ) {}
@@ -56,11 +56,9 @@ export class SizeComponent implements OnInit {
     }
   }
 
-
   handleCancel(): void {
     this.isVisible = false;
   }
-
 
   saveSize() {
     if (this.size.id) {
@@ -89,18 +87,17 @@ export class SizeComponent implements OnInit {
       });
   }
 
-
   addSize(size: SizeDTO) {
     if (this.formSize.valid) {
       this.addValueSize();
       this.sizeService.createSize(size).subscribe(
         (res) => {
           this.getAllSize();
-          this.toastr.success("Thêm dữ liệu thành công");
+          this.message.success('Thêm dữ liệu thành công');
           this.isVisible = false;
         },
         (error) => {
-          this.toastr.error("Thêm dữ liệu thất bại");
+          this.message.error('Thêm dữ liệu thất bại');
         }
       );
     }
@@ -112,18 +109,17 @@ export class SizeComponent implements OnInit {
       this.sizeService.updateSize(this.size).subscribe(
         (res) => {
           this.getAllSize();
-          this.toastr.success("Cập nhật dữ liệu thành công");
+          this.message.success('Cập nhật dữ liệu thành công');
           this.isVisible = false;
           return;
         },
         (error) => {
-          this.toastr.error("Cập nhật dữ liệu thất bại");
+          this.message.error('Cập nhật dữ liệu thất bại');
         }
       );
     }
     return;
   }
-
 
   deleteSize(id: any) {
     this.sizeService.deleteSize(id).subscribe(
@@ -133,15 +129,14 @@ export class SizeComponent implements OnInit {
             value.status = 0;
             return;
           }
-          this.toastr.success("Xóa dữ liệu thành công");
+          this.message.success('Xóa dữ liệu thành công');
         });
       },
       (error) => {
-        this.toastr.error("Xóa dữ liệu thất bại");
+        this.message.error('Xóa dữ liệu thất bại');
       }
     );
   }
-
 
   getInfoSize(id: any) {
     this.showModal();
@@ -174,7 +169,6 @@ export class SizeComponent implements OnInit {
     });
   }
 
-
   pageItem(pageItems: any) {
     this.limit = pageItems;
     this.pagination(this.offset);
@@ -195,5 +189,4 @@ export class SizeComponent implements OnInit {
     this.searchWithPage(0);
     this.initFormSearch();
   }
-
 }

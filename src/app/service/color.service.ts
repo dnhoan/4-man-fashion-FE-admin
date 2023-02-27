@@ -3,20 +3,19 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
 import { ColorDTO } from '../model/color.model';
-import { ToastrService } from 'ngx-toastr';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ColorService {
   public apiColor = `${environment.baseUrl}/api/admin`;
-  constructor(private httpClient: HttpClient, private toastr: ToastrService) {}
+  constructor(
+    private httpClient: HttpClient,
+    private message: NzMessageService
+  ) {}
 
-  getAllColor(
-    offset: any,
-    limit: any,
-    status: number,
-  ): Observable<any> {
+  getAllColor(offset: any, limit: any, status: number): Observable<any> {
     return this.httpClient.get<any>(
       this.apiColor +
         '/color/getAll?offset=' +
@@ -32,7 +31,7 @@ export class ColorService {
     return this.httpClient.post(`${this.apiColor}/color/create`, color).pipe(
       map((res: any) => {
         if (res.code === 200) {
-          this.toastr.success('Thêm dữ liệu thành công');
+          this.message.success('Thêm dữ liệu thành công');
           return res.data.items;
         }
         return [];
@@ -41,10 +40,7 @@ export class ColorService {
   }
 
   public updateColor(color: ColorDTO): Observable<any> {
-    return this.httpClient.put<any>(
-      this.apiColor + '/color/update',
-      color
-    );
+    return this.httpClient.put<any>(this.apiColor + '/color/update', color);
   }
 
   public deleteColor(id: any): Observable<any> {

@@ -3,14 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Category, CategoryDTO } from '../model/category.model';
-import { ToastrService } from 'ngx-toastr';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoryService {
   public apiCategory = `${environment.baseUrl}/api/admin`;
-  constructor(private httpClient: HttpClient, private toastr: ToastrService) {}
+  constructor(
+    private httpClient: HttpClient,
+    private message: NzMessageService
+  ) {}
 
   getAllCategory(offset: any, limit: any, status: number): Observable<any> {
     return this.httpClient.get<any>(
@@ -30,7 +33,7 @@ export class CategoryService {
       .pipe(
         map((res: any) => {
           if (res.code === 200) {
-            this.toastr.success('Thêm dữ liệu thành công');
+            this.message.success('Thêm dữ liệu thành công');
             return res.data.items;
           }
           return [];
@@ -44,7 +47,6 @@ export class CategoryService {
       category
     );
   }
-
 
   public deleteCategory(id: any): Observable<any> {
     return this.httpClient.delete<any>(

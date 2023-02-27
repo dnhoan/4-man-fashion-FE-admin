@@ -3,14 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { catchError, map, Observable, of } from 'rxjs';
 import { ModelsDTO } from '../model/model.model';
-import { ToastrService } from 'ngx-toastr';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ModelService {
   public apiModel = `${environment.baseUrl}/api/admin`;
-  constructor(private httpClient: HttpClient, private toastr: ToastrService) {}
+  constructor(
+    private httpClient: HttpClient,
+    private message: NzMessageService
+  ) {}
 
   getAllModel(offset: any, limit: any, status: number): Observable<any> {
     return this.httpClient.get<any>(
@@ -28,7 +31,7 @@ export class ModelService {
     return this.httpClient.post(`${this.apiModel}/model/create`, models).pipe(
       map((res: any) => {
         if (res.code === 200) {
-          this.toastr.success('Thêm dữ liệu thành công');
+          this.message.success('Thêm dữ liệu thành công');
           return res.data.items;
         }
         return [];
@@ -37,10 +40,7 @@ export class ModelService {
   }
 
   public updateModel(model: ModelsDTO): Observable<any> {
-    return this.httpClient.put<any>(
-      this.apiModel + '/model/update',
-      model
-    );
+    return this.httpClient.put<any>(this.apiModel + '/model/update', model);
   }
 
   public deleteModel(id: any): Observable<any> {

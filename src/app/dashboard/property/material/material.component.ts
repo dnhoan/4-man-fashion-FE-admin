@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Material, MaterialDTO } from 'src/app/model/material.model';
 import { MaterialService } from 'src/app/service/material.service';
 
@@ -28,8 +28,8 @@ export class MaterialComponent implements OnInit {
   disable = false;
   constructor(
     private readonly router: Router,
-    private toastr: ToastrService,
     private materialService: MaterialService,
+    private message: NzMessageService,
     private fb: FormBuilder
   ) {}
 
@@ -100,11 +100,11 @@ export class MaterialComponent implements OnInit {
       this.materialService.createMaterial(material).subscribe(
         (res) => {
           this.getAllMaterial();
-          this.toastr.success('Thêm dữ liệu thành công');
+          this.message.success('Thêm dữ liệu thành công');
           this.isVisible = false;
         },
         (error) => {
-          this.toastr.error('Thêm dữ liệu thất bại');
+          this.message.error('Thêm dữ liệu thất bại');
         }
       );
     }
@@ -116,12 +116,12 @@ export class MaterialComponent implements OnInit {
       this.materialService.updateMaterial(this.material).subscribe(
         (res) => {
           this.getAllMaterial();
-          this.toastr.success('Cập nhật dữ liệu thành công');
+          this.message.success('Cập nhật dữ liệu thành công');
           this.isVisible = false;
           return;
         },
         (error) => {
-          this.toastr.error('Cập nhật dữ liệu thất bại');
+          this.message.error('Cập nhật dữ liệu thất bại');
         }
       );
     }
