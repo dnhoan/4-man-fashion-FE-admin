@@ -40,7 +40,7 @@
       nzShowSizeChanger
       [nzFrontPagination]="false"
       [nzPageSizeOptions]="commonService.pageSizeOptions"
-      [nzPageIndex]="searchSize.offset"
+      [nzPageIndex]="searchSize.offset + 1"
       [nzPageSize]="searchSize.limit"
       [nzTotal]="page ? page.totalElement : 0"
       nzNoResult="Không có dữ liệu"
