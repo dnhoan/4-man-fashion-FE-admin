@@ -55,10 +55,12 @@ export class SizeComponent implements OnInit {
   }
   search(value: any) {
     this.searchSize.searchTerm = value;
+    this.searchSize.offset = 0;
     this.searchChange$.next({ ...this.searchSize });
   }
   onChangeStatus(status: any) {
     this.searchSize.status = status;
+    this.searchSize.offset = 0;
     this.searchChange$.next({ ...this.searchSize });
   }
   onChangeSizePage(event: any) {
