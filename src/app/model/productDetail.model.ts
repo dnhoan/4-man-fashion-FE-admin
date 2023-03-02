@@ -3,26 +3,28 @@ import { SizeDTO } from './size.model';
 import { ProductDTO } from './product.model';
 
 export interface ProductDetail {
-  id?: number;
-  productId?: ProductDTO;
+  id?: number | string;
+  productId?: string;
   size?: SizeDTO;
   color?: ColorDTO;
-  stock?: string;
+  stock?: number;
   productDetailCode?: string;
   price?: number;
   sizeName?: string;
-  status?: string;
+  expand?: boolean;
+  status?: number;
 }
 
 export interface ProductDetailDTO {
-  id?: number;
-  productId?: ProductDTO;
+  id?: number | string;
+  productId?: string;
   size?: SizeDTO;
   color?: ColorDTO;
-  stock?: string;
+  stock?: number;
   productDetailCode?: string;
   price?: number;
   colorName?: string;
   sizeName?: string;
-  status?: string;
+  expand?: boolean;
+  status?: number;
 }

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { catchError, finalize, map, Observable, of } from 'rxjs';
-import { ProductDTO } from 'src/app/model/product.model';
+import { Product, ProductDTO } from 'src/app/model/product.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -33,6 +33,14 @@ export class ProductsService {
   }
 
 
+  getListproduct(): Observable<any> {
+    return this.httpClient.get<any>(
+      this.apiProduct +
+        '/product/getList'
+    );
+  }
+
+
   createProduct(product: ProductDTO) {
     return this.httpClient.post(`${this.apiProduct}/product`, product).pipe(
       map((res: any) => {
@@ -45,7 +53,7 @@ export class ProductsService {
   }
 
 
-  public updateProduct(product: ProductDTO): Observable<any> {
+  public updateProduct(product: Product): Observable<any> {
     return this.httpClient.put<any>(
       this.apiProduct + '/product/update',
       product
@@ -54,7 +62,7 @@ export class ProductsService {
 
   public deleteProduct(id: any): Observable<any> {
     return this.httpClient.delete<any>(
-      `${this.apiProduct}` + '/product/delete/' + id
+      `${this.apiProduct}` + '/product/updateStatus/' + id
     );
   }
 }

@@ -24,6 +24,13 @@ export class ModelService {
     );
   }
 
+  getListModel(): Observable<any> {
+    return this.httpClient.get<any>(
+      this.apiModel +
+        '/model/getList'
+    );
+  }
+
   createModel(models: ModelsDTO) {
     return this.httpClient.post(`${this.apiModel}/model/create`, models).pipe(
       map((res: any) => {

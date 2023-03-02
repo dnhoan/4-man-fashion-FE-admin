@@ -21,6 +21,7 @@
     "@angular/router": "^14.0.0",
     "@auth0/angular-jwt": "^5.1.2",
     "@ngneat/elf": "^2.3.1",
+    "@ngneat/elf-entities": "^4.4.4",
     "ng-quill": "^4.5.3",
     "ng-zorro-antd": "^14.0.0",
     "ngx-pagination": "^6.0.3",

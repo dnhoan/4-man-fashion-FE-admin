@@ -28,6 +28,13 @@ export class ColorService {
     );
   }
 
+  getListColor(): Observable<any> {
+    return this.httpClient.get<any>(
+      this.apiColor +
+        '/color/getList'
+    );
+  }
+
   createColor(color: ColorDTO) {
     return this.httpClient.post(`${this.apiColor}/color/create`, color).pipe(
       map((res: any) => {

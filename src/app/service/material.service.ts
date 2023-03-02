@@ -24,7 +24,14 @@ export class MaterialService {
     );
   }
 
-  createMaterial(material: MaterialDTO) {
+  getListMaterial(): Observable<any> {
+    return this.httpClient.get<any>(
+      this.apiMaterial +
+        '/material/getList'
+    );
+  }
+
+  createMaterial(material: MaterialDTO): Observable<MaterialDTO[]> {
     return this.httpClient
       .post(`${this.apiMaterial}/material/create`, material)
       .pipe(

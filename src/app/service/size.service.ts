@@ -24,6 +24,14 @@ export class SizeService {
     );
   }
 
+  getListSize(): Observable<any> {
+    return this.httpClient.get<any>(
+      this.apiSize +
+        '/size/getList'
+    );
+  }
+
+
   createSize(size: SizeDTO) {
     return this.httpClient.post(`${this.apiSize}/size/create`, size).pipe(
       map((res: any) => {

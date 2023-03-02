@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -10,12 +9,21 @@ import { Observable } from 'rxjs';
 })
 export class ProductDetailService {
   public apiProductDetail = `${environment.baseUrl}/api/admin`;
-  constructor(private httpClient: HttpClient, private toastr: ToastrService) {}
+  constructor(private httpClient: HttpClient) {}
 
   getAllProductDetail(): Observable<any> {
     return this.httpClient.get<any>(
+      this.apiProductDetail + '/productDetail/getAll'
+    );
+  }
+
+  getProducByProductId(product_id: number, status: number): Observable<any> {
+    return this.httpClient.get<any>(
       this.apiProductDetail +
-        '/productDetail/getAll'
+        '/productDetail/getByProductId?product_id=' +
+        product_id +
+        '&status=' +
+        status
     );
   }
 }
