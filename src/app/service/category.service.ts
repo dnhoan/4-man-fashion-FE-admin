@@ -27,6 +27,13 @@ export class CategoryService {
     );
   }
 
+  getListCategory(): Observable<any> {
+    return this.httpClient.get<any>(
+      this.apiCategory +
+        '/category/getList'
+    );
+  }
+
   createCategory(category: CategoryDTO) {
     return this.httpClient
       .post(`${this.apiCategory}/category/create`, category)

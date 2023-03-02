@@ -19,4 +19,14 @@ export class ProductDetailService {
       this.apiProductDetail + '/productDetail/getAll'
     );
   }
+
+  getProducByProductId(product_id: number, status: number): Observable<any> {
+    return this.httpClient.get<any>(
+      this.apiProductDetail +
+        '/productDetail/getByProductId?product_id=' +
+        product_id +
+        '&status=' +
+        status
+    );
+  }
 }

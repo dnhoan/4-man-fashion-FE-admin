@@ -24,6 +24,7 @@ import { NgZorroAntdModule } from './share_modules/ng-add-ng-zorro-antd.module';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { environment } from 'src/environments/environment';
+import { ProductDetailComponent } from './dashboard/product/productDetail/productDetail.component';
 
 registerLocaleData(en);
 
@@ -57,6 +58,6 @@ registerLocaleData(en);
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: NZ_I18N, useValue: en_US },
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent, ProductDetailComponent],
 })
 export class AppModule {}

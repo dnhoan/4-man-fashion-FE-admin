@@ -4,39 +4,41 @@ import { Models } from './model.model';
 import { ProductDetail, ProductDetailDTO } from './productDetail.model';
 
 export interface Product {
-  id?: number;
-  productId?: number;
+  id: number;
+  productId: number;
   productName?: string;
   description?: String;
   detail?: string;
-  materialId?: Material[];
-  categoryId?: Category[];
-  modelId?: Models[];
+  material?: Material;
+  category?: Category;
+  model?: Models;
   gender?: number;
   materialName?: string;
   categoryName?: string;
-  modelsName?: string;
+  modelName?: string;
   status?: string;
   ctime?: Date;
   mtime?: Date;
-  productDetail?: ProductDetailDTO;
+  expand?: boolean;
+  productDetails: ProductDetail[];
 }
 
 export interface ProductDTO {
-  id?: number;
-  productId?: number;
+  id: number;
+  productId: number;
   productName?: string;
   description?: String;
   detail?: string;
-  materialId?: Material[];
-  categoryId?: Category[];
-  modelId?: Models[];
+  material?: Material;
+  category?: Category;
+  model?: Models;
   gender?: number;
   materialName?: string;
   categoryName?: string;
-  modelsName?: string;
+  modelName?: string;
   status?: string;
   ctime?: Date;
   mtime?: Date;
-  productDetail?: ProductDetailDTO;
+  expand?: boolean;
+  productDetails: ProductDetailDTO[];
 }
