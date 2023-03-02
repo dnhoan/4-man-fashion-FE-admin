@@ -19,12 +19,10 @@ import { CommonConstants } from './constants/common-constants';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthService } from './common-services/auth.service';
 import { JwtService } from './common-services/jwt.service';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { NgZorroAntdModule } from './share_modules/ng-add-ng-zorro-antd.module';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { environment } from 'src/environments/environment';
-import { ProductDetailComponent } from './dashboard/product/productDetail/productDetail.component';
 
 registerLocaleData(en);
 
@@ -58,6 +56,6 @@ registerLocaleData(en);
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: NZ_I18N, useValue: en_US },
   ],
-  bootstrap: [AppComponent, ProductDetailComponent],
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

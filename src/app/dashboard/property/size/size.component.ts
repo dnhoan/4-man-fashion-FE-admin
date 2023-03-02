@@ -1,7 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import {
+  BehaviorSubject,
+  debounceTime,
+  distinctUntilChanged,
+  Subscription,
+  switchMap,
+} from 'rxjs';
+import { CommonService } from 'src/app/common-services/common.service';
+import { CommonConstants } from 'src/app/constants/common-constants';
+import { Page } from 'src/app/model/pageable.model';
+import { SearchOption } from 'src/app/model/search-option.model';
 import { Size, SizeDTO } from 'src/app/model/size.model';
 import { SizeService } from 'src/app/service/size.service';
 
@@ -11,182 +20,139 @@ import { SizeService } from 'src/app/service/size.service';
   styleUrls: ['./size.component.scss'],
 })
 export class SizeComponent implements OnInit {
-  formSize!: FormGroup;
-  formSearch!: FormGroup;
-  radioValue = 'A';
-  size: Size = {};
-  datas: SizeDTO[] = [];
-  sortBy = 'sizeName';
-  descAsc = 'desc';
-  offset = 0;
-  limit = 5;
-  Page: any;
-  isVisible = false;
-  action = true;
-  submit = false;
-  status!: number;
-  disable = false;
+  subSearchSize!: Subscription;
+  searchSize: SearchOption = {
+    searchTerm: '',
+    status: 1,
+    offset: 0,
+    limit: 10,
+  };
+  page!: Page;
+  sizes: Size[] = [];
+  searchChange$ = new BehaviorSubject<SearchOption>(this.searchSize);
+  isVisibleModal = false;
+  inputSize: string = '';
+  currentSize!: number;
   constructor(
-    private readonly router: Router,
-    private message: NzMessageService,
     private sizeService: SizeService,
-    private fb: FormBuilder
+    public commonService: CommonService,
+    private modal: NzModalService
   ) {}
 
   ngOnInit(): void {
-    // this.getAllAccount();
-    this.initFormSearch();
-    this.pagination(this.offset);
+    this.subSearchSize = this.searchChange$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((res) => {
+          return this.sizeService.getAllSize(res);
+        })
+      )
+      .subscribe((res: any) => {
+        this.page = { ...res };
+        this.sizes = res.items;
+      });
   }
-
+  search(value: any) {
+    this.searchSize.searchTerm = value;
+    this.searchChange$.next({ ...this.searchSize });
+  }
+  onChangeStatus(status: any) {
+    this.searchSize.status = status;
+    this.searchChange$.next({ ...this.searchSize });
+  }
+  onChangeSizePage(event: any) {
+    this.searchSize.limit = event;
+    this.searchChange$.next({ ...this.searchSize });
+  }
+  onChangeIndexPage(event: any) {
+    --event;
+    this.searchSize.offset = event;
+    this.searchChange$.next({ ...this.searchSize });
+  }
   showModal(): void {
-    this.submit = false;
-    this.formSize = this.fb.group({
-      id: null,
-      sizeName: ['', [Validators.required]],
-      status: [1],
-    });
-    this.isVisible = true;
+    this.isVisibleModal = true;
   }
 
   handleOk() {
-    this.submit = true;
-    if (this.formSize.valid) {
-      this.saveSize();
+    if (this.validateSize()) {
+      this.messageError = '';
+      if (this.currentSize >= 0) {
+        this.updateSize();
+        return;
+      }
+      this.createSize();
     }
   }
 
   handleCancel(): void {
-    this.isVisible = false;
+    this.inputSize = '';
+    this.messageError = '';
+    this.currentSize = -1;
+    this.isVisibleModal = false;
   }
 
-  saveSize() {
-    if (this.size.id) {
-      this.updateSize();
-      return;
+  messageError = '';
+  validateSize() {
+    if (this.inputSize.trim().length == 0) {
+      this.messageError = 'Vui lòng nhập tên size';
+      return false;
     }
-    this.addSize(this.size);
+    if (this.inputSize.trim().length > 225) {
+      this.messageError = 'Vui lòng nhập tên size dưới 225 ký tự';
+      return false;
+    }
+    return true;
   }
 
-  getAllSize() {
+  createSize() {
     this.sizeService
-      .getAllSize(this.offset, this.limit, this.status)
-      .subscribe((res: any) => {
-        this.datas = res.data.items;
-      });
-  }
-
-  pagination(page: any) {
-    if (page < 0) page = 0;
-    this.offset = page;
-    this.sizeService
-      .getAllSize(this.offset, this.limit, this.status)
+      .createSize({
+        id: 0,
+        sizeName: this.inputSize,
+        status: CommonConstants.STATUS.ACTIVE,
+      })
       .subscribe((res) => {
-        this.datas = res.data.items;
-        this.Page = res.data;
-      });
-  }
-
-  addSize(size: SizeDTO) {
-    if (this.formSize.valid) {
-      this.addValueSize();
-      this.sizeService.createSize(size).subscribe(
-        (res) => {
-          this.getAllSize();
-          this.message.success('Thêm dữ liệu thành công');
-          this.isVisible = false;
-        },
-        (error) => {
-          this.message.error('Thêm dữ liệu thất bại');
+        if (res) {
+          this.sizes.unshift(res);
+          this.isVisibleModal = false;
         }
-      );
-    }
+      });
   }
 
   updateSize() {
-    if (this.formSize.valid) {
-      this.addValueSize();
-      this.sizeService.updateSize(this.size).subscribe(
-        (res) => {
-          this.getAllSize();
-          this.message.success('Cập nhật dữ liệu thành công');
-          this.isVisible = false;
-          return;
-        },
-        (error) => {
-          this.message.error('Cập nhật dữ liệu thất bại');
+    this.sizeService
+      .updateSize({ ...this.sizes[this.currentSize], sizeName: this.inputSize })
+      .subscribe((res) => {
+        if (res) {
+          this.sizes[this.currentSize] = res;
         }
-      );
-    }
-    return;
+      });
   }
 
-  deleteSize(id: any) {
-    this.sizeService.deleteSize(id).subscribe(
-      (res) => {
-        this.datas.forEach((value) => {
-          if (value.id == id) {
-            value.status = 0;
-            return;
+  updateStatus(size: Size, index: number, status: number) {
+    this.modal.confirm({
+      nzTitle:
+        'Bạn có muốn ' +
+        (status == 0 ? 'xóa' : 'khôi phục') +
+        ' size này không?',
+      nzOnOk: () => {
+        this.sizeService.updateStatus({ ...size, status }).subscribe((res) => {
+          if (res) {
+            if (this.searchSize.status == -1) {
+              this.sizes[index] = res;
+            } else {
+              this.sizes.splice(index, 1);
+            }
           }
-          this.message.success('Xóa dữ liệu thành công');
         });
       },
-      (error) => {
-        this.message.error('Xóa dữ liệu thất bại');
-      }
-    );
+    });
   }
 
-  getInfoSize(id: any) {
+  showModalEdit(index: number) {
+    this.currentSize = index;
+    this.inputSize = this.sizes[this.currentSize].sizeName!;
     this.showModal();
-    const sizeID = this.datas.find((value) => {
-      return value.id == id;
-    });
-    if (sizeID) {
-      this.size = sizeID;
-    }
-    this.fillValueForm();
-  }
-
-  addValueSize() {
-    this.size.id = this.formSize.value.id;
-    this.size.sizeName = this.formSize.value.sizeName;
-    this.size.status = this.formSize.value.status;
-  }
-
-  fillValueForm() {
-    this.formSize.patchValue({
-      id: this.size.id,
-      sizeName: this.size.sizeName,
-      status: this.size.status,
-    });
-  }
-
-  initFormSearch() {
-    this.formSearch! = this.fb.group({
-      valueSearch: [''],
-    });
-  }
-
-  pageItem(pageItems: any) {
-    this.limit = pageItems;
-    this.pagination(this.offset);
-  }
-
-  preNextPage(selector: string) {
-    if (selector == 'pre') --this.offset;
-    if (selector == 'next') ++this.offset;
-    this.pagination(this.offset);
-  }
-
-  searchWithPage(page: any) {
-    if (page < 0) page = 0;
-    this.offset = page;
-  }
-
-  timkiem() {
-    this.searchWithPage(0);
-    this.initFormSearch();
   }
 }

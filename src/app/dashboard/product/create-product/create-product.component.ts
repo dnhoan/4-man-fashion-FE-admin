@@ -243,13 +243,13 @@ export class CreateProductComponent implements OnInit {
           this.models = res.data.items;
         }
       });
-    this.sizeService
-      .getAllSize(0, 100, CommonConstants.STATUS.ACTIVE)
-      .subscribe((res) => {
-        if (res.code == '000') {
-          this.sizes = res.data.items;
-        }
-      });
+    // this.sizeService
+    //   .getAllSize(0, 100, CommonConstants.STATUS.ACTIVE)
+    //   .subscribe((res) => {
+    //     if (res.code == '000') {
+    //       this.sizes = res.data.items;
+    //     }
+    //   });
     this.colorService
       .getAllColor(0, 100, CommonConstants.STATUS.ACTIVE)
       .subscribe((res) => {

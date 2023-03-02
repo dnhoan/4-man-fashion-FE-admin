@@ -11,6 +11,7 @@ export interface ProductDetail {
   productDetailCode?: string;
   price?: number;
   sizeName?: string;
+  colorName?: string;
   expand?: boolean;
   status?: number;
 }
@@ -20,6 +21,7 @@ export interface ProductDetailDTO {
   productId?: string;
   size?: SizeDTO;
   color?: ColorDTO;
+  colorName?: string;
   stock?: number;
   productDetailCode?: string;
   price?: number;
