@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -22,12 +22,14 @@ import { ModelComponent } from './property/models/model.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { ProductModule } from './product/product.module';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { ProductDetailComponent } from './product/productDetail/productDetail.component';
 
 @NgModule({
   declarations: [
     DashboardComponent,
     ProductComponent,
+    ProductDetailComponent,
     CategoryComponent,
     ColorComponent,
     MaterialComponent,
@@ -40,6 +42,7 @@ import { ProductModule } from './product/product.module';
     ReactiveFormsModule,
     NzGridModule,
     FormsModule,
+    NzFormModule,
     NzLayoutModule,
     NzDropDownModule,
     NzIconModule,
