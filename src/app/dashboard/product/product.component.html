@@ -238,16 +238,11 @@
     </div>
   </div>
   <!--  ---------------------------------  -->
-  <nz-table
-    [nzShowPagination]="false"
-    #basicTable
-    [nzData]="datas"
-  >
+  <nz-table [nzShowPagination]="false" #basicTable [nzData]="datas">
     <thead>
       <tr>
-        <th nzWidth="20px"></th>
+        <td style="width: 40px" [(nzExpand)]="product.expand"></td>
         <th style="text-align: center">Tên sản phẩm</th>
-        <th style="text-align: center">Mô tả</th>
         <th style="text-align: center">Chất liệu</th>
         <th style="text-align: center">Loại</th>
         <th style="text-align: center">Kiểu dáng</th>
@@ -266,9 +261,8 @@
           ></td>
           <td>
             <!-- <a (click)="getInfoProduct(item.id)">{{ item.productName }}</a> -->
-            {{item.productName}}
+            {{ item.productName }}
           </td>
-          <td>{{ item.description }}</td>
           <td>{{ item.material!.materialName }}</td>
           <td>{{ item.category!.categoryName }}</td>
           <td>{{ item.model!.modelsName }}</td>
@@ -329,14 +323,14 @@
                 <td>{{ productDetails.price }}đ</td>
                 <td *ngIf="productDetails.status == 1">Còn hàng</td>
                 <td *ngIf="productDetails.status == 0">Hết hàng</td>
-                <td>
+                <!-- <td>
                   <a
                     nz-button
                     nzType="link"
                     (click)="addClassifying(productDetails)"
                     >Nhập hàng</a
                   >
-                </td>
+                </td> -->
               </tr>
             </tbody>
           </nz-table>

@@ -19,9 +19,18 @@
         <input
           type="text"
           nz-input
-          formControlName="name"
+          formControlName="productName"
           placeholder="Nhập tên sản phẩm"
         />
+        <ng-container *ngIf="formCreateProduct.get('productName')!.invalid">
+          <span
+            id="error"
+            *ngIf="formCreateProduct.get('productName')?.touched"
+            >{{
+              (formCreateProduct.get("productName")?.errors)!["productName"]
+            }}</span
+          >
+        </ng-container>
       </div>
       <nz-divider></nz-divider>
       <div style="display: flex; justify-content: space-between">
@@ -50,6 +59,18 @@
                 </a>
               </div>
             </ng-template>
+            <br />
+            <ng-container *ngIf="formCreateProduct.get('category')!.invalid">
+              <span
+                id="error"
+                *ngIf="formCreateProduct.get('category')?.touched"
+                >{{
+                  (formCreateProduct.get("category")?.errors)!["required"]
+                    ? "Chưa chọn danh mục sản phẩm"
+                    : ""
+                }}</span
+              >
+            </ng-container>
           </div>
         </ng-container>
         <ng-container *ngIf="models.length">
@@ -77,6 +98,18 @@
                 </a>
               </div>
             </ng-template>
+            <br />
+            <ng-container *ngIf="formCreateProduct.get('model')!.invalid">
+              <span
+                id="error"
+                *ngIf="formCreateProduct.get('model')?.touched"
+                >{{
+                  (formCreateProduct.get("model")?.errors)!["required"]
+                    ? "Chưa chọn kiểu dáng sản phẩm"
+                    : ""
+                }}</span
+              >
+            </ng-container>
           </div>
         </ng-container>
         <ng-container *ngIf="materials.length">
@@ -104,6 +137,18 @@
                 </a>
               </div>
             </ng-template>
+            <br />
+            <ng-container *ngIf="formCreateProduct.get('material')!.invalid">
+              <span
+                id="error"
+                *ngIf="formCreateProduct.get('material')?.touched"
+                >{{
+                  (formCreateProduct.get("material")?.errors)!["required"]
+                    ? "Chưa chọn chất liệu sản phẩm"
+                    : ""
+                }}</span
+              >
+            </ng-container>
           </div>
         </ng-container>
       </div>
@@ -145,6 +190,10 @@
             </ng-container>
           </div>
         </div>
+        <br />
+        <ng-container *ngIf="!images.length && submitted">
+          <span id="error">Vui lòng thêm ảnh sản phẩm</span>
+        </ng-container>
       </div>
       <nz-divider></nz-divider>
       <label for="">Phân loại</label>
@@ -214,7 +263,7 @@
           nzBordered
           [nzShowPagination]="false"
           nzTitle="Danh sách phân loại hàng"
-          [nzData]="productDetails"
+          [nzNoResult]="noData"
         >
           <thead>
             <tr>
@@ -225,9 +274,17 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let productDetail of tableName.data; index as i">
+            <tr *ngFor="let productDetail of productDetails; index as i">
               <td>{{ i + 1 }}</td>
-              <td>{{ productDetail.colorName! + productDetail.sizeName }}</td>
+              <td>
+                {{
+                  productDetail.colorName! +
+                    (productDetail.sizeName && productDetail.colorName
+                      ? ", "
+                      : "") +
+                    productDetail.sizeName
+                }}
+              </td>
               <td>
                 <nz-input-number
                   [ngModelOptions]="{ standalone: true }"
@@ -248,7 +305,21 @@
           </tbody>
         </nz-table>
       </div>
-      <button type="submit">Tạo sản phẩm</button>
+      <div>
+        <label>Chi tiết sản phẩm</label>
+        <quill-editor
+          (onEditorCreated)="imageHandler($event)"
+          formControlName="detail"
+        ></quill-editor>
+      </div>
+      <div>
+        <label>Mô tả sản phẩm</label>
+        <quill-editor formControlName="description"></quill-editor>
+      </div>
+      <button [disabled]="formCreateProduct.invalid" nz-button type="submit">
+        Tạo sản phẩm
+      </button>
     </form>
   </div>
 </div>
+<ng-template #noData></ng-template>

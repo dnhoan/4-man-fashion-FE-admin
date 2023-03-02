@@ -4,57 +4,38 @@ import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NzGridModule } from 'ng-zorro-antd/grid';
-import { NzSpaceModule } from 'ng-zorro-antd/space';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzTableModule } from 'ng-zorro-antd/table';
 import { ProductComponent } from './product/product.component';
-import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NgZorroAntdModule } from '../share_modules/ng-add-ng-zorro-antd.module';
 import { CategoryComponent } from './property/category/category.component';
 import { ColorComponent } from './property/color/color.component';
 import { MaterialComponent } from './property/material/material.component';
 import { SizeComponent } from './property/size/size.component';
 import { ModelComponent } from './property/models/model.component';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { ProductDetailComponent } from './product/productDetail/productDetail.component';
+import { CreateProductComponent } from './product/create-product/create-product.component';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   declarations: [
     DashboardComponent,
     ProductComponent,
-    ProductDetailComponent,
     CategoryComponent,
     ColorComponent,
     MaterialComponent,
     SizeComponent,
     ModelComponent,
+    CreateProductComponent,
   ],
   imports: [
     CommonModule,
     DashboardRoutingModule,
     ReactiveFormsModule,
-    NzGridModule,
     FormsModule,
-    NzFormModule,
-    NzLayoutModule,
-    NzDropDownModule,
-    NzIconModule,
-    NzTableModule,
-    NzSelectModule,
     NgZorroAntdModule,
-    NzDividerModule,
-    NzSpaceModule,
-    NzPaginationModule,
-    NzBreadCrumbModule,
+    FormsModule,
+    ReactiveFormsModule,
+    QuillModule.forRoot(),
   ],
 
-  providers: [NzMessageService],
+  providers: [],
 })
 export class DashboardModule {}

@@ -25,7 +25,6 @@ import { ProductDetailService } from 'src/app/service/productDetail.service';
 import { SizeService } from 'src/app/service/size.service';
 import { ProductsService } from '../../service/product.service';
 import { productsStore } from './product.repository';
-import { ProductDetailComponent } from './productDetail/productDetail.component';
 
 @Component({
   selector: 'app-product',
@@ -34,9 +33,9 @@ import { ProductDetailComponent } from './productDetail/productDetail.component'
 })
 export class ProductComponent implements OnInit {
   changePage(arg0: any) {
-    this.productService.getAllProduct(this.offset, this.limit, this.status).subscribe((res: any) => {
-
-    })
+    this.productService
+      .getAllProduct(this.offset, this.limit, this.status)
+      .subscribe((res: any) => {});
     console.log(arg0);
   }
   visible = false;
@@ -114,13 +113,11 @@ export class ProductComponent implements OnInit {
     this.initFormAddSize();
     this.initFormAddClassify();
     this.initFormSearch();
-    this.getByProductId(this.product.productId);
   }
 
   onExpandChange(id: number, expand: boolean): void {
     if (expand!) {
       this.expandSet.add(id);
-      this.getByProductId(id);
     } else {
       this.expandSet.delete(id);
     }
@@ -256,13 +253,13 @@ export class ProductComponent implements OnInit {
     });
   }
 
-  getByProductId(productId: any) {
-    this.productDetailService
-      .getProducByProductId(productId, this.status)
-      .subscribe((res: any) => {
-        this.datasPD = res.data;
-      });
-  }
+  // getByProductId(productId: any) {
+  //   this.productDetailService
+  //     .getProducByProductId(productId, this.status)
+  //     .subscribe((res: any) => {
+  //       this.datasPD = res.data;
+  //     });
+  // }
 
   addMaterial(input: HTMLInputElement) {
     let value = input.value;
@@ -355,29 +352,31 @@ export class ProductComponent implements OnInit {
 
   modalClassifying() {}
 
-  addClassifying(
-    productDetail: ProductDetailDTO,
-    productId?: number | string,
-    i_product_detail?: number
-  ) {
-    const modal = this.modal.create({
-      nzTitle: 'Thêm phân loại sản phẩm',
-      nzContent: ProductDetailComponent,
-      nzViewContainerRef: this.viewContainerRef,
-      nzComponentParams: {
-        productDetail: { ...productDetail },
-        productId,
-        i_product_detail,
-      },
-      nzOnOk: () => new Promise((resolve) => setTimeout(resolve, 1000)),
-      nzFooter: [],
-    });
-    const instance = modal.getContentComponent();
-  }
+  // addClassifying(
+  //   productDetail: ProductDetailDTO,
+  //   productId?: number | string,
+  //   i_product_detail?: number
+  // ) {
+  //   const modal = this.modal.create({
+  //     nzTitle: 'Thêm phân loại sản phẩm',
+  //     nzContent: ProductDetailComponent,
+  //     nzViewContainerRef: this.viewContainerRef,
+  //     nzComponentParams: {
+  //       productDetail: { ...productDetail },
+  //       productId,
+  //       i_product_detail,
+  //     },
+  //     nzOnOk: () => new Promise((resolve) => setTimeout(resolve, 1000)),
+  //     nzFooter: [],
+  //   });
+  //   const instance = modal.getContentComponent();
+  // }
 
   pagination(page: any) {
-    if (page < 0) page = 0;
-    this.offset = page;
+    if (page < 0) {
+      page = 0;
+      this.offset = page;
+    }
     this.productService
       .getAllProduct(this.offset, this.limit, this.status)
       .subscribe((res) => {
