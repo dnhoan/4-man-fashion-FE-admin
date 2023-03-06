@@ -1,348 +1,168 @@
-<div class="bg-white mt-4 p-3">
-  <div class="d-flex justify-content-between p-3">
-    <div>
-      <button nz-button [nzType]="'primary'" (click)="showModal()">
-        <span>Thêm mới</span>
-      </button>
-      <nz-modal
-        [(nzVisible)]="isVisible"
-        (nzOnCancel)="handleCancel()"
-        (nzOnOk)="handleOk()"
-        [nzWidth]="720"
-      >
-        <ng-container *nzModalContent>
-          <form nz-form [formGroup]="formProduct">
-            <nz-form-item>
-              <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="productId"
-                >Mã sản phẩm</nz-form-label
-              >
-              <nz-form-control [nzSm]="14" [nzXs]="24">
-                <input
-                  nz-input
-                  type="text"
-                  formControlName="productId"
-                  id="productId"
-                />
-                <small
-                  class="col alert text-danger col-12"
-                  role="alert"
-                  *ngIf="formProduct.get('productId')?.errors?.['required'] && formProduct.get('productId')?.touched || submit && formProduct.get('productId')?.errors?.['required'] "
-                >
-                  Mã sản phẩm không được để trống!
-                </small>
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label
-                [nzSm]="6"
-                [nzXs]="24"
-                nzRequired
-                nzFor="productName"
-                >Tên sản phẩm</nz-form-label
-              >
-              <nz-form-control [nzSm]="14" [nzXs]="24">
-                <input
-                  nz-input
-                  type="text"
-                  formControlName="productName"
-                  id="productName"
-                />
-                <small
-                  class="col alert text-danger col-12"
-                  role="alert"
-                  *ngIf="formProduct.get('productName')?.errors?.['required'] && formProduct.get('productName')?.touched || submit && formProduct.get('productName')?.errors?.['required'] "
-                >
-                  Tên sản phẩm không được để trống!
-                </small>
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="description"
-                >Mô tả</nz-form-label
-              >
-              <nz-form-control [nzSm]="14" [nzXs]="24">
-                <input
-                  nz-input
-                  type="text"
-                  formControlName="description"
-                  id="description"
-                />
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="detail"
-                >Chi tiết</nz-form-label
-              >
-              <nz-form-control [nzSm]="14" [nzXs]="24">
-                <input
-                  nz-input
-                  type="text"
-                  formControlName="detail"
-                  id="detail"
-                />
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="gender"
-                >Sản phẩm của</nz-form-label
-              >
-              <nz-radio-group
-                class="radio"
-                formControlName="gender"
-                nzName="gender"
-              >
-                <label nz-radio [nzValue]="1" nzValue="1">Nam</label>
-                <label nz-radio [nzValue]="0" nzValue="0">Nữ</label>
-              </nz-radio-group>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="material"
-                >Chất liệu</nz-form-label
-              >
-              <nz-form-control [nzSm]="14" [nzXs]="24">
-                <nz-select
-                  formControlName="material"
-                  nzAllowClear
-                  [nzDropdownRender]="renderMaterial"
-                  nzPlaceHolder="Vui lòng chọn chất liệu"
-                >
-                  <nz-option
-                    *ngFor="let itemMate of dataMaterial"
-                    [nzValue]="itemMate.id"
-                    nzLabel="{{ itemMate.materialName }}"
-                  ></nz-option>
-                </nz-select>
-                <ng-template #renderMaterial>
-                  <nz-divider></nz-divider>
-                  <div class="container">
-                    <input type="text" nz-input #inputElement />
-                    <a class="add-item" (click)="addMaterial(inputElement)">
-                      <span nz-icon nzType="plus"></span>
-                    </a>
-                  </div>
-                </ng-template>
-                <small
-                  class="col alert text-danger col-12"
-                  role="alert"
-                  *ngIf="formProduct.get('material')?.errors?.['required'] && formProduct.get('material')?.touched || submit && formProduct.get('material')?.errors?.['required'] "
-                >
-                  Chất liệu không được để trống!
-                </small>
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="category"
-                >Loại sản phẩm</nz-form-label
-              >
-              <nz-form-control [nzSm]="14" [nzXs]="24">
-                <nz-select
-                  formControlName="category"
-                  nzAllowClear
-                  nzPlaceHolder="Vui lòng chọn loại sản phẩm"
-                >
-                  <nz-option
-                    *ngFor="let itemCate of dataCate"
-                    [nzValue]="itemCate.id"
-                    nzLabel="{{ itemCate.categoryName }}"
-                  ></nz-option>
-                </nz-select>
-                <small
-                  class="col alert text-danger col-12"
-                  role="alert"
-                  *ngIf="formProduct.get('category')?.errors?.['required'] && formProduct.get('category')?.touched || submit && formProduct.get('category')?.errors?.['required'] "
-                >
-                  Loại sản phẩm không được để trống!
-                </small>
-              </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="model"
-                >Kiểu dáng</nz-form-label
-              >
-              <nz-form-control [nzSm]="14" [nzXs]="24">
-                <nz-select
-                  formControlName="model"
-                  nzAllowClear
-                  nzPlaceHolder="Vui lòng chọn kiểu dáng"
-                >
-                  <nz-option
-                    *ngFor="let itemModel of dataModel"
-                    [nzValue]="itemModel.id"
-                    nzLabel="{{ itemModel.modelsName }}"
-                  ></nz-option>
-                </nz-select>
-                <small
-                  class="col alert text-danger col-12"
-                  role="alert"
-                  *ngIf="formProduct.get('model')?.errors?.['required'] && formProduct.get('model')?.touched || submit && formProduct.get('model')?.errors?.['required'] "
-                >
-                  Kiểu dáng không được để trống!
-                </small>
-              </nz-form-control>
-            </nz-form-item>
-            <!-- <nz-form-item>
-              <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="status"
-                >Trạng thái</nz-form-label
-              >
-              <nz-radio-group
-                formControlName="status"
-                nzName="status"
-                class="radio"
-              >
-                <label nz-radio [nzValue]="1">Active</label>
-                <label nz-radio [nzValue]="0">InActive</label>
-              </nz-radio-group>
-            </nz-form-item> -->
-          </form>
-        </ng-container>
-      </nz-modal>
+<div class="bg-white mt-4 p-3 h-100">
+  <div class="mb-3">
+    <button nz-button [nzType]="'primary'" (click)="showDrawerCreateProduct()">
+      <span>Thêm mới</span>
+    </button>
+  </div>
+  <div class="d-flex mb-3">
+    <div class="me-2" style="width: 300px">
+      <label class="mb-1">Tìm kiếm sản phẩm</label>
+      <br />
+      <input
+        nz-input
+        type="text"
+        (ngModelChange)="search($event)"
+        [(ngModel)]="searchProduct.searchTerm"
+        placeholder="Tìm kiếm sản phẩm"
+      />
     </div>
-    <div>
-      <div>
-        <nz-select
-          nzAllowClear
-          class="selectStatus"
-          nzPlaceHolder="Lọc theo trạng thái"
-          [(ngModel)]="status"
-        >
-          <nz-option nzValue="" nzLabel="Tất cả"></nz-option>
-          <nz-option nzValue="1" nzLabel="Active"></nz-option>
-          <nz-option nzValue="0" nzLabel="InActive"></nz-option>
-        </nz-select>
-      </div>
-      <form nz-form [formGroup]="formSearch" class="formSearch">
-        <div>
-          <div>
-            <nz-form-item>
-              <nz-form-control>
-                <input
-                  nz-input
-                  type="text"
-                  formControlName="valueSearch"
-                  id="valueSearch"
-                  placeholder="Nhập loại sản phẩm để có thể tìm kiếm!"
-                />
-              </nz-form-control>
-              <button
-                class="btnSearch"
-                nz-button
-                (click)="timkiem()"
-                [nzType]="'primary'"
-              >
-                <span>Tìm kiếm</span>
-              </button>
-            </nz-form-item>
-          </div>
-        </div>
-      </form>
+    <div style="width: 200px">
+      <label class="mb-1">Trạng thái</label> <br />
+      <nz-select
+        style="width: 100%"
+        nzAllowClear
+        class="selectStatus"
+        nzPlaceHolder="Lọc theo trạng thái"
+        (ngModelChange)="onChangeStatus($event)"
+        [nzAllowClear]="false"
+        [ngModel]="searchProduct.status"
+      >
+        <nz-option
+          *ngFor="let item of commonService.statuses"
+          [nzValue]="item.value"
+          [nzLabel]="item.label"
+        ></nz-option>
+      </nz-select>
     </div>
   </div>
   <!--  ---------------------------------  -->
-  <nz-table [nzShowPagination]="false" #basicTable [nzData]="datas">
-    <thead>
-      <tr>
-        <td style="width: 40px" [(nzExpand)]="product.expand"></td>
-        <th style="text-align: center">Tên sản phẩm</th>
-        <th style="text-align: center">Chất liệu</th>
-        <th style="text-align: center">Loại</th>
-        <th style="text-align: center">Kiểu dáng</th>
-        <th style="text-align: center">Sản phẩm của</th>
-        <th style="text-align: center">Trạng thái</th>
-        <th style="text-align: center">Ngày tạo SP</th>
-        <th style="text-align: center">Thao tác</th>
-      </tr>
-    </thead>
-    <tbody class="data">
-      <ng-container *ngFor="let item of basicTable.data; let i_product = index">
+  <div>
+    <nz-table
+      nzShowSizeChanger
+      [nzFrontPagination]="false"
+      [nzPageSizeOptions]="commonService.pageSizeOptions"
+      [nzPageIndex]="searchProduct.offset + 1"
+      [nzPageSize]="searchProduct.limit"
+      [nzTotal]="page ? page.totalElement : 0"
+      nzNoResult="Không có dữ liệu"
+      [nzData]="products"
+      (nzPageIndexChange)="onChangeIndexPage($event)"
+      (nzPageSizeChange)="onChangeSizePage($event)"
+    >
+      <thead>
         <tr>
-          <td
-            [nzExpand]="expandSet.has(item.id)"
-            (nzExpandChange)="onExpandChange(item.id, $event)"
-          ></td>
-          <td>
-            <!-- <a (click)="getInfoProduct(item.id)">{{ item.productName }}</a> -->
-            {{ item.productName }}
-          </td>
-          <td>{{ item.material!.materialName }}</td>
-          <td>{{ item.category!.categoryName }}</td>
-          <td>{{ item.model!.modelsName }}</td>
-          <td *ngIf="item.gender == 1">Nam</td>
-          <td *ngIf="item.gender == 0">Nữ</td>
-          <td *ngIf="item.gender == null"></td>
-          <td *ngIf="item.status">Còn hàng</td>
-          <td *ngIf="!item.status">Hết hàng</td>
-          <td>{{ item.ctime | date : "dd/MM/yyyy" }}</td>
-          <td>
-            <nz-space>
-              <a
-                *nzSpaceItem
-                nz-button
-                nzType="link"
-                (click)="getInfoProduct(item.id)"
-                ><span nz-icon nzType="edit"></span
-              ></a>
-              <a
-                *nzSpaceItem
+          <th></th>
+          <th>Ảnh</th>
+          <th>Tên sản phẩm</th>
+          <th>Danh mục</th>
+          <th>Chất liệu</th>
+          <th>Kiểu dáng</th>
+          <th>Trạng thái</th>
+          <th>Ngày tạo SP</th>
+          <th>Cập nhật lúc</th>
+          <th>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of products; index as i">
+          <tr>
+            <td style="width: 40px" [(nzExpand)]="item.expand"></td>
+            <td>
+              <img
+                nz-image
+                width="50px"
+                height="50px"
+                [nzSrc]="item.productImages![0].image"
+                alt=""
+              />
+            </td>
+            <td>
+              <b>{{ item.productName }}</b>
+            </td>
+            <td>{{ item.categoryName }}</td>
+            <td>{{ item.materialName }}</td>
+            <td>{{ item.modelName }}</td>
+            <td>
+              <nz-tag [nzColor]="item.status == 1 ? 'processing' : 'error'"
+                >{{ item.status == 1 ? "Hoạt động" : "Đã xóa" }}
+              </nz-tag>
+            </td>
+            <td>{{ item.ctime | date : "hh:mm dd/MM/yyyy" }}</td>
+            <td>{{ item.mtime | date : "hh:mm dd/MM/yyyy" }}</td>
+            <td style="text-align: center; width: 100px">
+              <button nz-button nzType="text" (click)="showModalEdit(item.id)">
+                <span
+                  class="text-primary"
+                  nz-icon
+                  nzType="edit"
+                  nzTheme="outline"
+                ></span>
+              </button>
+              <button
                 nz-button
                 nzType="text"
-                nzDanger
-                nz-popconfirm
-                nzPopconfirmTitle="Bạn muốn xóa sản phẩm này không?"
-                nzOkText="Ok"
-                nzCancelText="không"
-                (nzOnConfirm)="deleteProductById(item.id)"
-                ><span nz-icon nzType="delete"></span
-              ></a>
-            </nz-space>
-          </td>
-        </tr>
-        <tr [nzExpand]="expandSet.has(item.id)">
-          <nz-table
-            #innerTable
-            [nzData]="item.productDetails"
-            nzSize="middle"
-            [nzShowPagination]="false"
-          >
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Kích cỡ</th>
-                <th>Màu sắc</th>
-                <th>Tồn kho</th>
-                <th>Giá</th>
-                <th>Trạng thái</th>
-                <th>Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let productDetails of innerTable.data; let i = index">
-                <td>{{ productDetails.id }}</td>
-                <td>{{ productDetails.size?.sizeName }}</td>
-                <td>{{ productDetails.color?.colorName }}</td>
-                <td>{{ productDetails.stock }}</td>
-                <td>{{ productDetails.price }}đ</td>
-                <td *ngIf="productDetails.status == 1">Còn hàng</td>
-                <td *ngIf="productDetails.status == 0">Hết hàng</td>
-                <!-- <td>
-                  <a
-                    nz-button
-                    nzType="link"
-                    (click)="addClassifying(productDetails)"
-                    >Nhập hàng</a
-                  >
-                </td> -->
-              </tr>
-            </tbody>
-          </nz-table>
-        </tr>
-      </ng-container>
-    </tbody>
-  </nz-table>
-  <nz-pagination
-    (nzPageIndexChange)="changePage($event)"
-    [nzPageIndex]="1"
-    [nzTotal]="5"
-    nzShowSizeChanger
-    [nzPageSize]="1"
-  ></nz-pagination>
+                (click)="updateStatus(item, i, item.status == 1 ? 0 : 1)"
+              >
+                <span
+                  class="{{
+                    item.status == 1 ? 'text-danger' : 'text-secondary'
+                  }}"
+                  nz-icon
+                  [nzType]="item.status == 1 ? 'delete' : 'redo'"
+                  nzTheme="outline"
+                ></span>
+              </button>
+            </td>
+          </tr>
+          <tr [nzExpand]="item.expand!">
+            <nz-table
+              #innerTable
+              [nzData]="item.productDetails"
+              nzSize="middle"
+              [nzShowPagination]="false"
+            >
+              <thead>
+                <tr>
+                  <th width="50px">STT</th>
+                  <th>Tên phân loại</th>
+                  <th>Tồn kho</th>
+                  <th>Giá</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let productDetail of innerTable.data; let i = index"
+                >
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ productDetail.productDetailName }}</td>
+                  <td class="text-success">
+                    <b>{{ productDetail.stock }}</b>
+                  </td>
+                  <td class="text-danger">
+                    <b>{{ productDetail.price }}đ</b>
+                  </td>
+                  <td>
+                    <ng-container *ngIf="productDetail.status == 0">
+                      <nz-tag [nzColor]="'#ff0000'">Ngừng kinh doanh</nz-tag>
+                    </ng-container>
+                    <ng-container *ngIf="productDetail.status == 1">
+                      <nz-tag
+                        [nzColor]="
+                          productDetail.stock > 0 ? '#0073e6' : '#e6e600'
+                        "
+                        >{{
+                          productDetail.stock > 0 ? "Còn hàng" : "Hết hàng"
+                        }}</nz-tag
+                      >
+                    </ng-container>
+                  </td>
+                </tr>
+              </tbody>
+            </nz-table>
+          </tr>
+        </ng-container>
+      </tbody>
+    </nz-table>
+  </div>
 </div>

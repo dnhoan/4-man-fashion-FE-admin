@@ -13,6 +13,7 @@ import { SizeComponent } from './property/size/size.component';
 import { ModelComponent } from './property/models/model.component';
 import { CreateProductComponent } from './product/create-product/create-product.component';
 import { QuillModule } from 'ngx-quill';
+import { UpdateProductComponent } from './product/update-product/update-product.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { QuillModule } from 'ngx-quill';
     SizeComponent,
     ModelComponent,
     CreateProductComponent,
+    UpdateProductComponent,
   ],
   imports: [
     CommonModule,

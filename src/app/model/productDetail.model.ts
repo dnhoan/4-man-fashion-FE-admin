@@ -7,8 +7,9 @@ export interface ProductDetail {
   productId?: string;
   size?: SizeDTO;
   color?: ColorDTO;
-  stock?: number;
+  stock: number;
   productDetailCode?: string;
+  productDetailName?: string;
   price?: number;
   sizeName?: string;
   colorName?: string;
@@ -22,8 +23,9 @@ export interface ProductDetailDTO {
   size?: SizeDTO;
   color?: ColorDTO;
   colorName?: string;
-  stock?: number;
+  stock: number;
   productDetailCode?: string;
+  productDetailName?: string;
   price?: number;
   sizeName?: string;
   expand?: boolean;

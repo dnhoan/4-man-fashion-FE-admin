@@ -45,7 +45,7 @@ export class SizeService {
       .post(`${this.apiSize}/size/create`, size, 'tạo mới size')
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             this.message.success('Tạo size thành công');
             return res.data;
           } else if (res.code == '409') {
