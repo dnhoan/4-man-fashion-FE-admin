@@ -16,10 +16,14 @@ export interface Product {
   materialName?: string;
   categoryName?: string;
   modelName?: string;
-  status?: string;
+  status?: number;
   ctime?: Date;
   mtime?: Date;
   expand?: boolean;
+  productImages?: {
+    id?: number;
+    image: string;
+  }[];
   productDetails: ProductDetail[];
 }
 
@@ -36,9 +40,13 @@ export interface ProductDTO {
   materialName?: string;
   categoryName?: string;
   modelName?: string;
-  status?: string;
+  status?: number;
   ctime?: Date;
   mtime?: Date;
   expand?: boolean;
+  productImages?: {
+    id?: number;
+    image: string;
+  }[];
   productDetails: ProductDetailDTO[];
 }

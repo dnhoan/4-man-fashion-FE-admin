@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import {
   FormBuilder,
@@ -14,6 +14,7 @@ import { Category } from 'src/app/model/category.model';
 import { Color } from 'src/app/model/color.model';
 import { Material } from 'src/app/model/material.model';
 import { Models } from 'src/app/model/model.model';
+import { ProductDTO } from 'src/app/model/product.model';
 import { ProductDetailDTO } from 'src/app/model/productDetail.model';
 import { Size } from 'src/app/model/size.model';
 import { CategoryService } from 'src/app/service/category.service';
@@ -25,19 +26,21 @@ import { ProductNameValidator } from 'src/app/validators/input.validator';
 import { ProductsService } from '../product.service';
 
 @Component({
-  selector: 'app-create-product',
-  templateUrl: './create-product.component.html',
-  styleUrls: ['./create-product.component.scss'],
+  selector: 'app-update-product',
+  templateUrl: './update-product.component.html',
+  styleUrls: ['./update-product.component.scss'],
 })
-export class CreateProductComponent implements OnInit {
-  formCreateProduct!: FormGroup;
+export class UpdateProductComponent implements OnInit {
+  @Input('product') product!: ProductDTO;
+  formUpdateProduct!: FormGroup;
 
   categories: Category[] = [];
   materials: Material[] = [];
   models: Models[] = [];
-  images: string[] = [];
-  colors: Color[] = [];
-  sizes: Size[] = [];
+  images: {
+    id?: number;
+    image: string;
+  }[] = [];
   productDetails: ProductDetailDTO[] = [
     {
       size: undefined,
@@ -50,6 +53,10 @@ export class CreateProductComponent implements OnInit {
       colorName: '',
     },
   ];
+
+  compareSelectFn = (o1: any, o2: any): boolean =>
+    o1 && o2 ? o1.id === o2.id : o1 === o2;
+
   categoryName = '';
   modelName = '';
   materialName = '';
@@ -82,29 +89,42 @@ export class CreateProductComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.images = [...this.product.productImages!];
+    this.productDetails = [...this.product.productDetails];
+
     this.getProperties();
 
-    this.formCreateProduct = this.fb.group({
-      productName: ['', Validators.compose([ProductNameValidator()])],
-      material: ['', Validators.compose([Validators.required])],
-      category: ['', Validators.compose([Validators.required])],
-      model: ['', Validators.compose([Validators.required])],
+    this.formUpdateProduct = this.fb.group({
+      productName: [
+        this.product.productName,
+        Validators.compose([ProductNameValidator()]),
+      ],
+      material: [
+        this.product.material,
+        Validators.compose([Validators.required]),
+      ],
+      category: [
+        this.product.category,
+        Validators.compose([Validators.required]),
+      ],
+      model: [this.product.model, Validators.compose([Validators.required])],
       color: [[]],
       size: [[]],
-      description: [''],
-      detail: [''],
+      description: [this.product.description],
+      detail: [this.product.detail],
     });
+
     new FormControl('', Validators.required);
   }
   submitted = false;
   submit() {
     this.submitted = true;
-    if (this.formCreateProduct.valid && this.images.length) {
-      let data = this.formCreateProduct.value;
+    if (this.formUpdateProduct.valid && this.images.length) {
+      let data = { ...this.product, ...this.formUpdateProduct.value };
       data.productDetails = this.productDetails;
-      data.productImages = this.images.map((image) => ({ id: '', image }));
+      data.productImages = this.images;
       data.productName = data.productName.trim();
-      this.productService.createProduct(data).subscribe((res) => {
+      this.productService.updateProduct(data).subscribe((res) => {
         if (res) this.drawerRef.close(res);
       });
     }
@@ -119,61 +139,6 @@ export class CreateProductComponent implements OnInit {
         p.sizeName!
       ),
     }));
-  }
-  mapTiers() {
-    let colorSelected: Color[] = this.formCreateProduct.value.color;
-    let sizeSelected: Size[] = this.formCreateProduct.value.size;
-    let productName: string = this.formCreateProduct.value.productName;
-    let productDetail: ProductDetailDTO = {
-      size: undefined,
-      color: undefined,
-      stock: 0,
-      price: 0,
-      sizeName: '',
-      colorName: '',
-      productDetailCode: '',
-      productDetailName: productName,
-    };
-    this.productDetails = [];
-    if (colorSelected.length && sizeSelected.length) {
-      colorSelected.forEach((color) => {
-        productDetail.color = color;
-        productDetail.colorName = color.colorName;
-        sizeSelected.forEach((size) => {
-          productDetail.size = size;
-          productDetail.sizeName = size.sizeName;
-          productDetail.productDetailName = this.mapProductDetailName(
-            productName,
-            color.colorName!,
-            size.sizeName!
-          );
-          this.productDetails.push({ ...productDetail });
-        });
-      });
-    } else if (colorSelected.length) {
-      colorSelected.forEach((color) => {
-        productDetail.color = color;
-        productDetail.colorName = color.colorName;
-        productDetail.productDetailName = this.mapProductDetailName(
-          productName,
-          color.colorName!,
-          ''
-        );
-        this.productDetails.push({ ...productDetail });
-      });
-    } else if (sizeSelected.length) {
-      sizeSelected.forEach((size) => {
-        productDetail.size = size;
-        productDetail.productDetailName = this.mapProductDetailName(
-          productName,
-          '',
-          size.sizeName!
-        );
-        this.productDetails.push({ ...productDetail });
-      });
-    } else {
-      this.productDetails = [productDetail];
-    }
   }
 
   mapProductDetailName(
@@ -237,40 +202,6 @@ export class CreateProductComponent implements OnInit {
       this.message.error('Vui lòng nhập tên chất liệu');
     }
   }
-  insertColor() {
-    if (this.colorName.trim().length > 0) {
-      this.colorService
-        .createColor({
-          colorName: this.colorName.trim(),
-          status: CommonConstants.STATUS.ACTIVE,
-        })
-        .subscribe((res) => {
-          if (res) {
-            this.colors.unshift(res);
-            this.colorName = '';
-          }
-        });
-    } else {
-      this.message.error('Vui lòng nhập tên màu sắc');
-    }
-  }
-  insertSize() {
-    if (this.sizeName.trim().length > 0) {
-      this.sizeService
-        .createSize({
-          sizeName: this.sizeName.trim(),
-          status: CommonConstants.STATUS.ACTIVE,
-        })
-        .subscribe((res) => {
-          if (res) {
-            this.sizes.unshift(res);
-            this.sizeName = '';
-          }
-        });
-    } else {
-      this.message.error('Vui lòng nhập tên kích cỡ');
-    }
-  }
 
   removeImage(i: any) {
     this.images.splice(i, 1);
@@ -285,9 +216,9 @@ export class CreateProductComponent implements OnInit {
       .snapshotChanges()
       .pipe(
         finalize(() => {
-          fileRef.getDownloadURL().subscribe((url: any) => {
-            if (url) {
-              this.images.push(url);
+          fileRef.getDownloadURL().subscribe((image: any) => {
+            if (image) {
+              this.images.push({ id: 0, image });
             }
           });
         })
@@ -357,24 +288,12 @@ export class CreateProductComponent implements OnInit {
           this.models = res.data.items;
         }
       });
-    this.sizeService
-      .getAllSize({
-        offset: 0,
-        limit: 9999,
-        searchTerm: '',
-        status: CommonConstants.STATUS.ACTIVE,
-      })
-      .subscribe((res) => {
-        if (res) {
-          this.sizes = res.items;
-        }
-      });
-    this.colorService
-      .getAllColor(0, 100, CommonConstants.STATUS.ACTIVE)
-      .subscribe((res) => {
-        if (res.code == '000') {
-          this.colors = res.data.items;
-        }
-      });
+  }
+  stopSell(e: any, i: number) {
+    if (e) {
+      this.productDetails[i].status = CommonConstants.STATUS.INACTIVE;
+    } else {
+      this.productDetails[i].status = CommonConstants.STATUS.ACTIVE;
+    }
   }
 }

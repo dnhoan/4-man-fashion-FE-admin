@@ -14,6 +14,7 @@ import { ModelComponent } from './property/models/model.component';
 import { CreateProductComponent } from './product/create-product/create-product.component';
 import { QuillModule } from 'ngx-quill';
 import { VoucherComponent } from './voucher/voucher/voucher.component';
+import { UpdateProductComponent } from './product/update-product/update-product.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { VoucherComponent } from './voucher/voucher/voucher.component';
     SizeComponent,
     ModelComponent,
     CreateProductComponent,
+    UpdateProductComponent,
   ],
   imports: [
     CommonModule,
