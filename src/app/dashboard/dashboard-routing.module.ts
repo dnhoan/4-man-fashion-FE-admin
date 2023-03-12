@@ -8,6 +8,7 @@ import { ColorComponent } from './property/color/color.component';
 import { MaterialComponent } from './property/material/material.component';
 import { ModelComponent } from './property/models/model.component';
 import { SizeComponent } from './property/size/size.component';
+import { VoucherComponent } from './voucher/voucher/voucher.component';
 
 const routes: Routes = [
   {
@@ -41,6 +42,10 @@ const routes: Routes = [
       {
         path: 'model',
         component: ModelComponent,
+      },
+      {
+        path: 'voucher',
+        component: VoucherComponent,
       },
     ],
   },
