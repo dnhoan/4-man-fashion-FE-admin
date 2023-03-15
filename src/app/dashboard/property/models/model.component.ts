@@ -2,7 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription, switchMap } from 'rxjs';
+import { CommonService } from 'src/app/common-services/common.service';
+import { CommonConstants } from 'src/app/constants/common-constants';
 import { Models, ModelsDTO } from 'src/app/model/model.model';
+import { Page } from 'src/app/model/pageable.model';
+import { SearchOption } from 'src/app/model/search-option.model';
 import { ModelService } from 'src/app/service/model.service';
 
 @Component({
@@ -11,177 +17,144 @@ import { ModelService } from 'src/app/service/model.service';
   styleUrls: ['./model.component.scss'],
 })
 export class ModelComponent implements OnInit {
-  formModel!: FormGroup;
-  formSearch!: FormGroup;
-  radioValue = 'A';
-  models: Models = {};
-  datas: ModelsDTO[] = [];
-  sortBy = 'modelName';
-  descAsc = 'desc';
-  offset = 0;
-  limit = 5;
-  Page: any;
-  isVisible = false;
-  action = true;
-  submit = false;
-  status = 1;
-  disable = false;
+  subSearchModel!: Subscription;
+  searchModel: SearchOption = {
+    searchTerm: '',
+    status: 1,
+    offset: 0,
+    limit: 10,
+  };
+  page!: Page;
+  models: Models[] = [];
+  searchChange$ = new BehaviorSubject<SearchOption>(this.searchModel);
+  isVisibleModal = false;
+  inputModel: string = '';
+  currentModel!: number;
   constructor(
-    private readonly router: Router,
-    private message: NzMessageService,
     private modelService: ModelService,
-    private fb: FormBuilder
+    public commonService: CommonService,
+    private modal: NzModalService
   ) {}
 
   ngOnInit(): void {
-    // this.getAllAccount();
-    this.initFormSearch();
-    this.pagination(this.offset);
+    this.subSearchModel = this.searchChange$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((res) => {
+          return this.modelService.getAllModel(res);
+        })
+      )
+      .subscribe((res: any) => {
+        this.page = { ...res };
+        this.models = res.items;
+      });
   }
-
+  search(value: any) {
+    this.searchModel.searchTerm = value;
+    this.searchModel.offset = 0;
+    this.searchChange$.next({ ...this.searchModel });
+  }
+  onChangeStatus(status: any) {
+    this.searchModel.status = status;
+    this.searchModel.offset = 0;
+    this.searchChange$.next({ ...this.searchModel });
+  }
+  onChangeModelPage(event: any) {
+    this.searchModel.limit = event;
+    this.searchChange$.next({ ...this.searchModel });
+  }
+  onChangeIndexPage(event: any) {
+    --event;
+    this.searchModel.offset = event;
+    this.searchChange$.next({ ...this.searchModel });
+  }
   showModal(): void {
-    this.submit = false;
-    this.formModel = this.fb.group({
-      id: null,
-      modelsName: ['', [Validators.required]],
-      status: [1],
-    });
-    this.isVisible = true;
+    this.isVisibleModal = true;
+    this.inputModel;
   }
 
   handleOk() {
-    this.submit = true;
-    if (this.formModel.valid) {
-      this.saveModel();
+    if (this.validateModel()) {
+      this.messageError = '';
+      if (this.currentModel >= 0) {
+        this.updateModel();
+        return;
+      }
+      this.createModel();
     }
+    this.isVisibleModal = false
   }
 
   handleCancel(): void {
-    this.isVisible = false;
+    this.inputModel = '';
+    this.messageError = '';
+    this.currentModel = -1;
+    this.isVisibleModal = false;
   }
 
-  initFormSearch() {
-    this.formSearch! = this.fb.group({
-      valueSearch: [''],
-    });
-  }
-
-  saveModel() {
-    if (this.models.id) {
-      this.updateModel();
-      return;
+  messageError = '';
+  validateModel() {
+    if (this.inputModel.trim().length == 0) {
+      this.messageError = 'Vui lòng nhập kiểu dáng';
+      return false;
     }
-    this.addModel(this.models);
+    if (this.inputModel.trim().length > 225) {
+      this.messageError = 'Vui lòng nhập tên kiểu dáng dưới 225 ký tự';
+      return false;
+    }
+    return true;
   }
 
-  getAllModel() {
+  createModel(){
     this.modelService
-      .getAllModel(this.offset, this.limit, this.status)
-      .subscribe((res: any) => {
-        this.datas = res.data.items;
-      });
-  }
-
-  pagination(page: any) {
-    if (page < 0) page = 0;
-    this.offset = page;
-    this.modelService
-      .getAllModel(this.offset, this.limit, this.status)
+      .createModel({
+        id: 0,
+        modelsName: this.inputModel,
+        status: CommonConstants.STATUS.ACTIVE,
+      })
       .subscribe((res) => {
-        console.log(res);
-
-        this.datas = res.data.items;
-        this.Page = res.data;
-      });
-  }
-
-  addModel(model: ModelsDTO) {
-    if (this.formModel.valid) {
-      this.addValueModel();
-      this.modelService.createModel(model).subscribe(
-        (res) => {
-          this.getAllModel();
-          this.message.success('Thêm dữ liệu thành công');
-          this.isVisible = false;
-        },
-        (error) => {
-          this.message.error('Thêm dữ liệu thất bại');
+        if (res) {
+          this.models.unshift(res);
+          this.isVisibleModal = false;
         }
-      );
-    }
+      });
   }
 
   updateModel() {
-    if (this.formModel.valid) {
-      this.addValueModel();
-      this.modelService.updateModel(this.models).subscribe(
-        (res) => {
-          this.getAllModel();
-          this.message.success('Cập nhật dữ liệu thành công');
-          this.isVisible = false;
-          return;
-        },
-        (error) => {
-          this.message.error('Cập nhật dữ liệu thất bại');
+    this.modelService
+      .updateModel({ ...this.models[this.currentModel], modelsName: this.inputModel })
+      .subscribe((res) => {
+        if (res) {
+          this.models[this.currentModel] = res;
         }
-      );
-    }
-    return;
+      });
+      this.isVisibleModal = false;
   }
 
-  deleteModel(id: any) {
-    this.modelService.deleteModel(id).subscribe((res: any) =>
-      this.datas.forEach((value) => {
-        if (value.id == id) {
-          value.status = 0;
-        }
-      })
-    );
-    this.pagination(this.offset);
+  updateStatus(model: Models, index: number, status: number) {
+    this.modal.confirm({
+      nzTitle:
+        'Bạn có muốn ' +
+        (status == 0 ? 'xóa' : 'khôi phục') +
+        ' kiểu dáng này không?',
+      nzOnOk: () => {
+        this.modelService.updateStatus({ ...model, status }).subscribe((res) => {
+          if (res) {
+            if (this.searchModel.status == -1) {
+              this.models[index] = res;
+            } else {
+              this.models.splice(index, 1);
+            }
+          }
+        });
+      },
+    });
   }
-  getInfoModel(id: any) {
+
+  showModalEdit(index: number) {
+    this.currentModel = index;
+    this.inputModel = this.models[this.currentModel].modelsName!;
     this.showModal();
-    const modelID = this.datas.find((value) => {
-      return value.id == id;
-    });
-    if (modelID) {
-      this.models = modelID;
-    }
-    this.fillValueForm();
-  }
-
-  addValueModel() {
-    this.models.id = this.formModel.value.id;
-    this.models.modelsName = this.formModel.value.modelsName;
-    this.models.status = this.formModel.value.status;
-  }
-
-  fillValueForm() {
-    this.formModel.patchValue({
-      id: this.models.id,
-      modelsName: this.models.modelsName,
-      status: this.models.status,
-    });
-  }
-
-  pageItem(pageItems: any) {
-    this.limit = pageItems;
-    this.pagination(this.offset);
-  }
-
-  preNextPage(selector: string) {
-    if (selector == 'pre') --this.offset;
-    if (selector == 'next') ++this.offset;
-    this.pagination(this.offset);
-  }
-
-  searchWithPage(page: any) {
-    if (page < 0) page = 0;
-    this.offset = page;
-  }
-
-  timkiem() {
-    this.searchWithPage(0);
-    this.initFormSearch();
   }
 }

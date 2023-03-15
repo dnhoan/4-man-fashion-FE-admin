@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { Material, MaterialDTO } from 'src/app/model/material.model';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription, switchMap } from 'rxjs';
+import { CommonService } from 'src/app/common-services/common.service';
+import { CommonConstants } from 'src/app/constants/common-constants';
+import { Material } from 'src/app/model/material.model';
+import { Page } from 'src/app/model/pageable.model';
+import { SearchOption } from 'src/app/model/search-option.model';
 import { MaterialService } from 'src/app/service/material.service';
 
 @Component({
@@ -11,177 +14,144 @@ import { MaterialService } from 'src/app/service/material.service';
   styleUrls: ['./material.component.scss'],
 })
 export class MaterialComponent implements OnInit {
-  formMaterial!: FormGroup;
-  formSearch!: FormGroup;
-  radioValue = 'A';
-  material: Material = {};
-  datas: MaterialDTO[] = [];
-  sortBy = 'materialName';
-  descAsc = 'desc';
-  offset = 0;
-  limit = 5;
-  Page: any;
-  isVisible = false;
-  action = true;
-  submit = false;
-  status!: number;
-  disable = false;
+  subSearchMaterial!: Subscription;
+  searchMaterial: SearchOption = {
+    searchTerm: '',
+    status: 1,
+    offset: 0,
+    limit: 10,
+  };
+  page!: Page;
+  materials: Material[] = [];
+  searchChange$ = new BehaviorSubject<SearchOption>(this.searchMaterial);
+  isVisibleModal = false;
+  inputMaterial: string = '';
+  currentMaterial!: number;
   constructor(
-    private readonly router: Router,
     private materialService: MaterialService,
-    private message: NzMessageService,
-    private fb: FormBuilder
+    public commonService: CommonService,
+    private modal: NzModalService
   ) {}
 
   ngOnInit(): void {
-    this.initFormSearch();
-    this.pagination(this.offset);
+    this.subSearchMaterial = this.searchChange$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((res) => {
+          return this.materialService.getAllMaterial(res);
+        })
+      )
+      .subscribe((res: any) => {
+        this.page = { ...res };
+        this.materials = res.items;
+      });
   }
-
+  search(value: any) {
+    this.searchMaterial.searchTerm = value;
+    this.searchMaterial.offset = 0;
+    this.searchChange$.next({ ...this.searchMaterial });
+  }
+  onChangeStatus(status: any) {
+    this.searchMaterial.status = status;
+    this.searchMaterial.offset = 0;
+    this.searchChange$.next({ ...this.searchMaterial });
+  }
+  onChangeMaterialPage(event: any) {
+    this.searchMaterial.limit = event;
+    this.searchChange$.next({ ...this.searchMaterial });
+  }
+  onChangeIndexPage(event: any) {
+    --event;
+    this.searchMaterial.offset = event;
+    this.searchChange$.next({ ...this.searchMaterial });
+  }
   showModal(): void {
-    this.submit = false;
-    this.formMaterial = this.fb.group({
-      id: null,
-      materialName: ['', [Validators.required]],
-      status: [1],
-    });
-    this.isVisible = true;
+    this.isVisibleModal = true;
+    this.inputMaterial;
   }
 
   handleOk() {
-    this.submit = true;
-    if (this.formMaterial.valid) {
-      this.saveMaterial();
+    if (this.validateMaterial()) {
+      this.messageError = '';
+      if (this.currentMaterial >= 0) {
+        this.updateMaterial();
+        return;
+      }
+      this.createMaterial();
     }
+    this.isVisibleModal = false;
   }
 
   handleCancel(): void {
-    this.isVisible = false;
+    this.inputMaterial = '';
+    this.messageError = '';
+    this.currentMaterial = -1;
+    this.isVisibleModal = false;
   }
 
-  initFormSearch() {
-    this.formSearch! = this.fb.group({
-      valueSearch: [''],
-    });
+  messageError = '';
+  validateMaterial() {
+    if (this.inputMaterial.trim().length == 0) {
+      this.messageError = 'Vui lòng nhập chất liệu';
+      return false;
+    }
+    if (this.inputMaterial.trim().length > 225) {
+      this.messageError = 'Vui lòng nhập tên chất liệu dưới 225 ký tự';
+      return false;
+    }
+    return true;
   }
 
-  pagination(page: any) {
-    if (page < 0) page = 0;
-    this.offset = page;
+  createMaterial() {
     this.materialService
-      .getAllMaterial(this.offset, this.limit, this.status)
+      .createMaterial({
+        id: 0,
+        materialName: this.inputMaterial,
+        status: CommonConstants.STATUS.ACTIVE,
+      })
       .subscribe((res) => {
-        this.datas = res.data.items;
-        this.Page = res.data;
-      });
-  }
-
-  saveMaterial() {
-    if (this.material.id) {
-      this.updateMaterial();
-      return;
-    }
-    this.addMaterial(this.material);
-  }
-
-  getAllMaterial() {
-    this.materialService
-      .getAllMaterial(this.offset, this.limit, this.status)
-      .subscribe((res: any) => {
-        this.datas = res.data.items;
-      });
-  }
-
-  addMaterial(material: MaterialDTO) {
-    if (this.formMaterial.valid) {
-      console.log(material);
-
-      this.addValueMaterial();
-      this.materialService.createMaterial(material).subscribe(
-        (res) => {
-          this.getAllMaterial();
-          this.message.success('Thêm dữ liệu thành công');
-          this.isVisible = false;
-        },
-        (error) => {
-          this.message.error('Thêm dữ liệu thất bại');
+        if (res) {
+          this.materials.unshift(res);
+          this.isVisibleModal = false;
         }
-      );
-    }
+      });
   }
 
   updateMaterial() {
-    if (this.formMaterial.valid) {
-      this.addValueMaterial();
-      this.materialService.updateMaterial(this.material).subscribe(
-        (res) => {
-          this.getAllMaterial();
-          this.message.success('Cập nhật dữ liệu thành công');
-          this.isVisible = false;
-          return;
-        },
-        (error) => {
-          this.message.error('Cập nhật dữ liệu thất bại');
+    this.materialService
+      .updateMaterial({ ...this.materials[this.currentMaterial], materialName: this.inputMaterial })
+      .subscribe((res) => {
+        if (res) {
+          this.materials[this.currentMaterial] = res;
         }
-      );
-    }
-    return;
+      });
+      this.isVisibleModal = false;
   }
 
-  deleteMaterial(id: any) {
-    this.materialService.deleteMaterial(id).subscribe((res: any) =>
-      this.datas.forEach((value) => {
-        if (value.id == id) {
-          value.status = 0;
-        }
-      })
-    );
-    this.pagination(this.offset);
+  updateStatus(material: Material, index: number, status: number) {
+    this.modal.confirm({
+      nzTitle:
+        'Bạn có muốn ' +
+        (status == 0 ? 'xóa' : 'khôi phục') +
+        ' chất liệu này không?',
+      nzOnOk: () => {
+        this.materialService.updateStatus({ ...material, status }).subscribe((res) => {
+          if (res) {
+            if (this.searchMaterial.status == -1) {
+              this.materials[index] = res;
+            } else {
+              this.materials.splice(index, 1);
+            }
+          }
+        });
+      },
+    });
   }
 
-  getInfoMaterial(id: any) {
+  showModalEdit(index: number) {
+    this.currentMaterial = index;
+    this.inputMaterial = this.materials[this.currentMaterial].materialName!;
     this.showModal();
-    const materialID = this.datas.find((value) => {
-      return value.id == id;
-    });
-    if (materialID) {
-      this.material = materialID;
-    }
-    this.fillValueForm();
-  }
-
-  addValueMaterial() {
-    this.material.id = this.formMaterial.value.id;
-    this.material.materialName = this.formMaterial.value.materialName;
-    this.material.status = this.formMaterial.value.status;
-  }
-
-  fillValueForm() {
-    this.formMaterial.patchValue({
-      id: this.material.id,
-      materialName: this.material.materialName,
-      status: this.material.status,
-    });
-  }
-
-  pageItem(pageItems: any) {
-    this.limit = pageItems;
-    this.pagination(this.offset);
-  }
-
-  preNextPage(selector: string) {
-    if (selector == 'pre') --this.offset;
-    if (selector == 'next') ++this.offset;
-    this.pagination(this.offset);
-  }
-
-  searchWithPage(page: any) {
-    if (page < 0) page = 0;
-    this.offset = page;
-  }
-
-  timkiem() {
-    this.searchWithPage(0);
-    this.initFormSearch();
   }
 }

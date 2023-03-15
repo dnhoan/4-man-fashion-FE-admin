@@ -15,6 +15,7 @@ import { Color } from 'src/app/model/color.model';
 import { Material } from 'src/app/model/material.model';
 import { Models } from 'src/app/model/model.model';
 import { ProductDetailDTO } from 'src/app/model/productDetail.model';
+import { SearchOption } from 'src/app/model/search-option.model';
 import { Size } from 'src/app/model/size.model';
 import { CategoryService } from 'src/app/service/category.service';
 import { ColorService } from 'src/app/service/color.service';
@@ -50,6 +51,12 @@ export class CreateProductComponent implements OnInit {
       colorName: '',
     },
   ];
+  searchProperty: SearchOption = {
+    searchTerm: '',
+    status: 1,
+    offset: 0,
+    limit: 10,
+  };
   categoryName = '';
   modelName = '';
   materialName = '';
@@ -337,21 +344,21 @@ export class CreateProductComponent implements OnInit {
 
   getProperties() {
     this.categoryService
-      .getAllCategory(0, 100, CommonConstants.STATUS.ACTIVE)
+      .getAllCategory(this.searchProperty)
       .subscribe((res) => {
         if (res.code == '000') {
           this.categories = res.data.items;
         }
       });
     this.materialService
-      .getAllMaterial(0, 100, CommonConstants.STATUS.ACTIVE)
+      .getAllMaterial(this.searchProperty)
       .subscribe((res) => {
         if (res.code == '000') {
           this.materials = res.data.items;
         }
       });
     this.modelService
-      .getAllModel(0, 100, CommonConstants.STATUS.ACTIVE)
+      .getAllModel(this.searchProperty)
       .subscribe((res) => {
         if (res.code == '000') {
           this.models = res.data.items;
@@ -370,7 +377,7 @@ export class CreateProductComponent implements OnInit {
         }
       });
     this.colorService
-      .getAllColor(0, 100, CommonConstants.STATUS.ACTIVE)
+      .getAllColor(this.searchProperty)
       .subscribe((res) => {
         if (res.code == '000') {
           this.colors = res.data.items;

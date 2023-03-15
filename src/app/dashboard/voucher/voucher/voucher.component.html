@@ -1,0 +1,205 @@
+<div class="bg-white mt-4 p-3 h-100">
+  <div class="mb-3">
+    <button nz-button [nzType]="'primary'" (click)="showModal()">
+      <span>Thêm mới</span>
+    </button>
+  </div>
+  <div class="d-flex mb-3">
+    <div class="me-2" style="width: 300px">
+      <label class="mb-1">Tìm kiếm tên</label> <br />
+      <input
+        nz-input
+        type="text"
+        (ngModelChange)="search($event)"
+        [(ngModel)]="searchVoucher.searchTerm"
+        placeholder="Tìm kiếm theo voucher"
+      />
+    </div>
+    <div style="width: 200px">
+      <label class="mb-1">Trạng thái</label> <br />
+      <nz-select
+        style="width: 100%"
+        nzAllowClear
+        class="selectStatus"
+        nzPlaceHolder="Lọc theo trạng thái"
+        (ngModelChange)="onChangeStatus($event)"
+        [nzAllowClear]="false"
+        [ngModel]="searchVoucher.status"
+      >
+        <nz-option
+          *ngFor="let item of commonService.statuses"
+          [nzValue]="item.value"
+          [nzLabel]="item.label"
+        ></nz-option>
+      </nz-select>
+    </div>
+  </div>
+  <!--  ---------------------------------  -->
+  <div>
+    <nz-table
+      nzShowSizeChanger
+      [nzFrontPagination]="false"
+      [nzPageSizeOptions]="commonService.pageSizeOptions"
+      [nzPageIndex]="searchVoucher.offset + 1"
+      [nzPageSize]="searchVoucher.limit"
+      [nzTotal]="page ? page.totalElement : 0"
+      nzNoResult="Không có dữ liệu"
+      [nzData]="vouchers"
+      (nzPageIndexChange)="onChangeIndexPage($event)"
+      (nzPageSizeChange)="onChangeSizePage($event)"
+    >
+      <thead>
+        <tr>
+          <th style="width: 50px">STT</th>
+          <th>Mã Voucher</th>
+          <th>Tên Voucher</th>
+          <th>Ngày bắt đầu</th>
+          <th>Ngày kết thúc</th>
+          <th>Loại Voucher</th>
+          <th>Giá trị giảm</th>
+          <th>Số lượng</th>
+          <th style="width: 200px">Trạng thái</th>
+          <th style="width: 150px">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="vouchers.length">
+          <tr *ngFor="let item of vouchers; index as i">
+            <td>{{ i + 1 }}</td>
+            <td>{{ item.voucherCode }}</td>
+            <td>{{ item.voucherName }}</td>
+            <td>{{ item.startDate | date : "dd/MM/yyyy"}}</td>
+            <td>{{ item.endDate | date : "dd/MM/yyyy" + 1}}</td>
+            <td>{{ item.voucherType == 1 ? "Phần trăm" : "VNĐ" }}</td>
+            <td *ngIf="item.voucherType == 1">{{ item.discount + "%"}}</td>
+            <td *ngIf="item.voucherType == 0">{{ item.discount + "đ"}}</td>
+            <td>{{ item.quantity }}</td>
+            <td>
+              <nz-tag [nzColor]="item.status == 1 ? 'processing' : 'error'"
+                >{{ item.status == 1 ? "Hoạt động" : "Đã xóa" }}
+              </nz-tag>
+            </td>
+            <td style="text-align: center; width: 100px">
+              <button nz-button nzType="text" (click)="showModalEdit(i)">
+                <span
+                  class="text-primary"
+                  nz-icon
+                  nzType="edit"
+                  nzTheme="outline"
+                ></span>
+              </button>
+              <button
+                nz-button
+                nzType="text"
+                (click)="updateStatus(item, i, item.status == 1 ? 0 : 1)"
+              >
+                <span
+                  class="{{
+                    item.status == 1 ? 'text-danger' : 'text-secondary'
+                  }}"
+                  nz-icon
+                  [nzType]="item.status == 1 ? 'delete' : 'redo'"
+                  nzTheme="outline"
+                ></span>
+              </button>
+            </td></tr>
+          </ng-container>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+<nz-modal
+  [(nzVisible)]="isVisibleModal"
+  nzTitle="Thêm mới voucher"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()"
+  nzCancelText="Hủy"
+  nzOkText="Lưu"
+>
+  <ng-container *nzModalContent>
+    <!-- <div>
+      <label class="mb-1">Nhập mã voucher</label> <br />
+      <input
+      dis
+        nz-input
+        type="text"
+        [(ngModel)]="inputVoucherCode"
+        id="voucherCode"
+      />
+      <span class="text-danger" *ngIf="messageError">
+        {{ messageError }}
+      </span>
+    </div> -->
+    <div>
+      <label class="mb-1">Nhập tên voucher</label> <br />
+      <input
+        nz-input
+        type="text"
+        [(ngModel)]="inputVoucherName"
+        id="voucherName"
+      />
+      <span class="text-danger" *ngIf="messageError">
+        {{ messageError }}
+      </span>
+    </div>
+    <div>
+      <label class="mb-1">Chọn ngày bắt đầu</label> <br />
+      <nz-date-picker style="width: 100%" [(ngModel)]="startDate"></nz-date-picker>
+    </div>
+    <div>
+      <label class="mb-1">Chọn ngày kết thúc</label> <br />
+      <nz-date-picker style="width: 100%" [(ngModel)]="endDate"></nz-date-picker>
+    </div>
+    <div>
+      <label class="mb-1">Loại voucher</label> <br />
+      <nz-select style="width: 100%"
+      nzPlaceHolder="Chọn loại voucher"
+      [(ngModel)]="voucherType"
+      nzAllowClear
+    >
+      <nz-option  style="width: 100%" *ngFor="let option of lstType" [nzValue]="option.id" [nzLabel]="option.label"></nz-option>
+    </nz-select>
+      <span class="text-danger" *ngIf="messageError">
+        {{ messageError }}
+      </span>
+    </div>
+    <div>
+      <label class="mb-1">Giá trị giảm</label> <br />
+      <input
+        nz-input
+        [(ngModel)]="discount"
+        type="text"
+        id="discount"
+      />
+      <span class="text-danger" *ngIf="messageError">
+        {{ messageError }}
+      </span>
+    </div>
+    <div>
+      <label class="mb-1">Áp dụng cho hóa có giá trị đơn tối thiểu</label> <br />
+      <input
+        nz-input
+        [(ngModel)]="minimumInvoiceValue"
+        type="text"
+        id="minimumInvoiceValue"
+      />
+      <span class="text-danger" *ngIf="messageError">
+        {{ messageError }}
+      </span>
+    </div>
+    <div>
+      <label class="mb-1">Số lượng</label> <br />
+      <input
+        nz-input
+        [(ngModel)]="quantity"
+        type="text"
+        id="quantity"
+      />
+      <span class="text-danger" *ngIf="messageError">
+        {{ messageError }}
+      </span>
+    </div>
+  </ng-container>
+</nz-modal>
+
+<ng-template #noResult></ng-template>

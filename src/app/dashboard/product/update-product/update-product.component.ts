@@ -11,12 +11,11 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize } from 'rxjs';
 import { CommonConstants } from 'src/app/constants/common-constants';
 import { Category } from 'src/app/model/category.model';
-import { Color } from 'src/app/model/color.model';
 import { Material } from 'src/app/model/material.model';
 import { Models } from 'src/app/model/model.model';
 import { ProductDTO } from 'src/app/model/product.model';
 import { ProductDetailDTO } from 'src/app/model/productDetail.model';
-import { Size } from 'src/app/model/size.model';
+import { SearchOption } from 'src/app/model/search-option.model';
 import { CategoryService } from 'src/app/service/category.service';
 import { ColorService } from 'src/app/service/color.service';
 import { MaterialService } from 'src/app/service/material.service';
@@ -57,6 +56,12 @@ export class UpdateProductComponent implements OnInit {
   compareSelectFn = (o1: any, o2: any): boolean =>
     o1 && o2 ? o1.id === o2.id : o1 === o2;
 
+  searchProperty: SearchOption = {
+    searchTerm: '',
+    status: 1,
+    offset: 0,
+    limit: 10,
+  };
   categoryName = '';
   modelName = '';
   materialName = '';
@@ -268,26 +273,24 @@ export class UpdateProductComponent implements OnInit {
 
   getProperties() {
     this.categoryService
-      .getAllCategory(0, 100, CommonConstants.STATUS.ACTIVE)
+      .getAllCategory(this.searchProperty)
       .subscribe((res) => {
         if (res.code == '000') {
           this.categories = res.data.items;
         }
       });
     this.materialService
-      .getAllMaterial(0, 100, CommonConstants.STATUS.ACTIVE)
+      .getAllMaterial(this.searchProperty)
       .subscribe((res) => {
         if (res.code == '000') {
           this.materials = res.data.items;
         }
       });
-    this.modelService
-      .getAllModel(0, 100, CommonConstants.STATUS.ACTIVE)
-      .subscribe((res) => {
-        if (res.code == '000') {
-          this.models = res.data.items;
-        }
-      });
+    this.modelService.getAllModel(this.searchProperty).subscribe((res) => {
+      if (res.code == '000') {
+        this.models = res.data.items;
+      }
+    });
   }
   stopSell(e: any, i: number) {
     if (e) {

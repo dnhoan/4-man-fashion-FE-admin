@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { Category, CategoryDTO } from 'src/app/model/category.model';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription, switchMap } from 'rxjs';
+import { CommonService } from 'src/app/common-services/common.service';
+import { CommonConstants } from 'src/app/constants/common-constants';
+import { Category } from 'src/app/model/category.model';
+import { Page } from 'src/app/model/pageable.model';
+import { SearchOption } from 'src/app/model/search-option.model';
 import { CategoryService } from 'src/app/service/category.service';
 
 @Component({
@@ -11,181 +14,144 @@ import { CategoryService } from 'src/app/service/category.service';
   styleUrls: ['./category.component.scss'],
 })
 export class CategoryComponent implements OnInit {
-  formCategory!: FormGroup;
-  formSearch!: FormGroup;
-  radioValue = 'A';
-  category: Category = {};
-  datas: CategoryDTO[] = [];
-  sortBy = 'categoryName';
-  descAsc = 'desc';
-  offset = 0;
-  limit = 5;
-  Page: any;
-  isVisible = false;
-  action = true;
-  submit = false;
-  status!: number;
-  disable = false;
+  subSearchCategory!: Subscription;
+  searchCategory: SearchOption = {
+    searchTerm: '',
+    status: 1,
+    offset: 0,
+    limit: 10,
+  };
+  page!: Page;
+  categories: Category[] = [];
+  searchChange$ = new BehaviorSubject<SearchOption>(this.searchCategory);
+  isVisibleModal = false;
+  inputCategory: string = '';
+  currentCategory!: number;
   constructor(
-    private readonly router: Router,
-    private message: NzMessageService,
     private categoryService: CategoryService,
-    private fb: FormBuilder
+    public commonService: CommonService,
+    private modal: NzModalService
   ) {}
 
   ngOnInit(): void {
-    this.initFormSearch();
-    this.pagination(this.offset);
+    this.subSearchCategory = this.searchChange$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((res) => {
+          return this.categoryService.getAllCategory(res);
+        })
+      )
+      .subscribe((res: any) => {
+        this.page = { ...res };
+        this.categories = res.items;
+      });
   }
-
+  search(value: any) {
+    this.searchCategory.searchTerm = value;
+    this.searchCategory.offset = 0;
+    this.searchChange$.next({ ...this.searchCategory });
+  }
+  onChangeStatus(status: any) {
+    this.searchCategory.status = status;
+    this.searchCategory.offset = 0;
+    this.searchChange$.next({ ...this.searchCategory });
+  }
+  onChangeCategoryPage(event: any) {
+    this.searchCategory.limit = event;
+    this.searchChange$.next({ ...this.searchCategory });
+  }
+  onChangeIndexPage(event: any) {
+    --event;
+    this.searchCategory.offset = event;
+    this.searchChange$.next({ ...this.searchCategory });
+  }
   showModal(): void {
-    this.submit = false;
-    this.formCategory = this.fb.group({
-      id: null,
-      categoryName: ['', [Validators.required]],
-      status: [1],
-    });
-    this.isVisible = true;
+    this.isVisibleModal = true;
+    this.inputCategory;
   }
 
   handleOk() {
-    this.submit = true;
-    if (this.formCategory.valid) {
-      this.saveCategory();
+    if (this.validateCategory()) {
+      this.messageError = '';
+      if (this.currentCategory >= 0) {
+        this.updateCategory();
+        return;
+      }
+      this.createCategory();
     }
+    this.isVisibleModal = false;
   }
 
   handleCancel(): void {
-    this.isVisible = false;
+    this.inputCategory = '';
+    this.messageError = '';
+    this.currentCategory = -1;
+    this.isVisibleModal = false;
   }
 
-  saveCategory() {
-    if (this.category.id) {
-      this.updateCategory();
-      return;
+  messageError = '';
+  validateCategory() {
+    if (this.inputCategory.trim().length == 0) {
+      this.messageError = 'Vui lòng nhập loại sản phẩm';
+      return false;
     }
-    this.addCategory(this.category);
+    if (this.inputCategory.trim().length > 225) {
+      this.messageError = 'Vui lòng nhập loại sản phẩm dưới 225 ký tự';
+      return false;
+    }
+    return true;
   }
 
-  getAllCategory() {
+  createCategory() {
     this.categoryService
-      .getAllCategory(this.offset, this.limit, this.status)
-      .subscribe((res: any) => {
-        this.datas = res.data.items;
-      });
-  }
-
-  pagination(page: any) {
-    if (page < 0) page = 0;
-    this.offset = page;
-    this.categoryService
-      .getAllCategory(this.offset, this.limit, this.status)
+      .createCategory({
+        id: 0,
+        categoryName: this.inputCategory,
+        status: CommonConstants.STATUS.ACTIVE,
+      })
       .subscribe((res) => {
-        this.datas = res.data.items;
-        this.Page = res.data;
-      });
-  }
-
-  addCategory(category: CategoryDTO) {
-    if (this.formCategory.valid) {
-      this.addValueCategory();
-      this.categoryService.createCategory(category).subscribe(
-        (res) => {
-          this.getAllCategory();
-          this.message.success('Thêm dữ liệu thành công');
-          this.isVisible = false;
-        },
-        (error) => {
-          this.message.error('Thêm dữ liệu thất bại');
+        if (res) {
+          this.categories.unshift(res);
+          this.isVisibleModal = false;
         }
-      );
-    }
+      });
   }
 
   updateCategory() {
-    if (this.formCategory.valid) {
-      this.addValueCategory();
-      this.categoryService.updateCategory(this.category).subscribe(
-        (res) => {
-          this.getAllCategory();
-          this.message.success('Cập nhật dữ liệu thành công');
-          this.isVisible = false;
-          return;
-        },
-        (error) => {
-          this.message.error('Cập nhật dữ liệu thất bại');
+    this.categoryService
+      .updateCategory({ ...this.categories[this.currentCategory], categoryName: this.inputCategory })
+      .subscribe((res) => {
+        if (res) {
+          this.categories[this.currentCategory] = res;
         }
-      );
-    }
-    return;
+      });
+      this.isVisibleModal = false;
   }
 
-  deleteCategory(id: any) {
-    this.categoryService.deleteCategory(id).subscribe(
-      (res) => {
-        this.datas.forEach((value) => {
-          if (value.id == id) {
-            value.status = 0;
-            return;
+  updateStatus(category: Category, index: number, status: number) {
+    this.modal.confirm({
+      nzTitle:
+        'Bạn có muốn ' +
+        (status == 0 ? 'xóa' : 'khôi phục') +
+        ' loại sản phẩm này không?',
+      nzOnOk: () => {
+        this.categoryService.updateStatus({ ...category, status }).subscribe((res) => {
+          if (res) {
+            if (this.searchCategory.status == -1) {
+              this.categories[index] = res;
+            } else {
+              this.categories.splice(index, 1);
+            }
           }
-          this.message.success('Xóa dữ liệu thành công');
         });
       },
-      (error) => {
-        this.message.error('Xóa dữ liệu thất bại');
-      }
-    );
+    });
   }
 
-  getInfoCategory(id: any) {
+  showModalEdit(index: number) {
+    this.currentCategory = index;
+    this.inputCategory = this.categories[this.currentCategory].categoryName!;
     this.showModal();
-    const categoryID = this.datas.find((value) => {
-      return value.id == id;
-    });
-    if (categoryID) {
-      this.category = categoryID;
-    }
-    this.fillValueForm();
-  }
-
-  addValueCategory() {
-    this.category.id = this.formCategory.value.id;
-    this.category.categoryName = this.formCategory.value.categoryName;
-    this.category.status = this.formCategory.value.status;
-  }
-
-  fillValueForm() {
-    this.formCategory.patchValue({
-      id: this.category.id,
-      categoryName: this.category.categoryName,
-      status: this.category.status,
-    });
-  }
-
-  initFormSearch() {
-    this.formSearch! = this.fb.group({
-      valueSearch: [''],
-    });
-  }
-
-  pageItem(pageItems: any) {
-    this.limit = pageItems;
-    this.pagination(this.offset);
-  }
-
-  preNextPage(selector: string) {
-    if (selector == 'pre') --this.offset;
-    if (selector == 'next') ++this.offset;
-    this.pagination(this.offset);
-  }
-
-  searchWithPage(page: any) {
-    if (page < 0) page = 0;
-    this.offset = page;
-  }
-
-  timkiem() {
-    this.searchWithPage(0);
-    this.initFormSearch();
   }
 }

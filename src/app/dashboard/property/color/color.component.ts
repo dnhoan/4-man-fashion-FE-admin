@@ -1,8 +1,11 @@
-import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { Color, ColorDTO } from 'src/app/model/color.model';
+import { Component, OnInit } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription, switchMap } from 'rxjs';
+import { CommonService } from 'src/app/common-services/common.service';
+import { CommonConstants } from 'src/app/constants/common-constants';
+import { Color } from 'src/app/model/color.model';
+import { Page } from 'src/app/model/pageable.model';
+import { SearchOption } from 'src/app/model/search-option.model';
 import { ColorService } from 'src/app/service/color.service';
 
 @Component({
@@ -11,184 +14,157 @@ import { ColorService } from 'src/app/service/color.service';
   styleUrls: ['./color.component.scss'],
 })
 export class ColorComponent implements OnInit {
-  formColor!: FormGroup;
-  formSearch!: FormGroup;
-  radioValue = 'A';
-  color: Color = {};
-  datas: ColorDTO[] = [];
-  sortBy = 'colorName';
-  descAsc = 'desc';
-  offset = 0;
-  limit = 5;
-  Page: any;
-  isVisible = false;
-  action = true;
-  submit = false;
-  status = 1;
-  disable = false;
+  subSearchColor!: Subscription;
+  searchColor: SearchOption = {
+    searchTerm: '',
+    status: 1,
+    offset: 0,
+    limit: 10,
+  };
+  page!: Page;
+  colors: Color[] = [];
+  searchChange$ = new BehaviorSubject<SearchOption>(this.searchColor);
+  isVisibleModal = false;
+  inputColorCode: string = '';
+  inputColorName: string = '';
+  currentColor!: number;
   constructor(
-    private readonly router: Router,
-    private message: NzMessageService,
     private colorService: ColorService,
-    private fb: FormBuilder
+    public commonService: CommonService,
+    private modal: NzModalService
   ) {}
 
   ngOnInit(): void {
-    this.initFormSearch();
-    this.pagination(this.offset);
+    this.subSearchColor = this.searchChange$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((res) => {
+          return this.colorService.getAllColor(res);
+        })
+      )
+      .subscribe((res: any) => {
+        this.page = { ...res };
+        this.colors = res.items;
+      });
   }
-
+  search(value: any) {
+    this.searchColor.searchTerm = value;
+    this.searchColor.offset = 0;
+    this.searchChange$.next({ ...this.searchColor });
+  }
+  onChangeStatus(status: any) {
+    this.searchColor.status = status;
+    this.searchColor.offset = 0;
+    this.searchChange$.next({ ...this.searchColor });
+  }
+  onChangeColorPage(event: any) {
+    this.searchColor.limit = event;
+    this.searchChange$.next({ ...this.searchColor });
+  }
+  onChangeIndexPage(event: any) {
+    --event;
+    this.searchColor.offset = event;
+    this.searchChange$.next({ ...this.searchColor });
+  }
   showModal(): void {
-    this.submit = false;
-    this.formColor = this.fb.group({
-      id: null,
-      colorCode: ['', [Validators.required]],
-      colorName: ['', [Validators.required]],
-      status: [1],
-    });
-    this.isVisible = true;
+    this.isVisibleModal = true;
+    this.inputColorCode;
+    this.inputColorName;
   }
 
   handleOk() {
-    this.submit = true;
-    if (this.formColor.valid) {
-      this.saveColor();
+    if (this.validateColor()) {
+      this.messageError = '';
+      if (this.currentColor >= 0) {
+        this.updateColor();
+        return;
+      }
+      this.createColor();
     }
+    this.isVisibleModal = false;
   }
 
   handleCancel(): void {
-    this.isVisible = false;
+    this.inputColorCode = '';
+    this.inputColorName = '';
+    this.messageError = '';
+    this.currentColor = -1;
+    this.isVisibleModal = false;
   }
 
-  saveColor() {
-    if (this.color.id) {
-      this.updateColor();
-      return;
+  messageError = '';
+  validateColor() {
+    if (this.inputColorCode.trim().length == 0) {
+      this.messageError = 'Vui lòng nhập mã màu sắc';
+      return false;
     }
-    this.addColor(this.color);
+    if (this.inputColorName.trim().length == 0) {
+      this.messageError = 'Vui lòng nhập màu sắc';
+      return false;
+    }
+    if (this.inputColorCode.trim().length > 225) {
+      this.messageError = 'Vui lòng nhập mã màu sắc dưới 225 ký tự';
+      return false;
+    }
+    if (this.inputColorName.trim().length > 225) {
+      this.messageError = 'Vui lòng nhập màu sắc dưới 225 ký tự';
+      return false;
+    }
+    return true;
   }
 
-  getAllColor() {
+  createColor() {
     this.colorService
-      .getAllColor(this.offset, this.limit, this.status)
-      .subscribe((res: any) => {
-        this.datas = res.data.items;
-      });
-  }
-
-  pagination(page: any) {
-    if (page < 0) page = 0;
-    this.offset = page;
-    this.colorService
-      .getAllColor(this.offset, this.limit, this.status)
+      .createColor({
+        id: 0,
+        colorCode: this.inputColorCode,
+        colorName: this.inputColorName,
+        status: CommonConstants.STATUS.ACTIVE,
+      })
       .subscribe((res) => {
-        this.datas = res.data.items;
-        this.Page = res.data;
-      });
-  }
-
-  addColor(color: ColorDTO) {
-    if (this.formColor.valid) {
-      this.addValueColor();
-      this.colorService.createColor(color).subscribe(
-        (res) => {
-          this.getAllColor();
-          this.message.success('Thêm dữ liệu thành công');
-          this.isVisible = false;
-        },
-        (error) => {
-          this.message.error('Thêm dữ liệu thất bại');
+        if (res) {
+          this.colors.unshift(res);
+          this.isVisibleModal = false;
         }
-      );
-    }
+      });
   }
 
   updateColor() {
-    if (this.formColor.valid) {
-      this.addValueColor();
-      this.colorService.updateColor(this.color).subscribe(
-        (res) => {
-          this.getAllColor();
-          this.message.success('Cập nhật dữ liệu thành công');
-          this.isVisible = false;
-          return;
-        },
-        (error) => {
-          this.message.error('Cập nhật dữ liệu thất bại');
+    this.colorService
+      .updateColor({ ...this.colors[this.currentColor], colorCode: this.inputColorCode, colorName: this.inputColorName })
+      .subscribe((res) => {
+        if (res) {
+          this.colors[this.currentColor] = res;
         }
-      );
-    }
-    return;
+      });
+      this.isVisibleModal = false;
   }
 
-  deleteColor(id: any) {
-    this.colorService.deleteColor(id).subscribe(
-      (res) => {
-        this.datas.forEach((value) => {
-          if (value.id == id) {
-            value.status = 0;
-            return;
+  updateStatus(color: Color, index: number, status: number) {
+    this.modal.confirm({
+      nzTitle:
+        'Bạn có muốn ' +
+        (status == 0 ? 'xóa' : 'khôi phục') +
+        ' màu sắc này không?',
+      nzOnOk: () => {
+        this.colorService.updateStatus({ ...color, status }).subscribe((res) => {
+          if (res) {
+            if (this.searchColor.status == -1) {
+              this.colors[index] = res;
+            } else {
+              this.colors.splice(index, 1);
+            }
           }
-          this.message.success('Xóa dữ liệu thành công');
         });
       },
-      (error) => {
-        this.message.error('Xóa dữ liệu thất bại');
-      }
-    );
+    });
   }
 
-  getInfoColor(id: any) {
+  showModalEdit(index: number) {
+    this.currentColor = index;
+    this.inputColorCode = this.colors[this.currentColor].colorCode!;
+    this.inputColorName = this.colors[this.currentColor].colorName!;
     this.showModal();
-    const colorID = this.datas.find((value) => {
-      return value.id == id;
-    });
-    if (colorID) {
-      this.color = colorID;
-    }
-    this.fillValueForm();
-  }
-
-  addValueColor() {
-    this.color.id = this.formColor.value.id;
-    this.color.colorCode = this.formColor.value.colorCode;
-    this.color.colorName = this.formColor.value.colorName;
-    this.color.status = this.formColor.value.status;
-  }
-
-  fillValueForm() {
-    this.formColor.patchValue({
-      id: this.color.id,
-      colorCode: this.color.colorCode,
-      colorName: this.color.colorName,
-      status: this.color.status,
-    });
-  }
-
-  initFormSearch() {
-    this.formSearch! = this.fb.group({
-      valueSearch: [''],
-    });
-  }
-
-  pageItem(pageItems: any) {
-    this.limit = pageItems;
-    this.pagination(this.offset);
-  }
-
-  preNextPage(selector: string) {
-    if (selector == 'pre') --this.offset;
-    if (selector == 'next') ++this.offset;
-    this.pagination(this.offset);
-  }
-
-  searchWithPage(page: any) {
-    if (page < 0) page = 0;
-    this.offset = page;
-  }
-
-  timkiem() {
-    this.searchWithPage(0);
-    this.initFormSearch();
   }
 }
