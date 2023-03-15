@@ -5,6 +5,7 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { Category, CategoryDTO } from '../model/category.model';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RequestService } from '../common-services/request.service';
+import { SearchOption } from '../model/search-option.model';
 
 @Injectable({
   providedIn: 'root',
@@ -17,21 +18,28 @@ export class CategoryService {
     private readonly requestService: RequestService
   ) {}
 
-  getAllCategory(offset: any, limit: any, status: number): Observable<any> {
-    return this.httpClient.get<any>(
-      this.apiCategory +
-        '/category/getAll?offset=' +
-        offset +
-        '&limit=' +
-        limit +
-        '&status=' +
-        1
-    );
+  getAllCategory(search: SearchOption) {
+    return this.requestService
+      .get(
+        `${this.apiCategory}/category/getAll?offset=${search.offset}&limit=${search.limit}&status=${search.status}&search=${search.searchTerm}`,
+        'lấy danh sách loại sản phẩm'
+      )
+      .pipe(
+        map((res) => {
+          if ((res.code = '000')) {
+            return res.data;
+          } else {
+            this.message.error('Lỗi lấy danh sách loại sản phẩm');
+            return false;
+          }
+        })
+      );
   }
 
   getListCategory(): Observable<any> {
     return this.httpClient.get<any>(this.apiCategory + '/category/getList');
   }
+
   createCategory(category: CategoryDTO) {
     return this.requestService
       .post(`${this.apiCategory}/category/create`, category, 'tạo mới danh mục')
@@ -51,16 +59,39 @@ export class CategoryService {
       );
   }
 
-  public updateCategory(category: Category): Observable<any> {
-    return this.httpClient.put<any>(
-      this.apiCategory + '/category/update',
-      category
-    );
+  updateCategory(category: Category) {
+    return this.requestService
+      .put(`${this.apiCategory}/category/update`, category, 'cập nhật loại sản phẩm')
+      .pipe(
+        map((res) => {
+          if ((res.code = '000')) {
+            this.message.success('Cập nhật loại sản phẩm thành công');
+            return res.data;
+          } else if (res.code == '409') {
+            this.message.error('Tên loại sản phẩm đã tồn tại');
+            return false;
+          } else {
+            this.message.error('Lỗi cập nhật loại sản phẩm');
+            return false;
+          }
+        })
+      );
   }
 
-  public deleteCategory(id: any): Observable<any> {
-    return this.httpClient.delete<any>(
-      `${this.apiCategory}` + '/category/delete/' + id
-    );
+  updateStatus(category: Category) {
+    let action = category.status == 0 ? 'Xóa' : 'Khôi phục';
+    return this.requestService
+      .put(`${this.apiCategory}/category/update`, category, action + ' loại sản phẩm')
+      .pipe(
+        map((res) => {
+          if ((res.code = '000')) {
+            this.message.success(action + ' loại sản phẩm thành công');
+            return res.data;
+          } else {
+            this.message.error('Lỗi ' + action + ' loại sản phẩm');
+            return false;
+          }
+        })
+      );
   }
 }

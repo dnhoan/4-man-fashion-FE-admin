@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
-import { ColorDTO } from '../model/color.model';
+import { Color, ColorDTO } from '../model/color.model';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RequestService } from '../common-services/request.service';
+import { SearchOption } from '../model/search-option.model';
 
 @Injectable({
   providedIn: 'root',
@@ -17,21 +18,28 @@ export class ColorService {
     private readonly requestService: RequestService
   ) {}
 
-  getAllColor(offset: any, limit: any, status: number): Observable<any> {
-    return this.httpClient.get<any>(
-      this.apiColor +
-        '/color/getAll?offset=' +
-        offset +
-        '&limit=' +
-        limit +
-        '&status=' +
-        1
-    );
+  getAllColor(search: SearchOption) {
+    return this.requestService
+      .get(
+        `${this.apiColor}/color/getAll?offset=${search.offset}&limit=${search.limit}&status=${search.status}&search=${search.searchTerm}`,
+        'lấy danh sách màu sắc'
+      )
+      .pipe(
+        map((res) => {
+          if ((res.code = '000')) {
+            return res.data;
+          } else {
+            this.message.error('Lỗi lấy danh sách màu sắc');
+            return false;
+          }
+        })
+      );
   }
 
   getListColor(): Observable<any> {
     return this.httpClient.get<any>(this.apiColor + '/color/getList');
   }
+
   createColor(color: ColorDTO) {
     return this.requestService
       .post(`${this.apiColor}/color/create`, color, 'tạo mới màu sắc')
@@ -51,13 +59,39 @@ export class ColorService {
       );
   }
 
-  public updateColor(color: ColorDTO): Observable<any> {
-    return this.httpClient.put<any>(this.apiColor + '/color/update', color);
+  updateColor(color: Color) {
+    return this.requestService
+      .put(`${this.apiColor}/color/update`, color, 'cập nhật màu sắc')
+      .pipe(
+        map((res) => {
+          if ((res.code = '000')) {
+            this.message.success('Cập nhật màu sắc thành công');
+            return res.data;
+          } else if (res.code == '409') {
+            this.message.error('Tên màu sắc đã tồn tại');
+            return false;
+          } else {
+            this.message.error('Lỗi cập nhật màu sắc');
+            return false;
+          }
+        })
+      );
   }
 
-  public deleteColor(id: any): Observable<any> {
-    return this.httpClient.delete<any>(
-      `${this.apiColor}` + '/color/delete/' + id
-    );
+  updateStatus(color: Color) {
+    let action = color.status == 0 ? 'Xóa' : 'Khôi phục';
+    return this.requestService
+      .put(`${this.apiColor}/color/update`, color, action + ' màu sắc')
+      .pipe(
+        map((res) => {
+          if ((res.code = '000')) {
+            this.message.success(action + ' màu sắc thành công');
+            return res.data;
+          } else {
+            this.message.error('Lỗi ' + action + ' màu sắc');
+            return false;
+          }
+        })
+      );
   }
 }

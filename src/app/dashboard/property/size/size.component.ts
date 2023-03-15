@@ -74,6 +74,7 @@ export class SizeComponent implements OnInit {
   }
   showModal(): void {
     this.isVisibleModal = true;
+    this.inputSize;
   }
 
   handleOk() {
@@ -85,6 +86,7 @@ export class SizeComponent implements OnInit {
       }
       this.createSize();
     }
+    this.isVisibleModal = false;
   }
 
   handleCancel(): void {
@@ -130,6 +132,7 @@ export class SizeComponent implements OnInit {
           this.sizes[this.currentSize] = res;
         }
       });
+      this.isVisibleModal = false;
   }
 
   updateStatus(size: Size, index: number, status: number) {

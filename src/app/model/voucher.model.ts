@@ -6,6 +6,7 @@ export interface Voucher {
   endDate?: Date;
   voucherType?: any;
   discount?: number;
+  minimumInvoiceValue?: number;
   quantity?: number;
   ctime?: Date;
   status?: number;
@@ -19,6 +20,7 @@ export interface VoucherDTO {
   endDate?: Date;
   voucherType?: any;
   discount?: number;
+  minimumInvoiceValue?: number;
   quantity?: number;
   ctime?: Date;
   status?: number;

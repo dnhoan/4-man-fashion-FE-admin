@@ -12,7 +12,7 @@
         type="text"
         (ngModelChange)="search($event)"
         [(ngModel)]="searchVoucher.searchTerm"
-        placeholder="Tìm kiếm theo tên voucher"
+        placeholder="Tìm kiếm theo voucher"
       />
     </div>
     <div style="width: 200px">
@@ -44,7 +44,7 @@
       [nzPageSize]="searchVoucher.limit"
       [nzTotal]="page ? page.totalElement : 0"
       nzNoResult="Không có dữ liệu"
-      [nzData]="datas"
+      [nzData]="vouchers"
       (nzPageIndexChange)="onChangeIndexPage($event)"
       (nzPageSizeChange)="onChangeSizePage($event)"
     >
@@ -63,8 +63,8 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="datas.length">
-          <tr *ngFor="let item of datas; index as i">
+        <ng-container *ngIf="vouchers.length">
+          <tr *ngFor="let item of vouchers; index as i">
             <td>{{ i + 1 }}</td>
             <td>{{ item.voucherCode }}</td>
             <td>{{ item.voucherName }}</td>
@@ -110,16 +110,17 @@
 </div>
 <nz-modal
   [(nzVisible)]="isVisibleModal"
-  nzTitle="Tạo Voucher"
+  nzTitle="Thêm mới voucher"
   (nzOnCancel)="handleCancel()"
   (nzOnOk)="handleOk()"
   nzCancelText="Hủy"
   nzOkText="Lưu"
 >
   <ng-container *nzModalContent>
-    <div>
+    <!-- <div>
       <label class="mb-1">Nhập mã voucher</label> <br />
       <input
+      dis
         nz-input
         type="text"
         [(ngModel)]="inputVoucherCode"
@@ -128,7 +129,7 @@
       <span class="text-danger" *ngIf="messageError">
         {{ messageError }}
       </span>
-    </div>
+    </div> -->
     <div>
       <label class="mb-1">Nhập tên voucher</label> <br />
       <input
@@ -151,7 +152,8 @@
     </div>
     <div>
       <label class="mb-1">Loại voucher</label> <br />
-      <nz-select
+      <nz-select style="width: 100%"
+      nzPlaceHolder="Chọn loại voucher"
       [(ngModel)]="voucherType"
       nzAllowClear
     >
@@ -168,6 +170,18 @@
         [(ngModel)]="discount"
         type="text"
         id="discount"
+      />
+      <span class="text-danger" *ngIf="messageError">
+        {{ messageError }}
+      </span>
+    </div>
+    <div>
+      <label class="mb-1">Áp dụng cho hóa có giá trị đơn tối thiểu</label> <br />
+      <input
+        nz-input
+        [(ngModel)]="minimumInvoiceValue"
+        type="text"
+        id="minimumInvoiceValue"
       />
       <span class="text-danger" *ngIf="messageError">
         {{ messageError }}

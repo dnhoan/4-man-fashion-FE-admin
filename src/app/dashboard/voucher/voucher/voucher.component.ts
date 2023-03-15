@@ -31,8 +31,7 @@ export class VoucherComponent implements OnInit {
     limit: 10,
   };
   page!: Page;
-  voucher!: Voucher;
-  datas: Voucher[] = [];
+  vouchers: Voucher[] = [];
   searchChange$ = new BehaviorSubject<SearchOption>(this.searchVoucher);
   isVisibleModal = false;
   inputVoucherCode: string = '';
@@ -49,6 +48,7 @@ export class VoucherComponent implements OnInit {
   compareFn = (o1: any, o2: any): boolean =>
     o1 && o2 ? o1.value === o2.value : o1 === o2;
   discount!: number;
+  minimumInvoiceValue!: number;
 
   constructor(
     private voucherService: VoucherService,
@@ -67,7 +67,7 @@ export class VoucherComponent implements OnInit {
       )
       .subscribe((res: any) => {
         this.page = { ...res };
-        this.datas = res.items;
+        this.vouchers = res.items;
       });
   }
   search(value: any) {
@@ -102,6 +102,7 @@ export class VoucherComponent implements OnInit {
       }
       this.createVoucher();
     }
+    this.isVisibleModal = false;
   }
 
   handleCancel(): void {
@@ -114,16 +115,8 @@ export class VoucherComponent implements OnInit {
 
   messageError = '';
   validateSize() {
-    if (this.inputVoucherCode.trim().length == 0) {
-      this.messageError = 'Vui lòng nhập mã voucher';
-      return false;
-    }
     if (this.inputVoucherName.trim().length == 0) {
       this.messageError = 'Vui lòng nhập tên voucher';
-      return false;
-    }
-    if (this.inputVoucherCode.trim().length > 50) {
-      this.messageError = 'Vui lòng nhập mã voucher dưới 50 ký tự';
       return false;
     }
     if (this.inputVoucherName.trim().length > 255) {
@@ -142,38 +135,42 @@ export class VoucherComponent implements OnInit {
         startDate: this.startDate,
         endDate: this.endDate,
         voucherType: this.voucherType,
+        minimumInvoiceValue: this.minimumInvoiceValue,
         discount: this.discount,
         quantity: this.quantity,
         status: CommonConstants.STATUS.ACTIVE,
       })
       .subscribe((res) => {
         if (res) {
-          this.datas.unshift(res);
+          this.vouchers.unshift(res);
           this.isVisibleModal = false;
         }
       });
+      this.isVisibleModal = false;
   }
 
   updateVoucher() {
     this.voucherService
       .updateVoucher({
-        ...this.datas[this.currentVoucher],
+        ...this.vouchers[this.currentVoucher],
         voucherCode: this.inputVoucherCode,
         voucherName: this.inputVoucherName,
         startDate: this.startDate,
         endDate: this.endDate,
         voucherType: this.voucherType,
         discount: this.discount,
+        minimumInvoiceValue: this.minimumInvoiceValue,
         quantity: this.quantity,
       })
       .subscribe((res) => {
         if (res) {
-          this.datas[this.currentVoucher] = res;
+          this.vouchers[this.currentVoucher] = res;
         }
       });
+      this.isVisibleModal = false;
   }
 
-  updateStatus(size: Size, index: number, status: number) {
+  updateStatus(voucher: Voucher, index: number, status: number) {
     this.modal.confirm({
       nzTitle:
         'Bạn có muốn ' +
@@ -181,13 +178,13 @@ export class VoucherComponent implements OnInit {
         ' voucher này không?',
       nzOnOk: () => {
         this.voucherService
-          .updateStatus({ ...size, status })
+          .updateStatus({ ...voucher, status })
           .subscribe((res) => {
             if (res) {
               if (this.searchVoucher.status == -1) {
-                this.datas[(index = res)];
+                this.vouchers[(index = res)];
               } else {
-                this.datas.splice(index, 1);
+                this.vouchers.splice(index, 1);
               }
             }
           });
@@ -197,13 +194,14 @@ export class VoucherComponent implements OnInit {
 
   showModalEdit(index: number) {
     this.currentVoucher = index;
-    this.inputVoucherCode = this.datas[this.currentVoucher].voucherCode!;
-    this.inputVoucherName = this.datas[this.currentVoucher].voucherName!;
-    this.startDate = this.datas[this.currentVoucher].startDate!;
-    this.endDate = this.datas[this.currentVoucher].endDate!;
-    // this.voucherType = this.datas[this.currentVoucher].voucherType!;
-    this.discount = this.datas[this.currentVoucher].discount!;
-    this.quantity = this.datas[this.currentVoucher].quantity!;
+    this.inputVoucherCode = this.vouchers[this.currentVoucher].voucherCode!;
+    this.inputVoucherName = this.vouchers[this.currentVoucher].voucherName!;
+    this.startDate = this.vouchers[this.currentVoucher].startDate!;
+    this.endDate = this.vouchers[this.currentVoucher].endDate!;
+    this.voucherType = this.vouchers[this.currentVoucher].voucherType!;
+    this.discount = this.vouchers[this.currentVoucher].discount!;
+    this.minimumInvoiceValue = this.vouchers[this.currentVoucher].minimumInvoiceValue!;
+    this.quantity = this.vouchers[this.currentVoucher].quantity!;
     this.showModal();
   }
 }
