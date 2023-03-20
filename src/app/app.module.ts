@@ -23,6 +23,7 @@ import { NgZorroAntdModule } from './share_modules/ng-add-ng-zorro-antd.module';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { environment } from 'src/environments/environment';
+import { RequestInterceptor } from './request.interceptor';
 
 registerLocaleData(en);
 
@@ -54,6 +55,7 @@ registerLocaleData(en);
     JwtService,
     JwtHelperService, // Add JwtHelperService to the providers array
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
     { provide: NZ_I18N, useValue: en_US },
   ],
   bootstrap: [AppComponent],
