@@ -15,6 +15,7 @@ import { CreateProductComponent } from './product/create-product/create-product.
 import { QuillModule } from 'ngx-quill';
 import { VoucherComponent } from './voucher/voucher/voucher.component';
 import { UpdateProductComponent } from './product/update-product/update-product.component';
+import { EmployeeComponent } from './user/employee/employee.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { UpdateProductComponent } from './product/update-product/update-product.
     ModelComponent,
     CreateProductComponent,
     UpdateProductComponent,
+    EmployeeComponent,
   ],
   imports: [
     CommonModule,

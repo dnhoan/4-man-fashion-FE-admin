@@ -9,6 +9,7 @@ import { MaterialComponent } from './property/material/material.component';
 import { ModelComponent } from './property/models/model.component';
 import { SizeComponent } from './property/size/size.component';
 import { VoucherComponent } from './voucher/voucher/voucher.component';
+import { EmployeeComponent } from './user/employee/employee.component';
 
 const routes: Routes = [
   {
@@ -47,6 +48,10 @@ const routes: Routes = [
         path: 'voucher',
         component: VoucherComponent,
       },
+      {
+        path: 'employee',
+        component: EmployeeComponent,
+      },
     ],
   },
 ];
@@ -55,4 +60,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class DashboardRoutingModule {}
+export class DashboardRoutingModule { }
