@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductComponent } from './product/product.component';
 import { NgZorroAntdModule } from '../share_modules/ng-add-ng-zorro-antd.module';
 import { CategoryComponent } from './property/category/category.component';
@@ -15,6 +15,11 @@ import { CreateProductComponent } from './product/create-product/create-product.
 import { QuillModule } from 'ngx-quill';
 import { VoucherComponent } from './voucher/voucher/voucher.component';
 import { UpdateProductComponent } from './product/update-product/update-product.component';
+import { OrderDetailComponent } from './order/orderDetail/orderDetail.component';
+import { OrderComponent } from './order/order.component';
+import { CreateOrderComponent } from './create-order/create-order.component';
+import { AddressComponent } from './create-order/address/address.component';
+import { DeliveryComponent } from './create-order/delivery/delivery.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +33,11 @@ import { UpdateProductComponent } from './product/update-product/update-product.
     ModelComponent,
     CreateProductComponent,
     UpdateProductComponent,
+    OrderComponent,
+    DeliveryComponent,
+    AddressComponent,
+    CreateOrderComponent,
+    OrderDetailComponent,
   ],
   imports: [
     CommonModule,
@@ -38,6 +48,7 @@ import { UpdateProductComponent } from './product/update-product/update-product.
     FormsModule,
     ReactiveFormsModule,
     QuillModule.forRoot(),
+
   ],
 
   providers: [],

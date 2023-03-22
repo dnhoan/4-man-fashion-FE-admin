@@ -1,0 +1,101 @@
+<div class="d-flex justify-content-between" *ngIf="address; else addAddress">
+  <textarea
+    nz-input
+    [(ngModel)]="address"
+    [nzAutosize]="{ minRows: 2, maxRows: 6 }"
+    disabled
+  ></textarea>
+  <a (click)="showModal()"
+    ><span nz-icon nzType="edit" nzTheme="outline"></span
+  ></a>
+</div>
+<ng-template #addAddress>
+  <button nz-button nzType="dashed" (click)="showModal()">
+    <span nz-icon nzType="plus" nzTheme="outline"></span> Thêm địa chỉ
+  </button>
+</ng-template>
+<nz-modal
+  [(nzVisible)]="isVisibleModal"
+  nzTitle="Địa chỉ"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()"
+  nzOkText="Lưu"
+  nzCancelText="Hủy"
+>
+  <ng-container *nzModalContent>
+    <div class="">
+      <nz-select
+        style="width: 100%"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Chọn Tỉnh / Thành Phố"
+        [(ngModel)]="provinceSelected"
+        (ngModelChange)="changeProvince()"
+      >
+        <ng-container *ngFor="let province of provinces">
+          <nz-option
+            *ngIf="!isLoadingProvince"
+            [nzLabel]="province.name"
+            [nzValue]="province"
+          ></nz-option>
+        </ng-container>
+        <nz-option *ngIf="isLoadingProvince" nzDisabled nzCustomContent>
+          <span nz-icon nzType="loading" class="loading-icon"></span>
+          Đang tải...
+        </nz-option>
+      </nz-select>
+    </div>
+    <div class="mt-3">
+      <nz-select
+        style="width: 100%"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Chọn Quận / Huyện"
+        [(ngModel)]="districtSelected"
+        (ngModelChange)="changeDistrict()"
+      >
+        <ng-container *ngFor="let district of districts">
+          <nz-option
+            *ngIf="!isLoadingDistrict"
+            [nzLabel]="district.name"
+            [nzValue]="district"
+          ></nz-option>
+        </ng-container>
+        <nz-option *ngIf="isLoadingDistrict" nzDisabled nzCustomContent>
+          <span nz-icon nzType="loading" class="loading-icon"></span>
+          Đang tải...
+        </nz-option>
+      </nz-select>
+    </div>
+    <div class="mt-3">
+      <nz-select
+        style="width: 100%"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Chọn Xã / Phường"
+        [(ngModel)]="wartSelected"
+      >
+        <ng-container *ngFor="let wart of warts">
+          <nz-option
+            *ngIf="!isLoadingWart"
+            [nzLabel]="wart.name"
+            [nzValue]="wart"
+          ></nz-option>
+        </ng-container>
+        <nz-option *ngIf="isLoadingWart" nzDisabled nzCustomContent>
+          <span nz-icon nzType="loading" class="loading-icon"></span>
+          Đang tải...
+        </nz-option>
+      </nz-select>
+    </div>
+    <div class="mt-3">
+      <textarea
+        nz-input
+        placeholder="Địa chỉ chi tiết"
+        [(ngModel)]="addressDetail"
+        [nzAutosize]="{ minRows: 2, maxRows: 6 }"
+        (ngModelChange)="changeAddress($event)"
+      ></textarea>
+    </div>
+  </ng-container>
+</nz-modal>

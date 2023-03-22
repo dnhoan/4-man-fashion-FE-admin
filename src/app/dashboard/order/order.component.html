@@ -1,0 +1,101 @@
+<div class="mt-4 bg-white">
+  <div class="d-flex justify-content-start p-3 row">
+    <div style="width: 200px">
+      <nz-select
+        style="width: 100%"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Lọc đơn hàng"
+      >
+        <!-- <nz-option
+          *ngFor="let status of commonService.orderStatuses"
+          [nzLabel]="status.statusName"
+          [nzValue]="status.status"
+        ></nz-option> -->
+      </nz-select>
+    </div>
+    <div style="width: 500px">
+      <nz-input-group
+        style="width: 100%"
+        class="col-4"
+        [nzSuffix]="suffixIconSearch"
+      >
+        <!-- <input
+          type="text"
+          nz-input
+          [(ngModel)]="searchTerm"
+          placeholder="Tìm kiếm theo tên, sđt, địa chỉ khách hàng"
+          (keyup.enter)="search()"
+        /> -->
+      </nz-input-group>
+        <ng-template #suffixIconSearch>
+        <span nz-icon nzType="search"></span>
+      </ng-template>
+    </div>
+  </div>
+  <nz-table #basicTable [nzData]="orders">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Mã đơn hàng</th>
+        <th>Tạo lúc</th>
+        <th>Tên KH</th>
+        <th>SĐT KH</th>
+        <th>SL</th>
+        <th>Giao hàng</th>
+        <th>Phí Ship</th>
+        <th>Tổng tiền hàng</th>
+        <th>Tổng</th>
+        <th>Khách trả</th>
+        <th>Công nợ</th>
+        <th>Trạng thái ĐH</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of basicTable.data">
+        <td>
+          <a nz-button nzType="link"
+            >{{ order.id }}</a
+          >
+        </td>
+        <td>{{order.orderId}}</td>
+        <td>{{ order.ctime | date : "HH:mm dd/MM/yyyy" }}</td>
+        <td>{{ order.recipientName }}</td>
+        <td>{{ order.recipientPhone }}</td>
+        <!-- <td>{{ order.orderDetails.quantity }}</td> -->
+        <td>{{ order.delivery == 1 ? "Giao hàng" : "Tại cửa hàng" }}</td>
+        <td>{{ order.shipFee | number }}đ</td>
+        <td>{{ order.goodsValue | number }}đ</td>
+        <td>{{ order.totalMoney | number }}đ</td>
+        <td>{{ order.checkout | number }}đ</td>
+        <!-- <td>
+          <span
+            nz-typography
+            [nzType]="
+              order.checkout - order.totalMoney < 0 ? 'danger' : 'success'
+            "
+            >{{ order.checkout - order.totalMoney}}đ</span
+          >
+        </td> -->
+        <!-- <td class="">
+          <ng-container *ngFor="let status of commonService.orderStatuses">
+            <nz-tag
+              [nzColor]="status.color"
+              *ngIf="status.status == order.orderStatus"
+              >{{ status.statusName }}</nz-tag
+            ></ng-container
+          >
+        </td> -->
+        <td>
+          <a
+            *ngIf="order.orderStatus != -1"
+            nz-button
+            nzType="link"
+            ><span nz-icon nzType="edit" nzTheme="outline"></span
+          ></a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

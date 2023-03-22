@@ -1,0 +1,7 @@
+<nz-radio-group [(ngModel)]="delivery" (ngModelChange)="changeDelivery()">
+  <label nz-radio [nzValue]="0">Tại cửa hàng</label>
+  <label nz-radio [nzValue]="1">Giao hàng</label>
+</nz-radio-group>
+<ng-container *ngIf="delivery">
+  <app-address [address]="address"></app-address>
+</ng-container>
