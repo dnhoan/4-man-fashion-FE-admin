@@ -17,6 +17,15 @@ export const STATUS_ALL = [
   { code: 'INACTIVE', value: 'Dừng hoạt động' },
 ];
 
+export const ORDER_STATUS = {
+  EXCHANGE: -2,
+  CANCEL_ORDER: -1,
+  PENDING: 0,
+  CONFIRMED: 1,
+  PACKAGED: 2,
+  DELIVERING: 3,
+  COMPLETE: 4,
+};
 
 export const APPLY_ALL = [
   { code: null, value: 'Tất cả', mapClass: '' },
