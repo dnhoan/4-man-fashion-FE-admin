@@ -48,7 +48,6 @@ import { DeliveryComponent } from './create-order/delivery/delivery.component';
     FormsModule,
     ReactiveFormsModule,
     QuillModule.forRoot(),
-
   ],
 
   providers: [],

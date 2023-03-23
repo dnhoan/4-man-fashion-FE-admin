@@ -6,10 +6,10 @@ interface OrderProps {
   orderDto: OrderDTO;
 }
 export const orderInit = {
-  id: 0,
-  orderId: '',
-  customerId: 0,
-  orderStatus: 0,
+  id: 2,
+  customerId: null,
+  orderId: '1679582927047',
+  orderStatus: 1,
   recipientName: '',
   recipientPhone: '',
   recipientEmail: '',
@@ -18,12 +18,11 @@ export const orderInit = {
   goodsValue: 0,
   checkout: 0,
   sale: 0,
+  totalMoney: 0,
   delivery: 0,
   purchaseType: 0,
   note: '',
-  cancelNot: '',
-  ctime:'',
-  mtime:'',
+  cancelNote: '',
   orderDetails: [],
 };
 export const orderStore = createStore(

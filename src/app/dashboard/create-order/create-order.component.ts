@@ -1,6 +1,13 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
-import { ProductDTO } from 'src/app/model/product.model';
-import { debounceTime, distinctUntilChanged, Subject, Subscription, switchMap } from 'rxjs';
+import { Product, ProductDTO } from 'src/app/model/product.model';
+import {
+  BehaviorSubject,
+  debounceTime,
+  distinctUntilChanged,
+  Subject,
+  Subscription,
+  switchMap,
+} from 'rxjs';
 import { OrderDTO } from 'src/app/model/order.model';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { OrdersService } from 'src/app/service/order.service';
@@ -9,23 +16,33 @@ import { CommonService } from 'src/app/common-services/common.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ProductsService } from '../product/product.service';
 import { orderInit, orderStore } from './order.repository';
+import { SearchOption } from 'src/app/model/search-option.model';
+import { Page } from 'ngx-pagination';
 
 @Component({
   selector: 'app-create-order',
   templateUrl: './create-order.component.html',
-  styleUrls: ['./create-order.component.scss']
+  styleUrls: ['./create-order.component.scss'],
 })
 export class CreateOrderComponent implements OnInit {
   nowDate = new Date();
   isEdit = false;
   products: ProductDTO[] = [];
-  searchTerm = '';
   subProducts!: Subscription;
   subOrder!: Subscription;
   order!: OrderDTO;
   cancelNote: string = '';
   isShowConfirmCancelOrder = false;
   private searchTerms = new Subject<string>();
+  subSearchProduct!: Subscription;
+  searchProduct: SearchOption = {
+    searchTerm: '',
+    status: 1,
+    offset: 0,
+    limit: 10,
+  };
+  product: ProductDTO[] = [];
+  searchChange$ = new BehaviorSubject<SearchOption>(this.searchProduct);
   constructor(
     private productsService: ProductsService,
     private modal: NzModalService,
@@ -35,43 +52,50 @@ export class CreateOrderComponent implements OnInit {
     private router: Router,
     public commonService: CommonService,
     private message: NzMessageService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    // this.subProducts = this.searchTerms
-    //   .pipe(
-    //     debounceTime(500),
-    //     distinctUntilChanged(),
-    //     switchMap((term: string) => this.productsService.getAllProduct(term))
-    //   )
-    //   .subscribe((res) => {
-    //     this.products = res;
-    //   });
-    // let id = this.route.snapshot.paramMap.get('id');
-    // if (id) {
-    //   this.isEdit = true;
-    //   this.orderService.getOrderById(id).subscribe((orderDto) => {
-    //     console.log(orderDto);
+    this.subSearchProduct = this.searchChange$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((res) => {
+          return this.productsService.getAllProduct(res);
+        })
+      )
+      .subscribe((res: any) => {
+        this.products = res.items.map((item: ProductDTO) => {
+          if (item.productDetails.length == 1) {
+            item.stock = item.productDetails[0].stock;
+          }
+          return item;
+        });
+      });
 
-    //     orderStore.update(() => ({
-    //       orderDto,
-    //     }));
-    //   });
-    // } else {
-    //   orderStore.update(() => ({
-    //     orderDto: orderInit,
-    //   }));
-    // }
-
-    // this.subOrder = orderStore.subscribe((state) => {
-    //   console.log(state);
-    //   this.order = state.orderDto;
-    // });
+    this.subOrder = orderStore.subscribe((state) => {
+      this.order = state.orderDto;
+    });
   }
-  search(searchTerm: any){}
-  saveOrderStore(){}
-  noteChange(event: any){}
-  save(){}
-  handleCancel(){}
-  handleOk(){}
+  addToCart(product: ProductDTO, index: number) {
+    console.log(product);
+
+    if (product.productDetails.length == 1) {
+    }
+    this.products[index].amount = 10;
+  }
+  search(searchTerm: any) {
+    console.log(searchTerm);
+    console.log(this.searchProduct);
+
+    this.searchChange$.next({ ...this.searchProduct });
+  }
+
+  saveOrderStore() {}
+  noteChange(event: any) {}
+  save() {}
+  handleCancel() {}
+  handleOk() {}
+  ngOnDestroy() {
+    this.subSearchProduct.unsubscribe();
+  }
 }
