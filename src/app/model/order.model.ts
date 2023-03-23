@@ -1,5 +1,5 @@
-import { OrderDetailDTO } from "./orderDetails.model";
-import { ProductImagesDTO } from "./productImages.model";
+import { OrderDetailDTO } from './orderDetails.model';
+import { ProductImagesDTO } from './productImages.model';
 
 export interface Order {
   id: number;
@@ -27,7 +27,7 @@ export interface Order {
 export interface OrderDTO {
   id: number;
   orderId: string;
-  customerId: number;
+  customerId?: number | null;
   orderStatus: number;
   recipientName: string;
   recipientPhone: string;
@@ -41,7 +41,7 @@ export interface OrderDTO {
   delivery?: number;
   purchaseType: number;
   note: string;
-  cancelNot: string;
+  cancelNote?: string;
   ctime?: string;
   mtime?: string;
   orderDetails?: OrderDetailDTO[];
