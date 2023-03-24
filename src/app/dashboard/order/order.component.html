@@ -55,7 +55,7 @@
     <tbody>
       <tr *ngFor="let order of basicTable.data">
         <td>
-          <a nz-button nzType="link"
+          <a nz-button nzType="link" (click)="showOrderDetail(order)"
             >{{ order.id }}</a
           >
         </td>
@@ -63,13 +63,13 @@
         <td>{{ order.ctime | date : "HH:mm dd/MM/yyyy" }}</td>
         <td>{{ order.recipientName }}</td>
         <td>{{ order.recipientPhone }}</td>
-        <!-- <td>{{ order.orderDetails.quantity }}</td> -->
+        <td>{{ order.orderDetails }}</td>
         <td>{{ order.delivery == 1 ? "Giao hàng" : "Tại cửa hàng" }}</td>
         <td>{{ order.shipFee | number }}đ</td>
         <td>{{ order.goodsValue | number }}đ</td>
         <td>{{ order.totalMoney | number }}đ</td>
         <td>{{ order.checkout | number }}đ</td>
-        <!-- <td>
+        <td>
           <span
             nz-typography
             [nzType]="
@@ -77,8 +77,8 @@
             "
             >{{ order.checkout - order.totalMoney}}đ</span
           >
-        </td> -->
-        <!-- <td class="">
+        </td>
+        <td class="">
           <ng-container *ngFor="let status of commonService.orderStatuses">
             <nz-tag
               [nzColor]="status.color"
@@ -86,7 +86,7 @@
               >{{ status.statusName }}</nz-tag
             ></ng-container
           >
-        </td> -->
+        </td>
         <td>
           <a
             *ngIf="order.orderStatus != -1"

@@ -12,9 +12,9 @@ export interface Order {
   address: string;
   shipFee?: number;
   goodsValue: number;
-  checkout?: number;
+  checkout: number;
   sale: number;
-  totalMoney?: number;
+  totalMoney: number;
   delivery?: number;
   purchaseType: number;
   note: string;

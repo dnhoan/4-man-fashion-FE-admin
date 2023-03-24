@@ -1,3 +1,6 @@
+import { Product } from "./product.model";
+import { ProductDetail, ProductDetailDTO } from "./productDetail.model";
+
 export interface OrderDetail {
   id?: number;
   orderId?: string;
@@ -7,6 +10,7 @@ export interface OrderDetail {
   exchangeId?: string;
   statusExchange?: string;
   statusOrderDetail?: string;
+  productDetail: ProductDetailDTO;
 }
 
 export interface OrderDetailDTO {
@@ -18,4 +22,5 @@ export interface OrderDetailDTO {
   exchangeId?: string;
   statusExchange?: string;
   statusOrderDetail?: string;
+  productDetail: ProductDetailDTO;
 }
