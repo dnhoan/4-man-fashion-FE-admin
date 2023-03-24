@@ -55,9 +55,9 @@ export function ProductNameValidator(): ValidatorFn {
       return { productName: 'Chưa nhập tên sản phẩm' };
     }
 
-    if ((controlVal || '').trim().length < 20) {
-      return { productName: 'Tên sản phẩm tối thiểu 20 ký tự' };
-    }
+    // if ((controlVal || '').trim().length < 20) {
+    //   return { productName: 'Tên sản phẩm tối thiểu 20 ký tự' };
+    // }
     if ((controlVal || '').trim().length > 225) {
       return { productName: 'Tên sản phẩm tối đa 225 ký tự' };
     }
