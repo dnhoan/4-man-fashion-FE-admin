@@ -52,7 +52,7 @@
       <thead>
         <tr>
           <th></th>
-          <!-- <th>Ảnh</th> -->
+          <th>Ảnh</th>
           <th>Tên sản phẩm</th>
           <th>Danh mục</th>
           <th>Chất liệu</th>
@@ -67,7 +67,7 @@
         <ng-container *ngFor="let item of products; index as i">
           <tr>
             <td style="width: 40px" [(nzExpand)]="item.expand"></td>
-            <!-- <td>
+            <td>
               <img
                 nz-image
                 width="50px"
@@ -75,7 +75,7 @@
                 [nzSrc]="item.productImages![0].image"
                 alt=""
               />
-            </td> -->
+            </td>
             <td>
               <b>{{ item.productName }}</b>
             </td>
