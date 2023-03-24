@@ -5,6 +5,8 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RequestService } from '../common-services/request.service';
 import { SearchOption } from '../model/search-option.model';
+import { OrderStatus } from '../model/orderStatus.model';
+import { UpdateStatus } from '../model/updateStatus.model';
 
 @Injectable({
   providedIn: 'root',
@@ -33,6 +35,26 @@ export class OrdersService {
             return false;
           }
         })
+      );
+  }
+
+  updateOrderStatus(id: number, newStatus: number, cancelNot?: string) {
+    let data: UpdateStatus = {
+      orderId: id,
+      newStatus,
+      note: cancelNot ? cancelNot : '',
+    };
+    return this.httpClient
+      .put(`${this.apiOrder}/order/updateOrderStatus`, data)
+      .pipe(
+        map((res: any) => {
+          if (res.code === '000') {
+            this.message.success('Cập nhật trạng thái đơn hàng thành công');
+            return true;
+          }
+          return false;
+        }),
+        catchError(this.handleError<any>('Lỗi cập nhật đơn hàng', false))
       );
   }
 
