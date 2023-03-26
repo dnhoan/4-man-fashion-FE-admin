@@ -49,6 +49,7 @@ export class CreateProductComponent implements OnInit {
       price: 0,
       sizeName: '',
       colorName: '',
+      status: CommonConstants.STATUS.ACTIVE
     },
   ];
   searchProperty: SearchOption = {
