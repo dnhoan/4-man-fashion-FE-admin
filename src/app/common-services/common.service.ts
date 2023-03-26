@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ORDER_STATUS } from '../constants/constant.constant';
 import { OrderStatus } from '../model/orderStatus.model';
 
 @Injectable({
@@ -12,51 +13,96 @@ export class CommonService {
     { value: 0, label: 'Đã xóa' },
     { value: -1, label: 'Tất cả' },
   ];
-
+  // conditionToNewStatus = {
+  //   DRAFT: [
+  //     ORDER_STATUS.DRAFT,
+  //     ORDER_STATUS.PACKAGING,
+  //     ORDER_STATUS.DELIVERING,
+  //     ORDER_STATUS.COMPLETE,
+  //     ORDER_STATUS.CANCEL_ORDER,
+  //   ], // [đóng gói, vận chuyển, hoàn thành, hủy]
+  //   PENDING: [
+  //     ORDER_STATUS.CONFIRMED,
+  //     ORDER_STATUS.PACKAGING,
+  //     ORDER_STATUS.DELIVERING,
+  //     ORDER_STATUS.COMPLETE,
+  //     ORDER_STATUS.CANCEL_ORDER,
+  //   ], // [Xác nhận, đóng gói, vận chuyển, hoàn thành, hủy]
+  //   CONFIRMED: [
+  //     ORDER_STATUS.PENDING,
+  //     ORDER_STATUS.CONFIRMED,
+  //     ORDER_STATUS.PACKAGING,
+  //     ORDER_STATUS.DELIVERING,
+  //     ORDER_STATUS.COMPLETE,
+  //     ORDER_STATUS.CANCEL_ORDER,
+  //   ], // [Đóng gói, vận chuyển, hoàn thành, hủy]
+  //   PACKAGING: [
+  //     ORDER_STATUS.PACKAGING,
+  //     ORDER_STATUS.DELIVERING,
+  //     ORDER_STATUS.COMPLETE,
+  //     ORDER_STATUS.CANCEL_ORDER,
+  //   ], // [Vận chuyển, hoàn thành, hủy]
+  //   DELIVERING: [4, 6], // [Hoàn thành, Hủy]
+  //   COMPLETE: [5, 6], // [Đổi trả]
+  //   EXCHANGE: [],
+  //   CANCEL_ORDER: [],
+  // };
   orderStatuses: OrderStatus[] = [
     {
-      status: 0,
-      statusName: 'Đang chờ',
+      status: ORDER_STATUS.DRAFT,
+      code: 'DRAFT',
+      statusName: 'Đơn nháp',
+      color: '#9898a0',
+      icon: 'plus-circle',
+    },
+    {
+      status: ORDER_STATUS.PENDING,
+      code: 'PENDING',
+      statusName: 'Chưa xác nhận',
       color: '#9898a0',
       icon: 'loading',
     },
     {
-      status: 1,
+      status: ORDER_STATUS.CONFIRMED,
+      code: 'CONFIRMED',
       statusName: 'Xác nhận',
       color: '#0099ff',
       icon: 'check',
     },
-
     {
-      status: 2,
-      statusName: 'Đã đóng gói',
+      status: ORDER_STATUS.PACKAGING,
+      code: 'PACKAGING',
+      statusName: 'Đóng gói',
       color: '#cccc00',
       icon: 'dropbox',
     },
     {
-      status: 3,
+      status: ORDER_STATUS.DELIVERING,
+      code: 'DELIVERING',
       statusName: 'Đang vận chuyển',
       color: '#9966ff ',
       icon: 'car',
     },
     {
-      status: 4,
+      status: ORDER_STATUS.COMPLETE,
+      code: 'COMPLETE',
       statusName: 'Hoàn thành',
       color: '#009933',
       icon: 'check-circle',
     },
     {
-      status: -2,
+      status: ORDER_STATUS.EXCHANGE,
+      code: 'EXCHANGE',
       statusName: 'Đổi trả',
       color: '#003366',
       icon: 'sync',
     },
     {
-      status: -1,
+      status: ORDER_STATUS.CANCEL_ORDER,
+      code: 'CANCEL_ORDER',
       statusName: 'Hủy',
       color: '#ff3300',
       icon: 'stop',
     },
   ];
-
 }

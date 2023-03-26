@@ -10,7 +10,6 @@ import { SearchOption } from '../model/search-option.model';
   providedIn: 'root',
 })
 export class OrdersService {
-
   public apiOrder = `${environment.baseUrl}/api/admin`;
   constructor(
     private httpClient: HttpClient,
@@ -26,10 +25,27 @@ export class OrdersService {
       )
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             return res.data;
           } else {
             this.message.error('Lỗi lấy danh sách đơn hàng');
+            return false;
+          }
+        })
+      );
+  }
+  getOrderByOrderId(orderId: string) {
+    return this.requestService
+      .get(`${this.apiOrder}/order/${orderId}`, 'lấy đơn hàng')
+      .pipe(
+        map((res) => {
+          if (res.code == '000') {
+            return res.data;
+          } else if (res.code == '002') {
+            this.message.error('Đơn hàng không tồn tại');
+            return false;
+          } else {
+            this.message.error('Lỗi lấy đơn hàng');
             return false;
           }
         })
@@ -43,10 +59,7 @@ export class OrdersService {
     };
   }
 
-  getFeeShip(address: string) {
-    let arr = address.split(', ');
-    let district = arr[arr.length - 2];
-    let province = arr[arr.length - 1];
+  getFeeShip(province: string, district: string, address: string) {
     let data = {
       package_type: 'express',
       pick_province: 'Hà Nội',

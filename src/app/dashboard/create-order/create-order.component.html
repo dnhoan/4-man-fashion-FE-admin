@@ -1,34 +1,28 @@
-<div class="row m-0 w-100 mt-4 p-2" *ngIf="isEdit">
+<div class="row m-0 w-100 mt-4 p-2">
   <div class="bg-white p-3 rounded-3 h-100">
     <nz-steps [nzCurrent]="order.orderStatus">
-      <ng-container *ngFor="let orderStatus of commonService.orderStatuses">
+      <ng-container *ngFor="let orderStatus of orderStatuses">
         <nz-step
-          nz-popconfirm
-          nzPopconfirmTitle="Bạn có muốn chuyển trạng thái đơn hàng sang {{
-            orderStatus.statusName
-          }} không?"
-          nzIcon="iconTpl"
-          nzPopconfirmPlacement="bottom"
+          [nzIcon]="orderStatus.icon"
           style="cursor: pointer"
           [nzTitle]="orderStatus.statusName"
         ></nz-step>
       </ng-container>
     </nz-steps>
-    <ng-template #iconTpl> </ng-template>
   </div>
 </div>
 <div class="row m-0 w-100 mt-4">
   <div class="col-7">
     <div class="bg-white p-3 rounded-3 h-100">
       <div class="">
-        <!-- <nz-table [nzNoResult]="noResult">
+        <nz-table [nzNoResult]="noResult">
           <thead>
             <tr>
               <th>Sản phẩm</th>
-              <th>SL</th>
               <th>Đơn giá</th>
+              <th>SL</th>
               <th>Thành tiền</th>
-              <th>Imei</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -39,19 +33,29 @@
               "
             >
               <td>
-                <b>{{ orderDetail.productDetailCartDto.productName }}</b
-                ><br />{{ orderDetail.productDetailCartDto.sku }}
-              </td>
-              <td>
-                {{ orderDetail.quantity }}
+                <b>{{ orderDetail.productDetail!.productDetailName }}</b>
               </td>
               <td>{{ orderDetail.price | number }}đ</td>
               <td>
+                <nz-input-number
+                  [(ngModel)]="orderDetail.quantity"
+                  [nzMin]="1"
+                  [nzStep]="1"
+                  [nzMax]="
+                    orderDetail.productDetail
+                      ? orderDetail.productDetail.stock
+                      : 0
+                  "
+                  (ngModelChange)="updateOrderMoney()"
+                ></nz-input-number>
+              </td>
+              <td>
                 {{ orderDetail.price! * orderDetail.quantity! | number }}đ
               </td>
+              <td>Xóa</td>
             </tr>
           </tbody>
-        </nz-table> -->
+        </nz-table>
       </div>
       <div class="m-3">
         <nz-input-group [nzSuffix]="suffixIconSearch">
@@ -133,6 +137,7 @@
 
               <button
                 class="mt-3"
+                [disabled]="product.amount ? false : true"
                 nz-button
                 nzType="primary"
                 (click)="addToCart(product, i_product)"
@@ -147,19 +152,18 @@
     </div>
   </div>
   <div class="col-5">
-    <!-- <div>
+    <div>
       <div class="mb-3 p-3 rounded-3 bg-white">
         <h6>Thông tin khách hàng</h6>
-        <app-customer-info
-          [customer]="order.customerId"
-          [isEdit]="isEdit"
-        ></app-customer-info>
+        <ng-container *ngIf="isGetOrderDetail">
+          <app-customer-info></app-customer-info
+        ></ng-container>
       </div>
       <div class="mb-3 p-3 rounded-3 bg-white">
         <h6>Thông tin thanh toán</h6>
         <div class="d-flex justify-content-between">
-          <p>Tổng tiền hàng</p>
-          <p>
+          <p nz-typography>Tổng tiền hàng</p>
+          <p nz-typography>
             <b>{{ order.goodsValue | number }}đ</b>
           </p>
         </div>
@@ -167,19 +171,19 @@
           class="d-flex justify-content-between"
           *ngIf="this.order.delivery == 1"
         >
-          <p>Phí giao hàng</p>
-          <p>
+          <p nz-typography>Phí giao hàng</p>
+          <p nz-typography>
             <b>{{ order.shipFee | number }}đ</b>
           </p>
         </div>
         <div class="d-flex justify-content-between">
-          <p>Tổng tiền</p>
-          <p>
-            <b>{{ order.goodsValue + order.shipFee! | number }}đ</b>
+          <p nz-typography>Tổng tiền</p>
+          <p nz-typography>
+            <b>{{ order.totalMoney | number }}đ</b>
           </p>
         </div>
         <div class="row d-flex justify-content-between">
-          <p class="col-6">Khách thanh toán</p>
+          <p nz-typography class="col-6">Khách thanh toán</p>
           <div class="col-6">
             <nz-input-number
               style="width: 100%"
@@ -191,15 +195,9 @@
           </div>
         </div>
         <div class="d-flex justify-content-between">
-          <p>Còn thiếu</p>
-          <p>
-            <b>
-              {{
-                order.goodsValue +
-                  (order.shipFee ? order.shipFee : 0) -
-                  order.checkout | number
-              }}đ</b
-            >
+          <p nz-typography>Còn thiếu</p>
+          <p nz-typography>
+            <b> {{ order.totalMoney - order.checkout | number }}đ</b>
           </p>
         </div>
         <textarea
@@ -212,10 +210,13 @@
       </div>
       <div class="mb-3 p-3 rounded-3 bg-white">
         <h6>Thông tin giao hàng</h6>
-        <app-delivery-info
-          [address]="order.address"
-          [delivery]="order.delivery!"
-        ></app-delivery-info>
+        <ng-container *ngIf="isGetOrderDetail">
+          <app-delivery
+            [order]="order"
+            [address]="order.address"
+            [delivery]="order.delivery!"
+          ></app-delivery
+        ></ng-container>
       </div>
       <div class="p-3 rounded-3 d-flex justify-content-end bg-white">
         <button nz-button nzType="default" nzSize="large">
@@ -227,7 +228,7 @@
           Lưu
         </button>
       </div>
-    </div> -->
+    </div>
   </div>
 </div>
 <ng-template #noResult> </ng-template>

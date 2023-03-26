@@ -20,6 +20,8 @@ import { OrderComponent } from './order/order.component';
 import { CreateOrderComponent } from './create-order/create-order.component';
 import { AddressComponent } from './create-order/address/address.component';
 import { DeliveryComponent } from './create-order/delivery/delivery.component';
+import { CustomerInfoComponent } from './create-order/customer-info/customer-info.component';
+import { CustomerComponent } from './customer/customer.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,8 @@ import { DeliveryComponent } from './create-order/delivery/delivery.component';
     AddressComponent,
     CreateOrderComponent,
     OrderDetailComponent,
+    CustomerInfoComponent,
+    CustomerComponent,
   ],
   imports: [
     CommonModule,
