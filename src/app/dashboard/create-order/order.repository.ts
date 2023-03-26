@@ -1,6 +1,6 @@
 import { createStore, withProps } from '@ngneat/elf';
 import { Injectable } from '@angular/core';
-import { OrderDTO } from 'src/app/model/order.model';
+import { OrderDTO } from 'src/app/dashboard/order/order.model';
 
 interface OrderProps {
   orderDto: OrderDTO;

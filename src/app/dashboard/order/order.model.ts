@@ -1,5 +1,6 @@
 import { OrderDetailDTO } from './orderDetails.model';
-import { ProductImagesDTO } from './productImages.model';
+import { ProductImagesDTO } from '../../model/productImages.model';
+import { CustomerDto } from '../customer/customerDto.model';
 
 export interface Order {
   id: number;
@@ -15,10 +16,10 @@ export interface Order {
   checkout: number;
   sale: number;
   totalMoney: number;
-  delivery?: number;
+  delivery: number;
   purchaseType: number;
   note: string;
-  cancelNot: string;
+  cancelNote: string;
   ctime: Date;
   mtime: Date;
   orderDetails?: OrderDetailDTO[];
@@ -28,6 +29,7 @@ export interface OrderDTO {
   id: number;
   orderId: string;
   customerId?: number | null;
+  customerInfo?: CustomerDto;
   orderStatus: number;
   recipientName: string;
   recipientPhone: string;
@@ -35,10 +37,10 @@ export interface OrderDTO {
   address: string;
   shipFee?: number;
   goodsValue: number;
-  checkout?: number;
+  checkout: number;
   sale: number;
-  totalMoney?: number;
-  delivery?: number;
+  totalMoney: number;
+  delivery: number;
   purchaseType: number;
   note: string;
   cancelNote?: string;

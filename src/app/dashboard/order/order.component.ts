@@ -1,9 +1,15 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  distinctUntilChanged,
+  Subscription,
+  switchMap,
+} from 'rxjs';
 import { CommonService } from 'src/app/common-services/common.service';
-import { Order, OrderDTO } from 'src/app/model/order.model';
+import { Order, OrderDTO } from 'src/app/dashboard/order/order.model';
 import { Page } from 'src/app/model/pageable.model';
 import { SearchOption } from 'src/app/model/search-option.model';
 import { OrdersService } from 'src/app/service/order.service';
@@ -12,7 +18,7 @@ import { OrderDetailComponent } from './orderDetail/orderDetail.component';
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
-  styleUrls: ['./order.component.scss']
+  styleUrls: ['./order.component.scss'],
 })
 export class OrderComponent implements OnInit {
   subSearchOrder!: Subscription;
@@ -34,7 +40,7 @@ export class OrderComponent implements OnInit {
     private modal: NzModalService,
     private viewContainerRef: ViewContainerRef,
     public commonService: CommonService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.subSearchOrder = this.searchChange$
@@ -49,7 +55,6 @@ export class OrderComponent implements OnInit {
         this.page = { ...res };
         this.orders = res.items;
         console.log(this.orders);
-
       });
   }
   // changeStatusOrder() {
@@ -74,5 +79,4 @@ export class OrderComponent implements OnInit {
   openEditOrder(id: number) {
     this.router.navigate([`/admin/order/${id}`]);
   }
-
 }

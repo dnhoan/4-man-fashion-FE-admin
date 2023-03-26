@@ -5,5 +5,6 @@ export interface OrderStatus {
   icon?: string;
   orderId?: number;
   newStatus?: number;
+  code?: string;
   note?: string;
 }

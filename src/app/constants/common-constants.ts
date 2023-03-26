@@ -9,4 +9,8 @@ export class CommonConstants {
     ACTIVE: 1,
     INACTIVE: 0,
   };
+  public static readonly DELIVERY_STATUS = {
+    DELIVERY: 1,
+    NON_DELIVERY: 0,
+  };
 }

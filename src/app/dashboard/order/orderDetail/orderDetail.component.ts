@@ -1,17 +1,16 @@
-import { Component,Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Order, OrderDTO } from '../order.model';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { CommonService } from 'src/app/common-services/common.service';
 import { LogOrderStatus } from 'src/app/model/logOrderStatus.model';
-import { Order, OrderDTO } from 'src/app/model/order.model';
 import { LogOrderStatusService } from 'src/app/service/logOrderStatus.service';
 import { OrdersService } from 'src/app/service/order.service';
-
 
 @Component({
   selector: 'app-orderDetail',
   templateUrl: './orderDetail.component.html',
-  styleUrls: ['./orderDetail.component.scss']
+  styleUrls: ['./orderDetail.component.scss'],
 })
 export class OrderDetailComponent implements OnInit {
   @Input('order') currentOrder!: Order;
@@ -24,8 +23,7 @@ export class OrderDetailComponent implements OnInit {
     private logOrderStatusService: LogOrderStatusService,
     private modal: NzModalService,
     private message: NzMessageService
-  ) { }
-
+  ) {}
 
   ngOnInit(): void {}
 
@@ -63,21 +61,18 @@ export class OrderDetailComponent implements OnInit {
       .subscribe((res) => {
         if (res) {
           this.currentOrder.orderStatus = newStatus;
-          this.currentOrder.cancelNot = this.cancelNote;
+          this.currentOrder.cancelNote = this.cancelNote;
         }
       });
-      this.getListLogOrderStatus(this.currentOrder.id);
+    this.getListLogOrderStatus(this.currentOrder.id);
   }
 
-
   getListLogOrderStatus(id: number) {
-    this.logOrderStatusService
-      .getListLogOrder(id)
-      .subscribe((res) => {
-        if (res) {
-          this.currentLog = res;
-        }
-      });
+    this.logOrderStatusService.getListLogOrder(id).subscribe((res) => {
+      if (res) {
+        this.currentLog = res;
+      }
+    });
   }
   handleOk() {
     this.updateStatus(this.currentOrder.id, -1, this.cancelNote);
@@ -86,5 +81,4 @@ export class OrderDetailComponent implements OnInit {
   handleCancel() {
     this.isShowConfirmCancelOrder = false;
   }
-
 }

@@ -1,4 +1,4 @@
-import { Order } from './order.model';
+import { Order } from '../dashboard/order/order.model';
 import { ProductDetail } from './productDetail.model';
 
 export interface LogOrderStatus {

@@ -62,7 +62,7 @@
     <p><b>Email người nhận: </b>{{ currentOrder.recipientEmail }}</p>
     <p><b>Ghi chú: </b>{{ currentOrder.note }}</p>
     <p *ngIf="currentOrder.orderStatus == -1">
-      <b>Nội dung hủy: </b>{{ currentOrder.cancelNot }}
+      <b>Nội dung hủy: </b>{{ currentOrder.cancelNote }}
     </p>
   </div>
 </div>
@@ -89,24 +89,23 @@
               width="50"
             />
           </td> -->
-          <td>{{ orderDetail.productDetail.productDetailName }}</td>
-          <td>{{ orderDetail.productDetail.productDetailName }}</td>
+          <td>{{ orderDetail.productDetail?.productDetailName }}</td>
+          <td>{{ orderDetail.productDetail?.productDetailName }}</td>
           <td>{{ orderDetail.quantity }}</td>
           <td>{{ orderDetail.price | number }} đ</td>
-          <td>
-            {{
-              orderDetail.quantity! * orderDetail.price!
-                | number
-            }}đ
-          </td>
+          <td>{{ orderDetail.quantity! * orderDetail.price! | number }}đ</td>
         </tr>
       </tbody>
     </table>
   </div>
 </div>
 <nz-timeline *ngFor="let logstatus of currentLog">
-  <nz-timeline-item>Nguời dùng {{logstatus.user_change}} đã thay đổi trạng thái đơn hàng từ {{logstatus.currentStatus}} sang {{logstatus.newStatus}}<p> lúc {{logstatus.times}}</p></nz-timeline-item>
- </nz-timeline>
+  <nz-timeline-item
+    >Nguời dùng {{ logstatus.user_change }} đã thay đổi trạng thái đơn hàng từ
+    {{ logstatus.currentStatus }} sang {{ logstatus.newStatus }}
+    <p>lúc {{ logstatus.times }}</p></nz-timeline-item
+  >
+</nz-timeline>
 <nz-modal
   [(nzVisible)]="isShowConfirmCancelOrder"
   nzTitle="Hủy đơn hàng"
@@ -121,5 +120,4 @@
       [nzAutosize]="{ minRows: 2, maxRows: 6 }"
     ></textarea>
   </ng-container>
-
 </nz-modal>
