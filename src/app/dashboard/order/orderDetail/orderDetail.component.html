@@ -1,3 +1,123 @@
-<p>
-  orderDetail works!
-</p>
+<div class="rounded-3 mb-3">
+  <nz-steps [nzCurrent]="currentOrder.orderStatus">
+    <ng-container *ngFor="let orderStatus of commonService.orderStatuses">
+      <nz-step
+        nz-popconfirm
+        nzPopconfirmTitle="Bạn có muốn chuyển trạng thái đơn hàng sang {{
+          orderStatus.statusName
+        }} không?"
+        nzIcon="iconTpl"
+        nzPopconfirmPlacement="bottom"
+        (nzOnConfirm)="onIndexChange(orderStatus.status)"
+        style="cursor: pointer"
+        [nzTitle]="orderStatus.statusName"
+        [nzStatus]="
+          currentOrder.orderStatus == -1
+            ? 'process'
+            : (currentOrder.orderStatus >= orderStatus.newStatus! &&
+                orderStatus.newStatus != -1 &&
+                orderStatus.newStatus != -2) ||
+              (currentOrder.orderStatus == -2 && orderStatus.newStatus != -1)
+            ? 'process'
+            : 'wait'
+        "
+        [nzIcon]="orderStatus.icon"
+      ></nz-step>
+    </ng-container> </nz-steps
+  ><ng-template #iconTpl> </ng-template>
+</div>
+<div class="rounded-3 mb-3">
+  <div class="d-flex">
+    <div class="border-end m-3 pe-3">
+      <p><b>Mã đơn hàng</b></p>
+      <p>HD{{ currentOrder.id }}</p>
+    </div>
+    <div class="border-end m-3 pe-3">
+      <p><b>Ngày tạo</b></p>
+      <p>
+        {{ currentOrder.ctime | date : "dd/MM/yyyy HH:mm" }}
+      </p>
+    </div>
+    <div class="border-end m-3 pe-3">
+      <p><b>Tổng tiền hàng</b></p>
+      <p>{{ currentOrder.goodsValue | number }}đ</p>
+    </div>
+    <div class="border-end m-3 pe-3">
+      <p><b>Phí vận chuyển</b></p>
+      <p>{{ currentOrder.shipFee | number }}đ</p>
+    </div>
+    <div class="border-end m-3 pe-3">
+      <p><b>Tổng tiền</b></p>
+      <p>{{ currentOrder.totalMoney | number }}đ</p>
+    </div>
+  </div>
+</div>
+<nz-divider></nz-divider>
+<div class="rounded-3 p-3 mb-3">
+  <p><b>Thông tin người nhận</b></p>
+  <div class="">
+    <p><b>Tên người nhận: </b>{{ currentOrder.recipientName }}</p>
+    <p><b>Địa chỉ người nhận: </b>{{ currentOrder.address }}</p>
+    <p><b>SĐT người nhận: </b>{{ currentOrder.recipientPhone }}</p>
+    <p><b>Email người nhận: </b>{{ currentOrder.recipientEmail }}</p>
+    <p><b>Ghi chú: </b>{{ currentOrder.note }}</p>
+    <p *ngIf="currentOrder.orderStatus == -1">
+      <b>Nội dung hủy: </b>{{ currentOrder.cancelNote }}
+    </p>
+  </div>
+</div>
+<nz-divider></nz-divider>
+<div class="rounded-3 p-3">
+  <p><b>Thông tin đơn hàng</b></p>
+  <div class="">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Ảnh</th>
+          <th scope="col">Sản phẩm</th>
+          <th scope="col">SL</th>
+          <th scope="col">Đơn giá</th>
+          <th scope="col">Thành tiền</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let orderDetail of currentOrder.orderDetails">
+          <!-- <td>
+            <img
+              [src]="orderDetail.productDetailCartDto.image"
+              alt=""
+              width="50"
+            />
+          </td> -->
+          <td>{{ orderDetail.productDetail?.productDetailName }}</td>
+          <td>{{ orderDetail.productDetail?.productDetailName }}</td>
+          <td>{{ orderDetail.quantity }}</td>
+          <td>{{ orderDetail.price | number }} đ</td>
+          <td>{{ orderDetail.quantity! * orderDetail.price! | number }}đ</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<nz-timeline *ngFor="let logstatus of currentLog">
+  <nz-timeline-item
+    >Nguời dùng {{ logstatus.user_change }} đã thay đổi trạng thái đơn hàng từ
+    {{ logstatus.currentStatus }} sang {{ logstatus.newStatus }}
+    <p>lúc {{ logstatus.times }}</p></nz-timeline-item
+  >
+</nz-timeline>
+<nz-modal
+  [(nzVisible)]="isShowConfirmCancelOrder"
+  nzTitle="Hủy đơn hàng"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()"
+>
+  <ng-container *nzModalContent>
+    <textarea
+      nz-input
+      [(ngModel)]="cancelNote"
+      placeholder="Nhập lý do hủy đơn hàng"
+      [nzAutosize]="{ minRows: 2, maxRows: 6 }"
+    ></textarea>
+  </ng-container>
+</nz-modal>

@@ -19,7 +19,7 @@ export interface Order {
   delivery: number;
   purchaseType: number;
   note: string;
-  cancelNot: string;
+  cancelNote: string;
   ctime: Date;
   mtime: Date;
   orderDetails?: OrderDetailDTO[];

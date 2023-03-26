@@ -275,20 +275,20 @@ export class UpdateProductComponent implements OnInit {
     this.categoryService
       .getAllCategory(this.searchProperty)
       .subscribe((res) => {
-        if (res.code == '000') {
-          this.categories = res.data.items;
+        if (res) {
+          this.categories = res.items;
         }
       });
     this.materialService
       .getAllMaterial(this.searchProperty)
       .subscribe((res) => {
-        if (res.code == '000') {
-          this.materials = res.data.items;
+        if (res) {
+          this.materials = res.items;
         }
       });
     this.modelService.getAllModel(this.searchProperty).subscribe((res) => {
-      if (res.code == '000') {
-        this.models = res.data.items;
+      if (res) {
+        this.models = res.items;
       }
     });
   }

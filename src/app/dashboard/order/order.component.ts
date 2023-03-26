@@ -63,7 +63,7 @@ export class OrderComponent implements OnInit {
   //   }
   //   this.searchOrders();
   // }
-  showOrderDetail(order: OrderDTO) {
+  showOrderDetail(order: Order) {
     const modal = this.modal.create({
       nzTitle: 'Chi tiết đơn hàng',
       nzContent: OrderDetailComponent,

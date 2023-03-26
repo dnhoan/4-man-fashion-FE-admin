@@ -22,6 +22,7 @@ import { AddressComponent } from './create-order/address/address.component';
 import { DeliveryComponent } from './create-order/delivery/delivery.component';
 import { CustomerInfoComponent } from './create-order/customer-info/customer-info.component';
 import { CustomerComponent } from './customer/customer.component';
+import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { CustomerComponent } from './customer/customer.component';
     DashboardRoutingModule,
     ReactiveFormsModule,
     FormsModule,
+    NzTimelineModule,
     NgZorroAntdModule,
     FormsModule,
     ReactiveFormsModule,
