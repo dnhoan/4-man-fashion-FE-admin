@@ -4,6 +4,7 @@ import {
   BehaviorSubject,
   debounceTime,
   distinctUntilChanged,
+  skip,
   Subject,
   Subscription,
   switchMap,
@@ -23,7 +24,10 @@ import { OrderDetailDTO } from '../order/orderDetails.model';
 import {
   ORDER_STATUS,
   PURCHASE_TYPE,
+  STATUS_INACTIVE,
 } from 'src/app/constants/constant.constant';
+import { OrderDetailService } from '../order/orderDetail/order-detail.service';
+import { CommonConstants } from 'src/app/constants/common-constants';
 
 @Component({
   selector: 'app-create-order',
@@ -41,6 +45,7 @@ export class CreateOrderComponent implements OnInit {
   isShowConfirmCancelOrder = false;
   private searchTerms = new Subject<string>();
   subSearchProduct!: Subscription;
+  subUpdateOrderDetail!: Subscription;
   searchProduct: SearchOption = {
     searchTerm: '',
     status: 1,
@@ -49,6 +54,7 @@ export class CreateOrderComponent implements OnInit {
   };
   product: ProductDTO[] = [];
   searchChange$ = new BehaviorSubject<SearchOption>(this.searchProduct);
+  updateOrderDetail$ = new BehaviorSubject<OrderDetailDTO>({});
   isGetOrderDetail = false;
   orderStatuses: any[] = [];
   constructor(
@@ -60,7 +66,8 @@ export class CreateOrderComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public commonService: CommonService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private orderDetailService: OrderDetailService
   ) {}
 
   ngOnInit(): void {
@@ -83,6 +90,25 @@ export class CreateOrderComponent implements OnInit {
             }
             return item;
           });
+        });
+      this.subUpdateOrderDetail = this.updateOrderDetail$
+        .pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          skip(1),
+          switchMap((res) => {
+            return this.orderDetailService.updateOrderDetail(
+              this.order.orderId,
+              res
+            );
+          })
+        )
+        .subscribe((res: any) => {
+          if (res) {
+            this.order.orderDetails = res.orderDetails;
+            this.order.goodsValue = res.goodsValue;
+            this.updateOrderMoney();
+          }
         });
       this.orderService.getOrderByOrderId(order_id).subscribe((res) => {
         if (res) {
@@ -145,7 +171,22 @@ export class CreateOrderComponent implements OnInit {
   search(searchTerm: any) {
     this.searchChange$.next({ ...this.searchProduct });
   }
-
+  updateQuantityOrderDetail(orderDetail: OrderDetailDTO) {
+    orderDetail.orderId = this.order.id;
+    this.updateOrderDetail$.next(orderDetail);
+  }
+  deleteProductToOrderDetail(orderDetail: OrderDetailDTO) {
+    this.modal.confirm({
+      nzTitle: '<i>Xác nhận xóa</i>',
+      nzContent: '<b>Bạn có muốn xóa sản phẩm này khỏi giỏ hàng?</b>',
+      nzOkText: 'Xóa',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+        orderDetail.statusOrderDetail = CommonConstants.STATUS.INACTIVE;
+        this.updateOrderDetail$.next(orderDetail);
+      },
+    });
+  }
   updateOrderMoney() {
     let goodsValue = this.order.orderDetails?.reduce(
       (a, b) => a + b.price! * b.quantity!,
@@ -166,6 +207,7 @@ export class CreateOrderComponent implements OnInit {
   handleOk() {}
   ngOnDestroy() {
     this.subSearchProduct.unsubscribe();
+    this.subUpdateOrderDetail.unsubscribe();
   }
   redirect404() {
     this.message.error('Lỗi lấy thông tin sản phẩm chi tiết');

@@ -46,13 +46,26 @@
                       ? orderDetail.productDetail.stock
                       : 0
                   "
-                  (ngModelChange)="updateOrderMoney()"
+                  (ngModelChange)="updateQuantityOrderDetail(orderDetail)"
                 ></nz-input-number>
               </td>
               <td>
                 {{ orderDetail.price! * orderDetail.quantity! | number }}đ
               </td>
-              <td>Xóa</td>
+              <td>
+                <button
+                  nz-button
+                  (click)="deleteProductToOrderDetail(orderDetail)"
+                  nzType="text"
+                >
+                  <span
+                    class="text-danger"
+                    nz-icon
+                    nzType="delete"
+                    nzTheme="outline"
+                  ></span>
+                </button>
+              </td>
             </tr>
           </tbody>
         </nz-table>
