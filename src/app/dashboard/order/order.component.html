@@ -41,7 +41,6 @@
         <th>Tạo lúc</th>
         <th>Tên KH</th>
         <th>SĐT KH</th>
-        <th>SL</th>
         <th>Giao hàng</th>
         <th>Phí Ship</th>
         <th>Tổng tiền hàng</th>
@@ -63,7 +62,6 @@
         <td>{{ order.ctime | date : "HH:mm dd/MM/yyyy" }}</td>
         <td>{{ order.recipientName }}</td>
         <td>{{ order.recipientPhone }}</td>
-        <td>{{ order.orderDetails }}</td>
         <td>{{ order.delivery == 1 ? "Giao hàng" : "Tại cửa hàng" }}</td>
         <td>{{ order.shipFee | number }}đ</td>
         <td>{{ order.goodsValue | number }}đ</td>
