@@ -2,6 +2,8 @@ import { Material } from './material.model';
 import { Category } from './category.model';
 import { Models } from './model.model';
 import { ProductDetail, ProductDetailDTO } from './productDetail.model';
+import { Size } from './size.model';
+import { Color } from './color.model';
 
 export interface Product {
   id: number;
@@ -49,4 +51,10 @@ export interface ProductDTO {
     image: string;
   }[];
   productDetails: ProductDetailDTO[];
+  sizeSelected?: Size;
+  colorSelected?: Color;
+  sizes?: Size[];
+  colors?: Color[];
+  amount?: number;
+  stock?: number;
 }

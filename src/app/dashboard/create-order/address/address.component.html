@@ -1,0 +1,115 @@
+<div>
+  <form [formGroup]="formAddress" (ngSubmit)="onSubmit()">
+    <div class="form-group mb-4">
+      <label for="">Tỉnh/Thành phố</label>
+      <nz-select
+        formControlName="province"
+        [nzLoading]="loadingProvince"
+        nzSize="large"
+        (ngModelChange)="onChangeProvince($event)"
+      >
+        <nz-option
+          *ngFor="let province of provinces"
+          [nzValue]="province"
+          [nzLabel]="province.name!"
+        ></nz-option>
+      </nz-select>
+      <ng-container *ngIf="formAddress.get('province')!.invalid">
+        <span
+          class="mt-1 text-danger"
+          *ngIf="formAddress.get('province')?.touched"
+          >{{
+            (formAddress.get("province")?.errors)!["required"]
+              ? "Vui lòng chọn Tỉnh/Thành phố"
+              : ""
+          }}</span
+        >
+      </ng-container>
+    </div>
+    <div class="form-group mb-4">
+      <label for="">Quận/Huyện</label>
+      <nz-select
+        formControlName="district"
+        [nzDisabled]="this.formAddress.get('province')?.value ? false : true"
+        [nzLoading]="loadingDistrict"
+        nzSize="large"
+        (ngModelChange)="onChangeDistrict($event)"
+      >
+        <nz-option
+          *ngFor="let district of districts"
+          [nzValue]="district"
+          [nzLabel]="district.name!"
+        ></nz-option>
+      </nz-select>
+      <ng-container *ngIf="formAddress.get('district')!.invalid">
+        <span
+          class="mt-1 text-danger"
+          *ngIf="formAddress.get('district')?.touched"
+          >{{
+            (formAddress.get("district")?.errors)!["required"]
+              ? "Vui lòng chọn Quận/Huyện"
+              : ""
+          }}</span
+        >
+      </ng-container>
+    </div>
+    <div class="form-group mb-4">
+      <label for="">Phường/xã</label>
+      <nz-select
+        formControlName="ward"
+        [nzDisabled]="this.formAddress.get('district')?.value ? false : true"
+        [nzLoading]="loadingWard"
+        (ngModelChange)="onChangeWard($event)"
+        nzSize="large"
+      >
+        <nz-option
+          *ngFor="let ward of wards"
+          [nzValue]="ward"
+          [nzLabel]="ward.name!"
+        ></nz-option>
+      </nz-select>
+      <ng-container *ngIf="formAddress.get('ward')!.invalid">
+        <span
+          class="mt-1 text-danger"
+          *ngIf="formAddress.get('ward')?.touched"
+          >{{
+            (formAddress.get("ward")?.errors)!["required"]
+              ? "Vui lòng chọn Xã/Phường"
+              : ""
+          }}</span
+        >
+      </ng-container>
+    </div>
+    <div>
+      <div class="form-group mb-4">
+        <label for="detail">Địa chỉ chi tiết</label>
+        <textarea
+          nz-input
+          placeholder=""
+          formControlName="detail"
+          [nzAutosize]="{ minRows: 2, maxRows: 6 }"
+        ></textarea>
+        <ng-container *ngIf="formAddress.get('detail')!.invalid">
+          <span
+            class="mt-1 text-danger"
+            *ngIf="formAddress.get('detail')?.touched"
+            >{{ (formAddress.get("detail")?.errors)!["empty"] }}</span
+          >
+        </ng-container>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button
+        style="margin-right: 10px"
+        nz-button
+        (click)="cancel()"
+        nzSize="large"
+      >
+        Hủy
+      </button>
+      <button nz-button type="submit" [nzType]="'primary'" nzSize="large">
+        Lưu
+      </button>
+    </div>
+  </form>
+</div>

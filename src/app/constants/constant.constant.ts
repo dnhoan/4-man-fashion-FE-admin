@@ -1,6 +1,5 @@
-
-export const md5 = require('md5');
-export const xtype = require('xtypejs');
+// export const md5 = require('md5');
+// export const xtype = require('xtypejs');
 
 export const PAGE_SIZE = 10;
 
@@ -10,13 +9,27 @@ export const UNIT_LEVELS = [
   { level: 2, desc: 'Phường/Xã' },
 ];
 
-
 export const STATUS_ALL = [
   { code: null, value: 'Tất cả' },
   { code: 'ACTIVE', value: 'Đang hoạt động' },
   { code: 'INACTIVE', value: 'Dừng hoạt động' },
 ];
 
+export const PURCHASE_TYPE = {
+  ONLINE: 1,
+  STORE: 0,
+};
+
+export const ORDER_STATUS = {
+  DRAFT: 0,
+  PENDING: 1,
+  CONFIRMED: 2,
+  PACKAGING: 3,
+  DELIVERING: 4,
+  COMPLETE: 5,
+  EXCHANGE: 6,
+  CANCEL_ORDER: 7,
+};
 
 export const APPLY_ALL = [
   { code: null, value: 'Tất cả', mapClass: '' },
@@ -37,8 +50,6 @@ export const JOB_STATUS = [
   { code: 'UNSUCCESSFUL', value: 'Không thành công' },
   { code: 'ERROR', value: 'Lỗi' },
 ];
-
-
 
 export const USER_TYPES = [
   { code: 'ADMIN', value: 'Quản lý' },
@@ -82,7 +93,6 @@ export const REGEX_VALIDATE_URL_WITH_HTTP =
   /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._~#=]{1,256}\.[.vn](?:[-a-zA-Z0-9()@:%_.~#?&//=]*)$/;
 export const REGEX_VIETNAMESE_AND_SPECIAL_CHARACTERS =
   /^[a-zA-Z\dàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ ]*/;
-
 
 export const USE_FINAL_SCORE: Array<{ code: string; name: string }> = [
   {
@@ -258,14 +268,11 @@ export const YES_NO_ARRAY = [
   { code: false, value: 'Không' },
 ];
 
-
 export const USER_TYPE = {
   ADMIN: 'ADMIN',
   CUSTOMER: 'CUSTOMER',
   EMPLOYEE: 'EMPLOYEE',
 };
-
-
 
 export const MAX_FILE_SIZE = 5_242_880; // (in bytes)
 
@@ -284,7 +291,6 @@ export const DialogStyle = {
     borderRadius: '0px 0px 16px 16px',
   },
 };
-
 
 export const STATUS_ACTIVE = 'ACTIVE';
 export const STATUS_INACTIVE = 'INACTIVE';

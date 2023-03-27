@@ -1,0 +1,103 @@
+<nz-radio-group [(ngModel)]="delivery" (ngModelChange)="changeDelivery()">
+  <label nz-radio [nzValue]="0">Tại cửa hàng</label>
+  <label nz-radio [nzValue]="1">Giao hàng</label>
+</nz-radio-group>
+<ng-container *ngIf="delivery == 1">
+  <form [formGroup]="formDeliveryInfo">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="form-group mb-2 mt-2">
+          <nz-form-label
+            [nzNoColon]="true"
+            [nzSm]="6"
+            [nzXs]="24"
+            nzRequired
+            nzFor="recipientName"
+            >Họ và tên</nz-form-label
+          >
+          <input nz-input formControlName="recipientName" id="recipientName" />
+          <ng-container *ngIf="formDeliveryInfo.get('recipientName')!.invalid">
+            <span
+              class="mt-1 text-danger"
+              *ngIf="formDeliveryInfo.get('recipientName')?.touched"
+              >{{
+                (formDeliveryInfo.get("recipientName")?.errors)!["empty"]
+              }}</span
+            >
+          </ng-container>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="form-group mb-2">
+          <nz-form-label
+            [nzNoColon]="true"
+            [nzSm]="6"
+            [nzXs]="24"
+            nzRequired
+            nzFor="recipientPhone"
+            >Số điện thoại
+          </nz-form-label>
+          <input
+            nz-input
+            formControlName="recipientPhone"
+            id="recipientPhone"
+          />
+          <ng-container *ngIf="formDeliveryInfo.get('recipientPhone')!.invalid">
+            <span
+              class="mt-1 text-danger"
+              *ngIf="formDeliveryInfo.get('recipientPhone')?.touched"
+              >{{
+                (formDeliveryInfo.get("recipientPhone")?.errors)!["phoneNumber"]
+              }}</span
+            >
+          </ng-container>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="form-group mb-2">
+          <nz-form-label
+            [nzNoColon]="true"
+            [nzSm]="6"
+            [nzXs]="24"
+            nzFor="recipientEmail"
+            >Email
+          </nz-form-label>
+          <input
+            nz-input
+            formControlName="recipientEmail"
+            id="recipientEmail"
+          />
+          <ng-container *ngIf="formDeliveryInfo.get('recipientEmail')!.invalid">
+            <span
+              class="mt-1 text-danger"
+              *ngIf="formDeliveryInfo.get('recipientEmail')?.touched"
+              >{{
+                (formDeliveryInfo.get("recipientEmail")?.errors)!["email"]
+                  ? "Nhập sai định dạng email"
+                  : ""
+              }}</span
+            >
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div
+    class="d-flex justify-content-between mt-2"
+    *ngIf="address; else addAddress"
+  >
+    <nz-list class="w-100" ist nzBordered>
+      <nz-list-item>
+        <span nz-typography>{{ address }}</span>
+        <a (click)="showModal()"
+          ><span nz-icon nzType="edit" nzTheme="outline"></span
+        ></a>
+      </nz-list-item>
+    </nz-list>
+  </div>
+  <ng-template #addAddress>
+    <button nz-button nzType="dashed" (click)="showModal()">
+      <span nz-icon nzType="plus" nzTheme="outline"></span> Thêm địa chỉ
+    </button>
+  </ng-template>
+</ng-container>

@@ -49,6 +49,7 @@ export class CreateProductComponent implements OnInit {
       price: 0,
       sizeName: '',
       colorName: '',
+      status: CommonConstants.STATUS.ACTIVE
     },
   ];
   searchProperty: SearchOption = {
@@ -346,24 +347,22 @@ export class CreateProductComponent implements OnInit {
     this.categoryService
       .getAllCategory(this.searchProperty)
       .subscribe((res) => {
-        if (res.code == '000') {
-          this.categories = res.data.items;
+        if (res) {
+          this.categories = res.items;
         }
       });
     this.materialService
       .getAllMaterial(this.searchProperty)
       .subscribe((res) => {
-        if (res.code == '000') {
-          this.materials = res.data.items;
+        if (res) {
+          this.materials = res.items;
         }
       });
-    this.modelService
-      .getAllModel(this.searchProperty)
-      .subscribe((res) => {
-        if (res.code == '000') {
-          this.models = res.data.items;
-        }
-      });
+    this.modelService.getAllModel(this.searchProperty).subscribe((res) => {
+      if (res) {
+        this.models = res.items;
+      }
+    });
     this.sizeService
       .getAllSize({
         offset: 0,
@@ -376,12 +375,10 @@ export class CreateProductComponent implements OnInit {
           this.sizes = res.items;
         }
       });
-    this.colorService
-      .getAllColor(this.searchProperty)
-      .subscribe((res) => {
-        if (res.code == '000') {
-          this.colors = res.data.items;
-        }
-      });
+    this.colorService.getAllColor(this.searchProperty).subscribe((res) => {
+      if (res) {
+        this.colors = res.items;
+      }
+    });
   }
 }

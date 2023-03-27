@@ -1,0 +1,52 @@
+<div class="row d-flex justify-content-between">
+  <div class="col-10">
+    <nz-select
+      style="width: 100%"
+      nzPlaceHolder="Tìm kiếm tên, sđt, email"
+      nzAllowClear
+      nzShowSearch
+      [(ngModel)]="customer"
+      (nzOnSearch)="onSearch($event)"
+      (ngModelChange)="changeCustomer()"
+    >
+      <ng-container *ngFor="let o of customers; let i = index">
+        <nz-option
+          *ngIf="!isLoading"
+          [nzValue]="o"
+          [nzLabel]="o.customerName! + ' - ' + o.phoneNumber"
+        ></nz-option>
+      </ng-container>
+      <nz-option *ngIf="isLoading" nzDisabled nzCustomContent>
+        <span nz-icon nzType="loading" class="loading-icon"></span>
+        Đang tải...
+      </nz-option>
+    </nz-select>
+  </div>
+  <div class="col-2">
+    <!-- <app-add-customer></app-add-customer> -->
+  </div>
+</div>
+<ng-container *ngIf="customer && customer.id!">
+  <div class="mt-2">
+    <div class="d-flex justify-content-between">
+      <p nz-typography>Tên KH</p>
+      <p nz-typography>{{ customer.customerName }}</p>
+    </div>
+    <div class="d-flex justify-content-between">
+      <p nz-typography>SĐT</p>
+      <p nz-typography>{{ customer.phoneNumber }}</p>
+    </div>
+    <div class="d-flex justify-content-between">
+      <p nz-typography>Ngày sinh</p>
+      <p nz-typography>{{ customer.birthday | date : "dd/MM/yyyy" }}</p>
+    </div>
+    <div class="d-flex justify-content-between">
+      <p nz-typography>Giới tính</p>
+      <p nz-typography>{{ customer.gender == 0 ? "Nữ" : "Nam" }}</p>
+    </div>
+    <div class="d-flex justify-content-between">
+      <p nz-typography>Email</p>
+      <p nz-typography>{{ customer.email }}</p>
+    </div>
+  </div></ng-container
+>

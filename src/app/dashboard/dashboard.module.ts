@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductComponent } from './product/product.component';
 import { NgZorroAntdModule } from '../share_modules/ng-add-ng-zorro-antd.module';
 import { CategoryComponent } from './property/category/category.component';
@@ -16,6 +16,14 @@ import { QuillModule } from 'ngx-quill';
 import { VoucherComponent } from './voucher/voucher/voucher.component';
 import { UpdateProductComponent } from './product/update-product/update-product.component';
 import { EmployeeComponent } from './user/employee/employee.component';
+import { OrderDetailComponent } from './order/orderDetail/orderDetail.component';
+import { OrderComponent } from './order/order.component';
+import { CreateOrderComponent } from './create-order/create-order.component';
+import { AddressComponent } from './create-order/address/address.component';
+import { DeliveryComponent } from './create-order/delivery/delivery.component';
+import { CustomerInfoComponent } from './create-order/customer-info/customer-info.component';
+import { CustomerComponent } from './customer/customer.component';
+import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 
 @NgModule({
   declarations: [
@@ -30,12 +38,20 @@ import { EmployeeComponent } from './user/employee/employee.component';
     CreateProductComponent,
     UpdateProductComponent,
     EmployeeComponent,
+    OrderComponent,
+    DeliveryComponent,
+    AddressComponent,
+    CreateOrderComponent,
+    OrderDetailComponent,
+    CustomerInfoComponent,
+    CustomerComponent,
   ],
   imports: [
     CommonModule,
     DashboardRoutingModule,
     ReactiveFormsModule,
     FormsModule,
+    NzTimelineModule,
     NgZorroAntdModule,
     FormsModule,
     ReactiveFormsModule,
@@ -44,4 +60,4 @@ import { EmployeeComponent } from './user/employee/employee.component';
 
   providers: [],
 })
-export class DashboardModule {}
+export class DashboardModule { }

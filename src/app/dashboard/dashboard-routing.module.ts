@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CreateOrderComponent } from './create-order/create-order.component';
 import { DashboardComponent } from './dashboard.component';
+import { OrderComponent } from './order/order.component';
 import { CreateProductComponent } from './product/create-product/create-product.component';
 import { ProductComponent } from './product/product.component';
 import { CategoryComponent } from './property/category/category.component';
@@ -51,6 +53,14 @@ const routes: Routes = [
       {
         path: 'employee',
         component: EmployeeComponent,
+      },
+      {
+        path: 'create-order/:order_id',
+        component: CreateOrderComponent,
+      },
+      {
+        path: 'orders',
+        component: OrderComponent,
       },
     ],
   },
