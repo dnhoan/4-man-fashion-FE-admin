@@ -65,6 +65,7 @@ export class EmployeeComponent implements OnInit {
       id: null,
       employeeName: ['', [Validators.required]],
       employeeCode: ['', [Validators.required]],
+      image: [''],
       phoneNumber: [
         '',
         [
@@ -82,6 +83,7 @@ export class EmployeeComponent implements OnInit {
       dayOff: [''],
       note: [''],
       status: [1],
+      workType: [1]
     });
   }
 
@@ -131,16 +133,17 @@ export class EmployeeComponent implements OnInit {
     if (this.employee.birthday)
       birthdays = this.formatDate(this.employee.birthday);
     else birthdays = null;
-    if (this.employee.birthday)
-      timeOnboards = this.formatDate(this.employee.birthday);
+    if (this.employee.timeOnboard)
+      timeOnboards = this.formatDate(this.employee.timeOnboard);
     else timeOnboards = null;
-    if (this.employee.birthday)
-      dayOffs = this.formatDate(this.employee.birthday);
+    if (this.employee.dayOff)
+      dayOffs = this.formatDate(this.employee.dayOff);
     else dayOffs = null;
     this.formEmployee.patchValue({
       id: this.employee.id,
       employeeCode: this.employee.employeeCode,
       employeeName: this.employee.employeeName,
+      image: this.employee.image,
       phoneNumber: this.employee.phoneNumber,
       address: this.employee.address,
       birthday: birthdays,
@@ -152,6 +155,7 @@ export class EmployeeComponent implements OnInit {
       dayOff: dayOffs,
       note: this.employee.note,
       status: this.employee.status,
+      workType: this.employee.workType
     });
   }
 
@@ -159,6 +163,7 @@ export class EmployeeComponent implements OnInit {
     this.employee.id = this.formEmployee.value.id;
     this.employee.employeeCode = this.formEmployee.value.employeeCode;
     this.employee.employeeName = this.formEmployee.value.employeeName;
+    this.employee.image = this.formEmployee.value.image;
     this.employee.phoneNumber = this.formEmployee.value.phoneNumber;
     this.employee.address = this.formEmployee.value.address;
     this.employee.birthday = this.formEmployee.value.birthday;
@@ -169,6 +174,7 @@ export class EmployeeComponent implements OnInit {
     this.employee.timeOnboard = this.formEmployee.value.timeOnboard;
     this.employee.note = this.formEmployee.value.note;
     this.employee.status = this.formEmployee.value.status;
+    this.employee.workType = this.formEmployee.value.workType
   }
 
   getInfoEmployee(id: any) {
@@ -181,7 +187,6 @@ export class EmployeeComponent implements OnInit {
       this.employee = employeeByID;
     }
     this.fillValueForm();
-    this.formEmployee.get('email')?.disable();
   }
 
   saveEmployee() {
@@ -207,14 +212,14 @@ export class EmployeeComponent implements OnInit {
     this.employeeService.updateEmployee(employee)
       .subscribe((res) => {
         if (res) {
-          this.employees[this.currentEmp] = res;
+          this.employees[this.currentEmp - 1] = res;
         }
       });
     this.isVisibleModal = false;
   }
 
   deleteEmployee(id: any) {
-    this.employeeService.deleteEmployee(id);
+    this.employeeService.deleteEmployee(id)
   }
 
   restoreEmployee(id: any) {

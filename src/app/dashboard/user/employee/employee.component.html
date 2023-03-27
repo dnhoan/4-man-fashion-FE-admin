@@ -6,7 +6,7 @@
     </div>
     <div class="d-flex mb-3">
         <div class="me-2" style="width: 300px">
-            <label class="mb-1">Tìm kiếm tên</label> <br />
+            <label class="mb-1">Tìm kiếm</label> <br />
             <input nz-input type="text" (ngModelChange)="search($event)" [(ngModel)]="searchEmp.searchTerm"
                 placeholder="Tìm kiếm nhân viên" />
         </div>
@@ -158,6 +158,20 @@
                             *ngIf="formEmployee.get('cccd')?.errors?.['pattern']">
                             CCCD phải là số có 12 kí tự!
                         </small>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="timeOnboard" nzRequired>
+                        Ngày bắt đầu làm
+                    </nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input type="date" formControlName="timeOnboard" id="timeOnboard" />
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="dayOff" nzRequired>Ngày nghỉ làm</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input type="date" formControlName="dayOff" id="dayOff" />
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>

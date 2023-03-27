@@ -98,9 +98,9 @@ export class EmployeeService {
             );
     }
 
-    public restoreEmployee(id: any): Observable<any> {
+    public restoreEmployee(id: any) {
         return this.requestService
-            .put(`${this.apiEmployee}/employee/restore/`, id, 'phục hồi nhân viên')
+            .put(`${this.apiEmployee}/employee/restore/${id}`, id, 'phục hồi nhân viên')
             .pipe(
                 map((res) => {
                     if (res.code == '000') {
@@ -114,9 +114,9 @@ export class EmployeeService {
             );
     }
 
-    public deleteEmployee(id: any): Observable<any> {
+    public deleteEmployee(id: any) {
         return this.requestService
-            .delete(`${this.apiEmployee}/employee/delete/${id}`, 'vô hiệu hóa nhân viên')
+            .put(`${this.apiEmployee}/employee/delete/${id}`, id, 'vô hiệu hóa nhân viên')
             .pipe(
                 map((res) => {
                     if (res.code == '000') {

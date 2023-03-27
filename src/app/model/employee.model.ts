@@ -2,6 +2,7 @@ export interface Employee {
     id?: number;
     employeeName?: string;
     employeeCode?: string;
+    image?: string;
     phoneNumber?: string;
     address?: string;
     birthday?: Date;
@@ -12,6 +13,7 @@ export interface Employee {
     timeOnboard?: Date;
     dayOff?: Date;
     note?: string;
+    workType?: number;
     status?: number;
 }
 
@@ -19,6 +21,7 @@ export interface EmployeeDTO {
     id?: number;
     employeeName?: string;
     employeeCode?: string;
+    image?: string;
     phoneNumber?: string;
     address?: string;
     birthday?: Date;
@@ -29,5 +32,6 @@ export interface EmployeeDTO {
     timeOnboard?: Date;
     dayOff?: Date;
     note?: string;
+    workType?: number;
     status?: number;
 }
