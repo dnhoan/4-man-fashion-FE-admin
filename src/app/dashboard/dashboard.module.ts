@@ -15,6 +15,7 @@ import { CreateProductComponent } from './product/create-product/create-product.
 import { QuillModule } from 'ngx-quill';
 import { VoucherComponent } from './voucher/voucher/voucher.component';
 import { UpdateProductComponent } from './product/update-product/update-product.component';
+import { EmployeeComponent } from './user/employee/employee.component';
 import { OrderDetailComponent } from './order/orderDetail/orderDetail.component';
 import { OrderComponent } from './order/order.component';
 import { CreateOrderComponent } from './create-order/create-order.component';
@@ -37,6 +38,7 @@ import { OrderStatusPipe } from '../pipes/order-status.pipe';
     ModelComponent,
     CreateProductComponent,
     UpdateProductComponent,
+    EmployeeComponent,
     OrderComponent,
     DeliveryComponent,
     AddressComponent,
@@ -60,4 +62,4 @@ import { OrderStatusPipe } from '../pipes/order-status.pipe';
 
   providers: [],
 })
-export class DashboardModule {}
+export class DashboardModule { }

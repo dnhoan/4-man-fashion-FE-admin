@@ -1,0 +1,185 @@
+<div class="bg-white mt-4 p-3">
+    <div class="mb-3">
+        <button nz-button [nzType]="'primary'" (click)="showModal()">
+            <span>Thêm mới</span>
+        </button>
+    </div>
+    <div class="d-flex mb-3">
+        <div class="me-2" style="width: 300px">
+            <label class="mb-1">Tìm kiếm</label> <br />
+            <input nz-input type="text" (ngModelChange)="search($event)" [(ngModel)]="searchEmp.searchTerm"
+                placeholder="Tìm kiếm nhân viên" />
+        </div>
+        <div style="width: 200px">
+            <label class="mb-1">Trạng thái</label> <br />
+            <nz-select style="width: 100%" nzAllowClear class="selectStatus" nzPlaceHolder="Lọc theo trạng thái"
+                (ngModelChange)="onChangeStatus($event)" [nzAllowClear]="false" [ngModel]="searchEmp.status">
+                <nz-option *ngFor="let item of commonService.statuses" [nzValue]="item.value"
+                    [nzLabel]="item.label"></nz-option>
+            </nz-select>
+        </div>
+    </div>
+</div>
+<!--  ---------------------------------  -->
+<ng-template #noResult></ng-template>
+<nz-table *ngIf="employees" [nzNoResult]="noResult" style="width: 100%">
+    <nz-table nzShowSizeChanger [nzFrontPagination]="false" [nzPageSizeOptions]="commonService.pageSizeOptions"
+        [nzPageIndex]="searchEmp.offset + 1" [nzPageSize]="searchEmp.limit" [nzTotal]="page ? page.totalElement : 0"
+        nzNoResult="Không có dữ liệu" [nzData]="employees" (nzPageIndexChange)="onChangeIndexPage($event)"
+        (nzPageSizeChange)="onChangeColorPage($event)">
+        <thead>
+            <tr>
+                <th>Mã nhân viên</th>
+                <th>Tên nhân viên</th>
+                <th>SĐT</th>
+                <th>Ngày sinh</th>
+                <th>Email</th>
+                <th>Lương</th>
+                <th>Ngày nghỉ</th>
+                <th>Thời gian làm</th>
+                <th>Trạng thái</th>
+                <th colSpan="2">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of employees">
+                <td>{{ item.employeeCode }}</td>
+                <td>{{ item.employeeName }}</td>
+                <td>{{ item.phoneNumber }}</td>
+                <td>{{ item.birthday | date : "yyyy/MM/dd" }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ item.salary }}</td>
+                <td>{{ item.dayOff | date : "yyyy/MM/dd" || "" }}</td>
+                <td>{{ item.timeOnboard | date : "yyyy/MM/dd" || "" }}</td>
+                <td *ngIf="item.status == 1">Đang làm việc</td>
+                <td *ngIf="item.status == 0">Đã nghỉ việc</td>
+                <td *ngIf="item.status == null"></td>
+                <td style="text-align: center">
+                    <button nz-button nzType="text" (click)="restoreEmployee(item.id)">
+                        <span nz-icon nzType="retweet" nzTheme="outline"></span>
+                    </button>
+
+                    <button nz-button nzType="text" (click)="deleteEmployee(item.id)">
+                        <span class="btnDelete" nz-icon nzType="delete" nzTheme="outline"></span>
+                    </button>
+
+                    <button nz-button nzType="text" (click)="getInfoEmployee(item.id)">
+                        <span nz-icon nzType="edit" nzTheme="outline"></span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+
+    <nz-modal [(nzVisible)]="isVisibleModal" nzTitle="Thêm mới nhân viên" (nzOnCancel)="handleCancel()"
+        (nzOnOk)="handleOk()" nzCancelText="Hủy" nzOkText="Lưu">
+        <ng-container *nzModalContent>
+            <form nz-form [formGroup]="formEmployee">
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="employeeCode">Mã nhân viên</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input type="text" formControlName="employeeCode" id="employeeCode" />
+                        <small class="col alert text-danger col-12" role="alert"
+                            *ngIf="formEmployee.get('employeeCode')?.errors?.['required'] && formEmployee.get('employeeCode')?.touched || submit && formEmployee.get('employeeCode')?.errors?.['required'] ">
+                            Mã nhân viên không được để trống!
+                        </small>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="employeeName">Tên nhân viên</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input type="text" formControlName="employeeName" id="employeeName" />
+                        <small class="col alert text-danger col-12" role="alert"
+                            *ngIf="formEmployee.get('employeeName')?.errors?.['required'] && formEmployee.get('employeeName')?.touched || submit && formEmployee.get('employeeName')?.errors?.['required'] ">
+                            Tên nhân viên không được để trống!
+                        </small>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="address">Địa chỉ</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input type="text" formControlName="address" id="address" />
+                        <small class="col alert text-danger col-12" role="alert"
+                            *ngIf="formEmployee.get('address')?.errors?.['required'] && formEmployee.get('address')?.touched || submit && formEmployee.get('address')?.errors?.['required'] ">
+                            Địa chỉ không được để trống!
+                        </small>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phoneNumber" nzRequired>Số ĐT</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input type="text" id="phoneNumber" formControlName="phoneNumber" />
+                        <small class="col alert text-danger col-12" role="alert"
+                            *ngIf="formEmployee.get('phoneNumber')?.errors?.['required'] && formEmployee.get('phoneNumber')?.touched || submit && formEmployee.get('phoneNumber')?.errors?.['required'] ">
+                            Số điện thoại không được để trống!
+                        </small>
+                        <small class="col alert text-danger" role="alert"
+                            *ngIf="!formEmployee.get('phoneNumber')?.errors?.['required'] && formEmployee.get('phoneNumber')?.errors?.['pattern']">
+                            Số điện thoại chưa đúng định dạng!
+                        </small>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="birthday" nzRequired>Ngày sinh</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input type="date" formControlName="birthday" id="birthday" />
+                        <small class="col alert text-danger col-12" role="alert"
+                            *ngIf="formEmployee.get('birthday')?.errors?.['required'] && formEmployee.get('birthday')?.touched || submit && formEmployee.get('birthday')?.errors?.['required'] ">
+                            Ngày sinh không được để trống!
+                        </small>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="gender">Giới tính</nz-form-label>
+                    <nz-radio-group class="mt-1" formControlName="gender" nzName="gender">
+                        <label nz-radio [nzValue]="1" nzValue="1">Nam</label>
+                        <label nz-radio [nzValue]="0" nzValue="0">Nữ</label>
+                    </nz-radio-group>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">Email</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input type="email" formControlName="email" id="email" />
+                        <small class="col alert text-danger col-12" role="alert"
+                            *ngIf="formEmployee.get('email')?.errors?.['required'] && formEmployee.get('email')?.touched || submit && formEmployee.get('email')?.errors?.['required'] ">
+                            Email không được để trống !
+                        </small>
+                        <small class="col alert text-danger col-12" role="alert"
+                            *ngIf="!formEmployee.get('email')?.errors?.['required'] && formEmployee.get('email')?.errors?.['email']">
+                            Email phải đúng định dạng !
+                        </small>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="cccd">CCCD</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input type="text" formControlName="cccd" id="cccd" />
+                        <small class="col alert text-danger col-12" role="alert"
+                            *ngIf="formEmployee.get('cccd')?.errors?.['pattern']">
+                            CCCD phải là số có 12 kí tự!
+                        </small>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="timeOnboard" nzRequired>
+                        Ngày bắt đầu làm
+                    </nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input type="date" formControlName="timeOnboard" id="timeOnboard" />
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="dayOff" nzRequired>Ngày nghỉ làm</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input type="date" formControlName="dayOff" id="dayOff" />
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="salary">Lương</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input type="text" formControlName="salary" id="salary" />
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </ng-container>
+    </nz-modal>
