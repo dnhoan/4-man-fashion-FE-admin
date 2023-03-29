@@ -4,6 +4,7 @@ import {
   BehaviorSubject,
   debounceTime,
   distinctUntilChanged,
+  skip,
   Subject,
   Subscription,
   switchMap,
@@ -23,7 +24,10 @@ import { OrderDetailDTO } from '../order/orderDetails.model';
 import {
   ORDER_STATUS,
   PURCHASE_TYPE,
+  STATUS_INACTIVE,
 } from 'src/app/constants/constant.constant';
+import { OrderDetailService } from '../order/orderDetail/order-detail.service';
+import { CommonConstants } from 'src/app/constants/common-constants';
 
 @Component({
   selector: 'app-create-order',
@@ -41,6 +45,7 @@ export class CreateOrderComponent implements OnInit {
   isShowConfirmCancelOrder = false;
   private searchTerms = new Subject<string>();
   subSearchProduct!: Subscription;
+  subUpdateOrderDetail!: Subscription;
   searchProduct: SearchOption = {
     searchTerm: '',
     status: 1,
@@ -49,8 +54,11 @@ export class CreateOrderComponent implements OnInit {
   };
   product: ProductDTO[] = [];
   searchChange$ = new BehaviorSubject<SearchOption>(this.searchProduct);
+  updateOrderDetail$ = new BehaviorSubject<OrderDetailDTO>({});
   isGetOrderDetail = false;
   orderStatuses: any[] = [];
+  isShowStatusHistory = false;
+  currentIndex!: number;
   constructor(
     private productsService: ProductsService,
     private modal: NzModalService,
@@ -60,7 +68,8 @@ export class CreateOrderComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public commonService: CommonService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private orderDetailService: OrderDetailService
   ) {}
 
   ngOnInit(): void {
@@ -72,17 +81,44 @@ export class CreateOrderComponent implements OnInit {
         .pipe(
           debounceTime(300),
           distinctUntilChanged(),
+          skip(1),
           switchMap((res) => {
             return this.productsService.getAllProduct(res);
           })
         )
         .subscribe((res: any) => {
-          this.products = res.items.map((item: ProductDTO) => {
-            if (item.productDetails.length == 1) {
-              item.stock = item.productDetails[0].stock;
-            }
-            return item;
-          });
+          if (res.items)
+            this.products = res.items.map((item: ProductDTO) => {
+              if (item.productDetails.length == 1) {
+                item.stock = item.productDetails[0].stock;
+                item.productDetailSelected = item.productDetails[0];
+              } else {
+                item.stock = item.productDetails.reduce(
+                  (a, b) => a + b.stock,
+                  0
+                );
+              }
+              return item;
+            });
+        });
+      this.subUpdateOrderDetail = this.updateOrderDetail$
+        .pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          skip(1),
+          switchMap((res) => {
+            return this.orderDetailService.updateOrderDetail(
+              this.order.orderId,
+              res
+            );
+          })
+        )
+        .subscribe((res: any) => {
+          if (res) {
+            this.order.orderDetails = res.orderDetails;
+            this.order.goodsValue = res.goodsValue;
+            this.updateOrderMoney();
+          }
         });
       this.orderService.getOrderByOrderId(order_id).subscribe((res) => {
         if (res) {
@@ -99,7 +135,9 @@ export class CreateOrderComponent implements OnInit {
               );
             }
           });
-
+          this.currentIndex = this.orderStatuses.findIndex(
+            (s) => s.status == this.order.orderStatus
+          );
           this.isGetOrderDetail = true;
         } else this.redirect404();
       });
@@ -109,43 +147,156 @@ export class CreateOrderComponent implements OnInit {
     }
   }
   addToCart(product: ProductDTO, index: number) {
+    let productDetail = product.productDetailSelected;
     let orderDetail: OrderDetailDTO = {
       id: 0,
       orderId: this.order.id,
-      price: 0,
+      price: productDetail?.price,
       quantity: product.amount,
-      productDetailId: '',
+      productDetail,
     };
-    // case product has 1 product detail
-    if (product.productDetails.length == 1) {
-      let orderDetails = this.order.orderDetails;
-      if (
-        orderDetails?.some(
-          (o) => o.productDetailId == product.productDetails[0].id
-        )
-      ) {
-        // update quantity of order detail
-      } else {
-        // add product to order detail
-        orderDetail.price = product.productDetails[0].price;
-        orderDetail.productDetail = product.productDetails[0];
-        this.createOrderService
-          .createOrderDetailToOrder(this.order.orderId, orderDetail)
-          .subscribe((res) => {
-            if (res) {
-              orderStore.update((state) => ({
-                orderDto: res,
-              }));
-            }
-          });
-      }
+    if (
+      this.order.orderDetails?.some(
+        (orderDetail) => orderDetail.productDetail!.id == productDetail!.id
+      )
+    ) {
+      // update
+      this.message.info('Sản phẩm đã có trong đơn hàng');
+    } else {
+      // create
+      this.createOrderService
+        .createOrderDetailToOrder(this.order.orderId, orderDetail)
+        .subscribe((res) => {
+          if (res) {
+            orderStore.update((state) => ({
+              orderDto: res,
+            }));
+          }
+        });
     }
-    this.products[index].amount = 10;
+  }
+  onChangeOptions(product: ProductDTO, index: number) {
+    if (
+      !(
+        ((product.sizes && product.sizes.length >= 1) ||
+          (product.colors && product.colors.length >= 1)) &&
+        ((product.sizes && product.sizes.length > 0
+          ? product.sizeSelected == null
+          : false) ||
+          (product.colors && product.colors.length > 0
+            ? product.colorSelected == null
+            : false))
+      )
+    ) {
+      let productDetail = product.productDetails.filter((proDetail) => {
+        let result = true;
+        if (product.sizes && product.sizes.length >= 1) {
+          result = result && proDetail.size?.id == product.sizeSelected?.id;
+        }
+        if (product.colors && product.colors.length >= 1) {
+          result = result && proDetail.color?.id == product.colorSelected?.id;
+        }
+        return result;
+      });
+      this.products[index].stock = productDetail[0].stock;
+      this.products[index].amount = productDetail[0].stock == 0 ? 0 : 1;
+      this.products[index].productDetailSelected = productDetail[0];
+    }
+  }
+  onIndexChange(event: any) {
+    let newStatus = this.orderStatuses[event].status;
+    let currentStatus = this.order.orderStatus;
+
+    switch (true) {
+      case currentStatus == ORDER_STATUS.DRAFT &&
+        [
+          ORDER_STATUS.PACKAGING,
+          ORDER_STATUS.DELIVERING,
+          ORDER_STATUS.COMPLETE,
+          ORDER_STATUS.CANCEL_ORDER,
+        ].includes(newStatus):
+        this.updateStatus(this.order.id, newStatus);
+        break;
+      case currentStatus == ORDER_STATUS.PENDING &&
+        [
+          ORDER_STATUS.CONFIRMED,
+          ORDER_STATUS.PACKAGING,
+          ORDER_STATUS.DELIVERING,
+          ORDER_STATUS.COMPLETE,
+          ORDER_STATUS.CANCEL_ORDER,
+        ].includes(newStatus):
+        this.updateStatus(this.order.id, newStatus);
+        break;
+      case currentStatus == ORDER_STATUS.PACKAGING &&
+        [
+          ORDER_STATUS.DRAFT,
+          ORDER_STATUS.DELIVERING,
+          ORDER_STATUS.COMPLETE,
+          ORDER_STATUS.CANCEL_ORDER,
+        ].includes(newStatus):
+        this.updateStatus(this.order.id, newStatus);
+        break;
+      case currentStatus == ORDER_STATUS.DELIVERING &&
+        [ORDER_STATUS.COMPLETE, ORDER_STATUS.CANCEL_ORDER].includes(newStatus):
+        this.updateStatus(this.order.id, newStatus);
+        break;
+      case currentStatus == ORDER_STATUS.COMPLETE &&
+        [ORDER_STATUS.EXCHANGE, ORDER_STATUS.CANCEL_ORDER].includes(newStatus):
+        this.updateStatus(this.order.id, newStatus);
+        break;
+      case currentStatus == ORDER_STATUS.EXCHANGE &&
+        [ORDER_STATUS.COMPLETE, ORDER_STATUS.CANCEL_ORDER].includes(newStatus):
+        this.updateStatus(this.order.id, newStatus);
+        break;
+      default:
+        this.message.error('Không thể chuyển trạng thái đơn hàng');
+        break;
+    }
+  }
+  updateStatus(orderId: number, newStatus: number, note?: string) {
+    this.modal.confirm({
+      nzTitle: '<i>Xác nhận cập nhật trạng thái đơn hàng</i>',
+      nzContent: '<b>Bạn có muốn cập nhật trạng thái đơn hàng này không?</b>',
+      nzOkText: 'Ok',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+        if (newStatus == ORDER_STATUS.CANCEL_ORDER) {
+          this.isShowConfirmCancelOrder = true;
+        } else
+          this.orderService
+            .updateOrderStatus(orderId, newStatus, note)
+            .subscribe((res) => {
+              if (res) {
+                this.order.orderStatus = newStatus;
+                this.currentIndex = this.orderStatuses.findIndex(
+                  (s) => s.status == this.order.orderStatus
+                );
+                this.order.logsOrderStatus?.unshift(res);
+                this.saveOrderStore();
+              }
+            });
+      },
+    });
   }
   search(searchTerm: any) {
     this.searchChange$.next({ ...this.searchProduct });
   }
-
+  updateQuantityOrderDetail(orderDetail: OrderDetailDTO) {
+    orderDetail.orderId = this.order.id;
+    this.updateOrderDetail$.next(orderDetail);
+  }
+  deleteProductToOrderDetail(orderDetail: OrderDetailDTO) {
+    this.modal.confirm({
+      nzTitle: '<i>Xác nhận xóa</i>',
+      nzContent: '<b>Bạn có muốn xóa sản phẩm này khỏi giỏ hàng?</b>',
+      nzOkText: 'Xóa',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+        orderDetail.statusOrderDetail = CommonConstants.STATUS.INACTIVE;
+        this.updateOrderDetail$.next(orderDetail);
+      },
+    });
+  }
   updateOrderMoney() {
     let goodsValue = this.order.orderDetails?.reduce(
       (a, b) => a + b.price! * b.quantity!,
@@ -162,10 +313,31 @@ export class CreateOrderComponent implements OnInit {
   }
   noteChange(event: any) {}
   save() {}
-  handleCancel() {}
-  handleOk() {}
+  handleCancel() {
+    this.isShowConfirmCancelOrder = false;
+    this.cancelNote = '';
+  }
+  cancelOrder() {
+    this.orderService
+      .updateOrderStatus(
+        this.order.id,
+        ORDER_STATUS.CANCEL_ORDER,
+        this.cancelNote
+      )
+      .subscribe((res) => {
+        if (res) {
+          this.order.orderStatus = ORDER_STATUS.CANCEL_ORDER;
+          this.currentIndex = this.orderStatuses.findIndex(
+            (s) => s.status == this.order.orderStatus
+          );
+          this.order.logsOrderStatus?.unshift(res);
+          this.saveOrderStore();
+        }
+      });
+  }
   ngOnDestroy() {
     this.subSearchProduct.unsubscribe();
+    this.subUpdateOrderDetail.unsubscribe();
   }
   redirect404() {
     this.message.error('Lỗi lấy thông tin sản phẩm chi tiết');

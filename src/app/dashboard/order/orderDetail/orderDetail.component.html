@@ -1,36 +1,24 @@
 <div class="rounded-3 mb-3">
   <nz-steps [nzCurrent]="currentOrder.orderStatus">
-    <ng-container *ngFor="let orderStatus of commonService.orderStatuses">
-      <nz-step
-        nz-popconfirm
-        nzPopconfirmTitle="Bạn có muốn chuyển trạng thái đơn hàng sang {{
-          orderStatus.statusName
-        }} không?"
-        nzIcon="iconTpl"
-        nzPopconfirmPlacement="bottom"
-        (nzOnConfirm)="onIndexChange(orderStatus.status)"
-        style="cursor: pointer"
-        [nzTitle]="orderStatus.statusName"
-        [nzStatus]="
-          currentOrder.orderStatus == -1
-            ? 'process'
-            : (currentOrder.orderStatus >= orderStatus.newStatus! &&
-                orderStatus.newStatus != -1 &&
-                orderStatus.newStatus != -2) ||
-              (currentOrder.orderStatus == -2 && orderStatus.newStatus != -1)
-            ? 'process'
-            : 'wait'
-        "
-        [nzIcon]="orderStatus.icon"
-      ></nz-step>
-    </ng-container> </nz-steps
-  ><ng-template #iconTpl> </ng-template>
+    <nz-steps
+      [nzCurrent]="currentOrder.orderStatus"
+      (nzIndexChange)="onIndexChange($event)"
+    >
+      <ng-container *ngFor="let orderStatus of orderStatuses">
+        <nz-step
+          [nzIcon]="orderStatus.icon"
+          style="cursor: pointer"
+          [nzTitle]="orderStatus.statusName"
+        ></nz-step>
+      </ng-container>
+    </nz-steps>
+  </nz-steps>
 </div>
 <div class="rounded-3 mb-3">
   <div class="d-flex">
     <div class="border-end m-3 pe-3">
       <p><b>Mã đơn hàng</b></p>
-      <p>HD{{ currentOrder.id }}</p>
+      <p>{{ currentOrder.orderId }}</p>
     </div>
     <div class="border-end m-3 pe-3">
       <p><b>Ngày tạo</b></p>
@@ -99,13 +87,23 @@
     </table>
   </div>
 </div>
-<nz-timeline *ngFor="let logstatus of currentLog">
-  <nz-timeline-item
-    >Nguời dùng {{ logstatus.user_change }} đã thay đổi trạng thái đơn hàng từ
-    {{ logstatus.currentStatus }} sang {{ logstatus.newStatus }}
-    <p>lúc {{ logstatus.times }}</p></nz-timeline-item
+<nz-collapse [nzBordered]="false">
+  <nz-collapse-panel
+    [nzHeader]="headerCollapse"
+    [(nzActive)]="isShowStatusHistory"
   >
-</nz-timeline>
+    <nz-timeline *ngFor="let log of currentLog">
+      <nz-timeline-item>
+        <span>
+          <b>{{ log.newStatus | orderStatus }}</b>
+          <p>{{ log.user_change }}</p>
+        </span>
+        <p>{{ log.times | date : "HH:mm dd/MM/yyyy" }}</p></nz-timeline-item
+      >
+    </nz-timeline>
+  </nz-collapse-panel>
+</nz-collapse>
+<ng-template #headerCollapse><b>Lịch sử trạng thái đơn hàng</b></ng-template>
 <nz-modal
   [(nzVisible)]="isShowConfirmCancelOrder"
   nzTitle="Hủy đơn hàng"

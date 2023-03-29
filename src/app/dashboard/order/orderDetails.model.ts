@@ -20,6 +20,6 @@ export interface OrderDetailDTO {
   productDetailId?: string;
   exchangeId?: string;
   statusExchange?: string;
-  statusOrderDetail?: string;
+  statusOrderDetail?: number;
   productDetail?: ProductDetail;
 }

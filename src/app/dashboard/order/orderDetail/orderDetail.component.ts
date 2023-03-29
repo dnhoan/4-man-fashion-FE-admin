@@ -6,6 +6,11 @@ import { CommonService } from 'src/app/common-services/common.service';
 import { LogOrderStatus } from 'src/app/model/logOrderStatus.model';
 import { LogOrderStatusService } from 'src/app/service/logOrderStatus.service';
 import { OrdersService } from 'src/app/service/order.service';
+import {
+  ORDER_STATUS,
+  PURCHASE_TYPE,
+} from 'src/app/constants/constant.constant';
+import { OrderStatus } from 'src/app/model/orderStatus.model';
 
 @Component({
   selector: 'app-orderDetail',
@@ -16,7 +21,9 @@ export class OrderDetailComponent implements OnInit {
   @Input('order') currentOrder!: Order;
   isShowConfirmCancelOrder = false;
   cancelNote: string = '';
-  currentLog!: LogOrderStatus[];
+  currentLog: LogOrderStatus[] = [];
+  orderStatuses: OrderStatus[] = [];
+  isShowStatusHistory = false;
   constructor(
     public commonService: CommonService,
     private orderService: OrdersService,
@@ -25,33 +32,57 @@ export class OrderDetailComponent implements OnInit {
     private message: NzMessageService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.currentLog = this.currentOrder.logsOrderStatus!;
+    this.orderStatuses = this.commonService.orderStatuses.filter((s) => {
+      if (this.currentOrder.purchaseType == PURCHASE_TYPE.ONLINE) {
+        return s.status != ORDER_STATUS.DRAFT;
+      } else {
+        return (
+          s.status != ORDER_STATUS.PENDING && s.status != ORDER_STATUS.CONFIRMED
+        );
+      }
+    });
+  }
 
   onIndexChange(event: any) {
     let currentStatus = this.currentOrder.orderStatus;
-    switch (true) {
-      case event == -2 && currentStatus == 4:
+    switch (currentStatus) {
+      case ORDER_STATUS.DRAFT &&
+        [
+          ORDER_STATUS.PACKAGING,
+          ORDER_STATUS.DELIVERING,
+          ORDER_STATUS.COMPLETE,
+          ORDER_STATUS.CANCEL_ORDER,
+        ].includes(event):
         this.updateStatus(this.currentOrder.id, event);
         break;
-      case event == -1:
-        this.isShowConfirmCancelOrder = true;
-        break;
-      case event == 1 && currentStatus == 0:
+      case ORDER_STATUS.PENDING:
         this.updateStatus(this.currentOrder.id, event);
         break;
-      case event == 2 && currentStatus == 1:
+      case ORDER_STATUS.PACKAGING &&
+        [
+          ORDER_STATUS.DRAFT,
+          ORDER_STATUS.DELIVERING,
+          ORDER_STATUS.COMPLETE,
+          ORDER_STATUS.CANCEL_ORDER,
+        ].includes(event):
         this.updateStatus(this.currentOrder.id, event);
         break;
-      case event == 3 && currentStatus == 2:
+      case ORDER_STATUS.DELIVERING &&
+        [ORDER_STATUS.COMPLETE, ORDER_STATUS.CANCEL_ORDER].includes(event):
         this.updateStatus(this.currentOrder.id, event);
         break;
-      case event == 4 &&
-        (currentStatus == 3 ||
-          (currentStatus == 1 && this.currentOrder.delivery == 0)):
+      case ORDER_STATUS.COMPLETE &&
+        [ORDER_STATUS.EXCHANGE, ORDER_STATUS.CANCEL_ORDER].includes(event):
+        this.updateStatus(this.currentOrder.id, event);
+        break;
+      case ORDER_STATUS.EXCHANGE &&
+        [ORDER_STATUS.COMPLETE, ORDER_STATUS.CANCEL_ORDER].includes(event):
         this.updateStatus(this.currentOrder.id, event);
         break;
       default:
-        this.message.error('Không thể chuyển trạng thái');
+        this.message.error('Không thể chuyển trạng thái đơn hàng');
         break;
     }
   }
@@ -60,20 +91,21 @@ export class OrderDetailComponent implements OnInit {
       .updateOrderStatus(orderId, newStatus, note)
       .subscribe((res) => {
         if (res) {
-          this.currentOrder.orderStatus = newStatus;
-          this.currentOrder.cancelNote = this.cancelNote;
+          // this.currentOrder.orderStatus = newStatus;
+          // this.currentOrder.cancelNote = this.cancelNote;
+          this.currentOrder.logsOrderStatus?.unshift(res);
         }
       });
-    this.getListLogOrderStatus(this.currentOrder.id);
+    // this.getListLogOrderStatus(this.currentOrder.id);
   }
 
-  getListLogOrderStatus(id: number) {
-    this.logOrderStatusService.getListLogOrder(id).subscribe((res) => {
-      if (res) {
-        this.currentLog = res;
-      }
-    });
-  }
+  // getListLogOrderStatus(id: number) {
+  //   this.logOrderStatusService.getListLogOrder(id).subscribe((res) => {
+  //     if (res) {
+  //       this.currentLog = res;
+  //     }
+  //   });
+  // }
   handleOk() {
     this.updateStatus(this.currentOrder.id, -1, this.cancelNote);
     this.isShowConfirmCancelOrder = false;

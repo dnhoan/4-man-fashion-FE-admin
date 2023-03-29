@@ -57,6 +57,11 @@ export class OrderComponent implements OnInit {
         console.log(this.orders);
       });
   }
+  createOrder() {
+    this.ordersService.createOrder().subscribe((res) => {
+      if (res) this.router.navigate([`dashboard/order/${res.orderId}`]);
+    });
+  }
   // changeStatusOrder() {
   //   if (this.orderStatusSelected == null) {
   //     this.orderStatusSelected = 999;
@@ -76,7 +81,7 @@ export class OrderComponent implements OnInit {
       nzFooter: [],
     });
   }
-  openEditOrder(id: number) {
-    this.router.navigate([`/admin/order/${id}`]);
+  openEditOrder(orderId: string) {
+    this.router.navigate([`dashboard/order/${orderId}`]);
   }
 }

@@ -1,6 +1,9 @@
 <div class="row m-0 w-100 mt-4 p-2">
   <div class="bg-white p-3 rounded-3 h-100">
-    <nz-steps [nzCurrent]="order.orderStatus">
+    <nz-steps
+      [nzCurrent]="currentIndex"
+      (nzIndexChange)="onIndexChange($event)"
+    >
       <ng-container *ngFor="let orderStatus of orderStatuses">
         <nz-step
           [nzIcon]="orderStatus.icon"
@@ -46,13 +49,26 @@
                       ? orderDetail.productDetail.stock
                       : 0
                   "
-                  (ngModelChange)="updateOrderMoney()"
+                  (ngModelChange)="updateQuantityOrderDetail(orderDetail)"
                 ></nz-input-number>
               </td>
               <td>
                 {{ orderDetail.price! * orderDetail.quantity! | number }}đ
               </td>
-              <td>Xóa</td>
+              <td>
+                <button
+                  nz-button
+                  (click)="deleteProductToOrderDetail(orderDetail)"
+                  nzType="text"
+                >
+                  <span
+                    class="text-danger"
+                    nz-icon
+                    nzType="delete"
+                    nzTheme="outline"
+                  ></span>
+                </button>
+              </td>
             </tr>
           </tbody>
         </nz-table>
@@ -84,60 +100,83 @@
               <h6>
                 <b>{{ product.productName }}</b>
               </h6>
-              <ng-container *ngIf="product.productDetails.length > 1">
-                <ng-container *ngIf="product.colors">
-                  <div class="mb-3">
-                    <label for="">Màu sắc</label> <br />
-                    <nz-radio-group
-                      [(ngModel)]="product.sizeSelected"
-                      nzButtonStyle="solid"
+              <h6 class="text-danger" *ngIf="product.productDetailSelected">
+                {{ product.productDetailSelected.price | number }}đ
+              </h6>
+              <ng-container *ngIf="product.colors && product.colors.length">
+                <div class="mb-3">
+                  <label for="">Màu sắc</label> <br />
+                  <nz-radio-group
+                    [(ngModel)]="product.colorSelected"
+                    nzButtonStyle="solid"
+                    (ngModelChange)="onChangeOptions(product, i_product)"
+                  >
+                    <label
+                      nz-radio-button
+                      [nzValue]="color"
+                      *ngFor="let color of product.colors"
+                      >{{ color.colorName }}</label
                     >
-                      <label
-                        nz-radio-button
-                        [nzValue]="color"
-                        *ngFor="let color of product.colors"
-                        >{{ color.colorName }}</label
-                      >
-                    </nz-radio-group>
-                  </div>
-                </ng-container>
-                <ng-container *ngIf="product.sizes">
-                  <div class="mb-3">
-                    <label for="">Kích cỡ</label> <br />
-                    <nz-radio-group
-                      [(ngModel)]="product.colorSelected"
-                      nzButtonStyle="solid"
+                  </nz-radio-group>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="product.sizes && product.sizes.length">
+                <div class="mb-3">
+                  <label for="">Kích cỡ</label> <br />
+                  <nz-radio-group
+                    [(ngModel)]="product.sizeSelected"
+                    nzButtonStyle="solid"
+                    (ngModelChange)="onChangeOptions(product, i_product)"
+                  >
+                    <label
+                      nz-radio-button
+                      [nzValue]="size"
+                      *ngFor="let size of product.sizes"
+                      >{{ size.sizeName }}</label
                     >
-                      <label
-                        nz-radio-button
-                        [nzValue]="size"
-                        *ngFor="let size of product.sizes"
-                        >{{ size.sizeName }}</label
-                      >
-                    </nz-radio-group>
-                  </div>
-                </ng-container>
+                  </nz-radio-group>
+                </div>
               </ng-container>
               <div>
-                <label for="">Số lượng</label> <br />
+                <label for=""
+                  >Số lượng
+                  {{ "(" + (product.stock ? product.stock : 0) + ")" }}</label
+                >
+                <br />
                 <nz-input-number
                   [nzDisabled]="
-                    product.productDetails.length == 1
-                      ? false
-                      : product.stock
-                      ? false
-                      : true
+                    (((product.sizes && product.sizes.length >= 1) ||
+                      (product.colors && product.colors.length >= 1)) &&
+                      ((product.sizes && product.sizes.length > 0
+                        ? product.sizeSelected == null
+                        : false) ||
+                        (product.colors && product.colors.length > 0
+                          ? product.colorSelected == null
+                          : false))) ||
+                    product.stock == 0
                   "
                   [(ngModel)]="product.amount"
-                  [nzMin]="1"
+                  [nzMin]="product.stock ? 1 : 0"
                   [nzStep]="1"
                   [nzMax]="product.stock ? product.stock : 0"
                 ></nz-input-number>
+                <span class="text-danger ms-2" *ngIf="product.stock == 0"
+                  >Hết hàng</span
+                >
               </div>
-
               <button
+                [disabled]="
+                  (((product.sizes && product.sizes.length >= 1) ||
+                    (product.colors && product.colors.length >= 1)) &&
+                    ((product.sizes && product.sizes.length > 0
+                      ? product.sizeSelected == null
+                      : false) ||
+                      (product.colors && product.colors.length > 0
+                        ? product.colorSelected == null
+                        : false))) ||
+                  product.stock == 0
+                "
                 class="mt-3"
-                [disabled]="product.amount ? false : true"
                 nz-button
                 nzType="primary"
                 (click)="addToCart(product, i_product)"
@@ -156,7 +195,10 @@
       <div class="mb-3 p-3 rounded-3 bg-white">
         <h6>Thông tin khách hàng</h6>
         <ng-container *ngIf="isGetOrderDetail">
-          <app-customer-info></app-customer-info
+          <app-customer-info
+            [orderStatus]="order.orderStatus"
+            [purchaseType]="order.purchaseType"
+          ></app-customer-info
         ></ng-container>
       </div>
       <div class="mb-3 p-3 rounded-3 bg-white">
@@ -218,6 +260,29 @@
           ></app-delivery
         ></ng-container>
       </div>
+      <div class="mb-3 p-3 rounded-3 bg-white">
+        <nz-collapse [nzBordered]="false">
+          <nz-collapse-panel
+            [nzHeader]="headerCollapse"
+            [(nzActive)]="isShowStatusHistory"
+          >
+            <nz-timeline *ngFor="let log of order.logsOrderStatus">
+              <nz-timeline-item>
+                <span>
+                  <b>{{ log.newStatus | orderStatus }}</b>
+                  <p>{{ log.user_change }}</p>
+                </span>
+                <p>
+                  {{ log.times | date : "HH:mm dd/MM/yyyy" }}
+                </p></nz-timeline-item
+              >
+            </nz-timeline>
+          </nz-collapse-panel>
+        </nz-collapse>
+        <ng-template #headerCollapse
+          ><b>Lịch sử trạng thái đơn hàng</b></ng-template
+        >
+      </div>
       <div class="p-3 rounded-3 d-flex justify-content-end bg-white">
         <button nz-button nzType="default" nzSize="large">
           <span nz-icon nzType="printer" nzTheme="outline"></span>
@@ -237,7 +302,7 @@
   [(nzVisible)]="isShowConfirmCancelOrder"
   nzTitle="Hủy đơn hàng"
   (nzOnCancel)="handleCancel()"
-  (nzOnOk)="handleOk()"
+  (nzOnOk)="cancelOrder()"
 >
   <ng-container *nzModalContent>
     <textarea

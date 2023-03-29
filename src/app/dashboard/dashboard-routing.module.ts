@@ -55,7 +55,7 @@ const routes: Routes = [
         component: EmployeeComponent,
       },
       {
-        path: 'create-order/:order_id',
+        path: 'order/:order_id',
         component: CreateOrderComponent,
       },
       {
@@ -70,4 +70,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class DashboardRoutingModule { }
+export class DashboardRoutingModule {}

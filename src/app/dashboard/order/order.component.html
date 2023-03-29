@@ -28,17 +28,20 @@
           (keyup.enter)="search()"
         /> -->
       </nz-input-group>
-        <ng-template #suffixIconSearch>
+      <ng-template #suffixIconSearch>
         <span nz-icon nzType="search"></span>
       </ng-template>
+    </div>
+    <div>
+      <button nz-button nzType="primary" (click)="createOrder()">
+        Tạo đơn hàng
+      </button>
     </div>
   </div>
   <nz-table #basicTable [nzData]="orders">
     <thead>
       <tr>
-        <th>Id</th>
         <th>Mã đơn hàng</th>
-        <th>Tạo lúc</th>
         <th>Tên KH</th>
         <th>SĐT KH</th>
         <th>Giao hàng</th>
@@ -46,20 +49,19 @@
         <th>Tổng tiền hàng</th>
         <th>Tổng</th>
         <th>Khách trả</th>
-        <th>Công nợ</th>
+        <th>Thiếu</th>
         <th>Trạng thái ĐH</th>
+        <th>Tạo lúc</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let order of basicTable.data">
         <td>
-          <a nz-button nzType="link" (click)="showOrderDetail(order)"
-            >{{ order.id }}</a
-          >
+          <a nz-button nzType="link" (click)="showOrderDetail(order)">{{
+            order.orderId
+          }}</a>
         </td>
-        <td>{{order.orderId}}</td>
-        <td>{{ order.ctime | date : "HH:mm dd/MM/yyyy" }}</td>
         <td>{{ order.recipientName }}</td>
         <td>{{ order.recipientPhone }}</td>
         <td>{{ order.delivery == 1 ? "Giao hàng" : "Tại cửa hàng" }}</td>
@@ -73,7 +75,7 @@
             [nzType]="
               order.checkout - order.totalMoney < 0 ? 'danger' : 'success'
             "
-            >{{ order.checkout - order.totalMoney}}đ</span
+            >{{ order.checkout - order.totalMoney | number }}đ</span
           >
         </td>
         <td class="">
@@ -85,9 +87,11 @@
             ></ng-container
           >
         </td>
+        <td>{{ order.ctime | date : "HH:mm dd/MM/yyyy" }}</td>
         <td>
           <a
             *ngIf="order.orderStatus != -1"
+            (click)="openEditOrder(order.orderId)"
             nz-button
             nzType="link"
             ><span nz-icon nzType="edit" nzTheme="outline"></span

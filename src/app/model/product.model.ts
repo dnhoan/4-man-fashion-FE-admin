@@ -53,7 +53,10 @@ export interface ProductDTO {
   productDetails: ProductDetailDTO[];
   sizeSelected?: Size;
   colorSelected?: Color;
+  productDetailSelected?: ProductDetailDTO;
   sizes?: Size[];
+  minPrice?: number;
+  maxPrice?: number;
   colors?: Color[];
   amount?: number;
   stock?: number;

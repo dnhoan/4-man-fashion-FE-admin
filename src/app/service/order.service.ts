@@ -7,6 +7,12 @@ import { RequestService } from '../common-services/request.service';
 import { SearchOption } from '../model/search-option.model';
 import { OrderStatus } from '../model/orderStatus.model';
 import { UpdateStatus } from '../model/updateStatus.model';
+import { OrderDTO } from '../dashboard/order/order.model';
+import {
+  DELIVERY_STATUS,
+  ORDER_STATUS,
+  PURCHASE_TYPE,
+} from '../constants/constant.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -54,23 +60,71 @@ export class OrdersService {
       );
   }
 
-  updateOrderStatus(id: number, newStatus: number, cancelNot?: string) {
+  updateOrderStatus(id: number, newStatus: number, cancelNote?: string) {
     let data: UpdateStatus = {
       orderId: id,
       newStatus,
-      note: cancelNot ? cancelNot : '',
+      note: cancelNote ? cancelNote : '',
     };
-    return this.httpClient
-      .put(`${this.apiOrder}/order/updateOrderStatus`, data)
+    return this.requestService
+      .put(
+        `${this.apiOrder}/order/updateOrderStatus`,
+        data,
+        'cập nhật trạng thái đơn hàng'
+      )
       .pipe(
         map((res: any) => {
           if (res.code === '000') {
             this.message.success('Cập nhật trạng thái đơn hàng thành công');
-            return true;
+            return res.data;
+          } else {
+            this.message.error('Lỗi lấy đơn hàng');
+            return false;
           }
-          return false;
-        }),
-        catchError(this.handleError<any>('Lỗi cập nhật đơn hàng', false))
+        })
+      );
+  }
+  createOrder() {
+    let data: OrderDTO = {
+      id: 0,
+      orderId: '',
+      orderStatus: ORDER_STATUS.DRAFT,
+      recipientName: '',
+      recipientPhone: '',
+      recipientEmail: '',
+      address: '',
+      shipFee: 0,
+      goodsValue: 0,
+      checkout: 0,
+      sale: 0,
+      totalMoney: 0,
+      delivery: DELIVERY_STATUS.NON_DELIVERY,
+      purchaseType: PURCHASE_TYPE.STORE,
+      note: '',
+      cancelNote: '',
+      orderDetails: [],
+      logsOrderStatus: [
+        {
+          id: 0,
+          user_change: '',
+          note: '',
+          currentStatus: ORDER_STATUS.DRAFT,
+          newStatus: ORDER_STATUS.DRAFT,
+        },
+      ],
+    };
+    return this.requestService
+      .post(`${this.apiOrder}/order/create`, data, 'tạo đơn hàng')
+      .pipe(
+        map((res: any) => {
+          if (res.code === '000') {
+            this.message.success('Tạo đơn hàng thành công');
+            return res.data;
+          } else {
+            this.message.error('Lỗi tạo đơn hàng');
+            return false;
+          }
+        })
       );
   }
 
