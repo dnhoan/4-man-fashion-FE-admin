@@ -24,6 +24,7 @@ export const orderInit = {
   note: '',
   cancelNote: '',
   orderDetails: [],
+  logsOrderStatus: [],
 };
 export const orderStore = createStore(
   { name: 'order' },

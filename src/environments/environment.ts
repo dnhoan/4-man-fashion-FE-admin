@@ -7,12 +7,12 @@ export const environment = {
   baseUrl: 'http://localhost:8080',
   baseProvinces: 'https://provinces.open-api.vn',
   firebase: {
-    apiKey: 'AIzaSyD2YciptLqkxabdkPZW7pvCdX_3G5CMDXo',
-    authDomain: 'fashion-d9d81.firebaseapp.com',
-    projectId: 'fashion-d9d81',
-    storageBucket: 'fashion-d9d81.appspot.com',
-    messagingSenderId: '797168394648',
-    appId: '1:797168394648:web:a9f92e2b47ba45f5c7cbed',
+    apiKey: 'AIzaSyAkh3CqZaeeKGJA1h8300VrVMvXdNiwApc',
+    authDomain: 'manfashion2-b38a0.firebaseapp.com',
+    projectId: 'manfashion2-b38a0',
+    storageBucket: 'manfashion2-b38a0.appspot.com',
+    messagingSenderId: '1023769385916',
+    appId: '1:1023769385916:web:4983792c0210853160e9b9',
   },
   apiGHTK: 'https://web.giaohangtietkiem.vn/api/v1/package/fee',
   token_ghtk:

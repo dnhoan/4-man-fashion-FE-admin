@@ -12,6 +12,10 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
+import {
+  ORDER_STATUS,
+  PURCHASE_TYPE,
+} from 'src/app/constants/constant.constant';
 import { environment } from 'src/environments/environment';
 import { CustomerService } from '../../customer/customer.service';
 import { CustomerDto } from '../../customer/customerDto.model';
@@ -23,12 +27,16 @@ import { orderStore } from '../order.repository';
   styleUrls: ['./customer-info.component.scss'],
 })
 export class CustomerInfoComponent implements OnInit {
+  @Input('orderStatus') orderStatus!: number;
+  @Input('purchaseType') purchaseType!: number;
   baseUrl = environment.baseUrl;
   searchChange$ = new BehaviorSubject('');
   customers: CustomerDto[] = [];
   isLoading = false;
   subSearchCustomer!: Subscription;
   customer!: CustomerDto;
+  statuses = ORDER_STATUS;
+  purchaseTypes = PURCHASE_TYPE;
   onSearch(value: string): void {
     if (value) {
       this.isLoading = true;

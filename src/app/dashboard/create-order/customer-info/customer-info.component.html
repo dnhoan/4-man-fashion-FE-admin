@@ -1,4 +1,7 @@
-<div class="row d-flex justify-content-between">
+<div
+  *ngIf="orderStatus == statuses.DRAFT && purchaseType == purchaseTypes.STORE"
+  class="row d-flex justify-content-between"
+>
   <div class="col-10">
     <nz-select
       style="width: 100%"

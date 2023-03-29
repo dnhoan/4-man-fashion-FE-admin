@@ -19,7 +19,10 @@ export const PURCHASE_TYPE = {
   ONLINE: 1,
   STORE: 0,
 };
-
+export const DELIVERY_STATUS = {
+  DELIVERY: 1,
+  NON_DELIVERY: 0,
+};
 export const ORDER_STATUS = {
   DRAFT: 0,
   PENDING: 1,

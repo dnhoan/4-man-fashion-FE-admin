@@ -23,6 +23,7 @@ import { DeliveryComponent } from './create-order/delivery/delivery.component';
 import { CustomerInfoComponent } from './create-order/customer-info/customer-info.component';
 import { CustomerComponent } from './customer/customer.component';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
+import { OrderStatusPipe } from '../pipes/order-status.pipe';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { NzTimelineModule } from 'ng-zorro-antd/timeline';
     OrderDetailComponent,
     CustomerInfoComponent,
     CustomerComponent,
+    OrderStatusPipe,
   ],
   imports: [
     CommonModule,

@@ -50,7 +50,7 @@ const routes: Routes = [
         component: VoucherComponent,
       },
       {
-        path: 'create-order/:order_id',
+        path: 'order/:order_id',
         component: CreateOrderComponent,
       },
       {
