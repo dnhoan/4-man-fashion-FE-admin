@@ -15,7 +15,12 @@
             nzFor="recipientName"
             >Họ và tên</nz-form-label
           >
-          <input nz-input formControlName="recipientName" id="recipientName" />
+          <input
+            nz-input
+            (ngModelChange)="updateOrder()"
+            formControlName="recipientName"
+            id="recipientName"
+          />
           <ng-container *ngIf="formDeliveryInfo.get('recipientName')!.invalid">
             <span
               class="mt-1 text-danger"
@@ -41,6 +46,7 @@
             nz-input
             formControlName="recipientPhone"
             id="recipientPhone"
+            (ngModelChange)="updateOrder()"
           />
           <ng-container *ngIf="formDeliveryInfo.get('recipientPhone')!.invalid">
             <span
@@ -63,6 +69,7 @@
             >Email
           </nz-form-label>
           <input
+            (ngModelChange)="updateOrder()"
             nz-input
             formControlName="recipientEmail"
             id="recipientEmail"

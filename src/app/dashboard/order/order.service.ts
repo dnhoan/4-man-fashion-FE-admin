@@ -3,16 +3,16 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { catchError, map, Observable, of } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { RequestService } from '../common-services/request.service';
-import { SearchOption } from '../model/search-option.model';
-import { OrderStatus } from '../model/orderStatus.model';
-import { UpdateStatus } from '../model/updateStatus.model';
-import { OrderDTO } from '../dashboard/order/order.model';
+import { RequestService } from '../../common-services/request.service';
+import { SearchOption } from '../../model/search-option.model';
+import { OrderStatus } from '../../model/orderStatus.model';
+import { UpdateStatus } from '../../model/updateStatus.model';
+import { OrderDTO } from './order.model';
 import {
   DELIVERY_STATUS,
   ORDER_STATUS,
   PURCHASE_TYPE,
-} from '../constants/constant.constant';
+} from '../../constants/constant.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -107,7 +107,7 @@ export class OrdersService {
         {
           id: 0,
           user_change: '',
-          note: '',
+          note: 'Tạo đơn hàng',
           currentStatus: ORDER_STATUS.DRAFT,
           newStatus: ORDER_STATUS.DRAFT,
         },
@@ -122,6 +122,21 @@ export class OrdersService {
             return res.data;
           } else {
             this.message.error('Lỗi tạo đơn hàng');
+            return false;
+          }
+        })
+      );
+  }
+  updateOrder(order: OrderDTO) {
+    return this.requestService
+      .put(`${this.apiOrder}/order/update`, order, 'cập nhật đơn hàng')
+      .pipe(
+        map((res: any) => {
+          if (res.code === '000') {
+            this.message.success('Cập nhật đơn hàng thành công');
+            return res.data;
+          } else {
+            this.message.error('Lỗi cập nhật đơn hàng');
             return false;
           }
         })
@@ -163,5 +178,66 @@ export class OrdersService {
         }),
         catchError(this.handleError<any>('Lỗi tính phí giao dịch', 0))
       );
+  }
+
+  checkUpdateOrderStatus(currentStatus: number, newStatus: number) {
+    if (
+      currentStatus == ORDER_STATUS.DRAFT &&
+      [
+        ORDER_STATUS.PACKAGING,
+        ORDER_STATUS.DELIVERING,
+        ORDER_STATUS.COMPLETE,
+        ORDER_STATUS.CANCEL_ORDER,
+      ].includes(newStatus)
+    )
+      return true;
+    if (
+      currentStatus == ORDER_STATUS.PENDING &&
+      [
+        ORDER_STATUS.CONFIRMED,
+        ORDER_STATUS.PACKAGING,
+        ORDER_STATUS.DELIVERING,
+        ORDER_STATUS.COMPLETE,
+        ORDER_STATUS.CANCEL_ORDER,
+      ].includes(newStatus)
+    )
+      return true;
+    if (
+      currentStatus == ORDER_STATUS.CONFIRMED &&
+      [
+        ORDER_STATUS.PACKAGING,
+        ORDER_STATUS.DELIVERING,
+        ORDER_STATUS.COMPLETE,
+        ORDER_STATUS.CANCEL_ORDER,
+      ].includes(newStatus)
+    )
+      return true;
+    if (
+      currentStatus == ORDER_STATUS.PACKAGING &&
+      [
+        ORDER_STATUS.DRAFT,
+        ORDER_STATUS.DELIVERING,
+        ORDER_STATUS.COMPLETE,
+        ORDER_STATUS.CANCEL_ORDER,
+      ].includes(newStatus)
+    )
+      return true;
+    if (
+      currentStatus == ORDER_STATUS.DELIVERING &&
+      [ORDER_STATUS.COMPLETE, ORDER_STATUS.CANCEL_ORDER].includes(newStatus)
+    )
+      return true;
+    if (
+      currentStatus == ORDER_STATUS.COMPLETE &&
+      [ORDER_STATUS.EXCHANGE, ORDER_STATUS.CANCEL_ORDER].includes(newStatus)
+    )
+      return true;
+    if (
+      currentStatus == ORDER_STATUS.EXCHANGE &&
+      [ORDER_STATUS.COMPLETE, ORDER_STATUS.CANCEL_ORDER].includes(newStatus)
+    )
+      return true;
+    this.message.error('Không thể chuyển trạng thái đơn hàng');
+    return false;
   }
 }

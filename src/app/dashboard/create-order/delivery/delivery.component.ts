@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { OrdersService } from 'src/app/service/order.service';
+import { OrdersService } from 'src/app/dashboard/order/order.service';
 import {
   EmailValidator,
   EmptyValidator,
@@ -42,6 +42,15 @@ export class DeliveryComponent implements OnInit {
         Validators.compose([PhoneNumber()]),
       ],
     });
+  }
+  updateOrder() {
+    let value = this.formDeliveryInfo.value;
+    this.order.recipientEmail = value.recipientEmail;
+    this.order.recipientName = value.recipientName;
+    this.order.recipientPhone = value.recipientPhone;
+    orderStore.update((state) => ({
+      orderDto: this.order,
+    }));
   }
   showModal() {
     const modal = this.modal.create({
