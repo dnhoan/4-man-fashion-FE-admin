@@ -218,12 +218,24 @@ export class EmployeeComponent implements OnInit {
     this.isVisibleModal = false;
   }
 
-  deleteEmployee(id: any) {
-    this.employeeService.deleteEmployee(id)
-  }
-
-  restoreEmployee(id: any) {
-    this.employeeService.restoreEmployee(id);
+  updateStatus(employee: Employee, index: number, status: number){
+    this.modal.confirm({
+      nzTitle:
+        'Bạn có muốn ' +
+        (status == 0 ? 'xóa' : 'khôi phục') +
+        ' nhân viên này không?',
+      nzOnOk: () => {
+        this.employeeService.updateStatus({ ...employee, status }).subscribe((res) => {
+          if (res) {
+            if (this.searchEmp.status == -1) {
+              this.employees[index] = res;
+            } else {
+              this.employees.splice(index, 1);
+            }
+          }
+        });
+      },
+    });
   }
 
   formatDate(date: Date) {
