@@ -21,11 +21,12 @@
         <nz-table [nzNoResult]="noResult">
           <thead>
             <tr>
+              <th>Anh</th>
               <th>Sản phẩm</th>
               <th>Đơn giá</th>
               <th>SL</th>
               <th>Thành tiền</th>
-              <th></th>
+              <th *ngIf="order.orderStatus < ORDER_STATUS.DELIVERING"></th>
             </tr>
           </thead>
           <tbody>
@@ -35,12 +36,32 @@
                 let i_order_detail = index
               "
             >
+              <td>anh</td>
               <td>
                 <b>{{ orderDetail.productDetail!.productDetailName }}</b>
+                <ng-container
+                  *ngIf="
+                    orderDetail.statusOrderDetail ==
+                    ORDER_DETAIL_STATUS.RETURN_PENDING
+                  "
+                >
+                  <br />
+                  <button
+                    class="d-flex align-items-center"
+                    nz-button
+                    nzType="primary"
+                    nzSize="small"
+                    (click)="showExchangeReason(orderDetail.exchange!)"
+                  >
+                    Xem đơn hoàn
+                    <span nz-icon nzType="eye" nzTheme="outline"></span>
+                  </button>
+                </ng-container>
               </td>
               <td>{{ orderDetail.price | number }}đ</td>
               <td>
                 <nz-input-number
+                  *ngIf="order.orderStatus < ORDER_STATUS.DELIVERING"
                   [(ngModel)]="orderDetail.quantity"
                   [nzMin]="1"
                   [nzStep]="1"
@@ -51,11 +72,19 @@
                   "
                   (ngModelChange)="updateQuantityOrderDetail(orderDetail)"
                 ></nz-input-number>
+
+                <b
+                  *ngIf="order.orderStatus >= ORDER_STATUS.DELIVERING"
+                  class="{{
+                    orderDetail.quantity! > 0 ? 'text-primary' : 'text-danger'
+                  }}"
+                  >{{ orderDetail.quantity }}</b
+                >
               </td>
               <td>
                 {{ orderDetail.price! * orderDetail.quantity! | number }}đ
               </td>
-              <td>
+              <td *ngIf="order.orderStatus < ORDER_STATUS.DELIVERING">
                 <button
                   nz-button
                   (click)="deleteProductToOrderDetail(orderDetail)"
@@ -73,7 +102,7 @@
           </tbody>
         </nz-table>
       </div>
-      <div class="m-3">
+      <div class="m-3" *ngIf="order.orderStatus < ORDER_STATUS.DELIVERING">
         <nz-input-group [nzSuffix]="suffixIconSearch">
           <input
             #searchBox
@@ -252,13 +281,45 @@
       </div>
       <div class="mb-3 p-3 rounded-3 bg-white">
         <h6>Thông tin giao hàng</h6>
-        <ng-container *ngIf="isGetOrderDetail">
-          <app-delivery
-            [order]="order"
-            [address]="order.address"
-            [delivery]="order.delivery!"
-          ></app-delivery
+        <ng-container
+          *ngIf="
+            order.orderStatus < ORDER_STATUS.DELIVERING;
+            else showInfoDelivery
+          "
+        >
+          <ng-container *ngIf="isGetOrderDetail">
+            <app-delivery
+              [order]="order"
+              [address]="order.address"
+              [delivery]="order.delivery!"
+            ></app-delivery></ng-container
         ></ng-container>
+        <ng-template #showInfoDelivery>
+          <div class="mt-2" *ngIf="order.delivery == 1">
+            <div class="d-flex justify-content-between">
+              <p nz-typography>Tên KH</p>
+              <p nz-typography>{{ order.recipientName }}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+              <p nz-typography>Email</p>
+              <p nz-typography>{{ order.recipientEmail }}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+              <p nz-typography>SĐT</p>
+              <p nz-typography>{{ order.recipientPhone }}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+              <p nz-typography>Địa chỉ</p>
+              <p nz-typography>{{ order.address }}</p>
+            </div>
+          </div>
+          <div class="mt-2" *ngIf="order.delivery == 0">
+            <div class="d-flex justify-content-between">
+              <p nz-typography>Địa chỉ</p>
+              <p nz-typography>Tại cửa hàng</p>
+            </div>
+          </div>
+        </ng-template>
       </div>
       <div class="mb-3 p-3 rounded-3 bg-white">
         <nz-collapse [nzBordered]="false">
@@ -311,6 +372,39 @@
       placeholder="Nhập lý do hủy đơn hàng"
       [nzAutosize]="{ minRows: 2, maxRows: 6 }"
     ></textarea>
+  </ng-container>
+</nz-modal>
+<nz-modal
+  [(nzVisible)]="isShowExchangeReason"
+  nzTitle="Lý do đổi trả"
+  [nzFooter]="null"
+  (nzOnCancel)="destroyExchangeReason()"
+>
+  <ng-container *nzModalContent>
+    <h6>Ảnh lỗi</h6>
+    <div class="d-flex mb-3">
+      <ng-container *ngFor="let item of currentExchangeReason.exchangeImages">
+        <div class="p-2 me-1" style="border: 1px solid #b9b7b7">
+          <img
+            nz-image
+            width="100px"
+            height="100px"
+            [nzSrc]="item.image"
+            alt=""
+          />
+        </div>
+      </ng-container>
+    </div>
+    <h6>Lý do đổi trả</h6>
+    <div>
+      <p>{{ currentExchangeReason.reason }}</p>
+    </div>
+    <h6>Thời gian tạo</h6>
+    <div>
+      <p>
+        {{ currentExchangeReason.ctime | date : "hh:mm dd/MM/yyyy" }}
+      </p>
+    </div>
   </ng-container>
 </nz-modal>
 <!-- ngxPrintItem printName="First one" -->

@@ -33,7 +33,14 @@ export const ORDER_STATUS = {
   EXCHANGE: 6,
   CANCEL_ORDER: 7,
 };
-
+export const ORDER_DETAIL_STATUS = {
+  INACTIVE: 0,
+  ACTIVE: 1,
+  RETURN_PENDING: 2,
+  RETURN: 3,
+  EXCHANGE_PENDING: 4,
+  EXCHANGE: 5,
+};
 export const APPLY_ALL = [
   { code: null, value: 'Tất cả', mapClass: '' },
   { code: true, value: 'Sử dụng', mapClass: 'ACTIVE' },

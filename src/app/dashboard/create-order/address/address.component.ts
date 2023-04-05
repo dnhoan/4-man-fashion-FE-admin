@@ -4,7 +4,7 @@ import { NzModalRef } from 'ng-zorro-antd/modal';
 import { Subscription } from 'rxjs';
 import { CommonConstants } from 'src/app/constants/common-constants';
 import { Address, District, Province, Ward } from 'src/app/model/address.model';
-import { OrdersService } from 'src/app/service/order.service';
+import { OrdersService } from 'src/app/dashboard/order/order.service';
 import {
   EmailValidator,
   EmptyValidator,
@@ -49,18 +49,20 @@ export class AddressComponent implements OnInit {
       district: [null, Validators.required],
       ward: [null, Validators.required],
       detail: ['', Validators.compose([EmptyValidator()])],
-      recipientEmail: [this.order.recipientEmail, Validators.email],
-      recipientName: [
-        this.order.recipientName,
-        Validators.compose([EmptyValidator()]),
-      ],
-      recipientPhone: [
-        this.order.recipientPhone,
-        Validators.compose([PhoneNumber()]),
-      ],
+      // recipientEmail: [this.order.recipientEmail, Validators.email],
+      // recipientName: [
+      //   this.order.recipientName,
+      //   Validators.compose([EmptyValidator()]),
+      // ],
+      // recipientPhone: [
+      //   this.order.recipientPhone,
+      //   Validators.compose([PhoneNumber()]),
+      // ],
     });
   }
   onSubmit() {
+    console.log(this.formAddress);
+
     if (this.formAddress.valid) {
       let value = this.formAddress.value;
       let province = value.province.name;
@@ -73,6 +75,8 @@ export class AddressComponent implements OnInit {
     this.orderService
       .getFeeShip(province, district, address)
       .subscribe((res) => {
+        console.log(res);
+
         let addressDetail = address + ', ' + district + ', ' + province;
         orderStore.update((state: any) => {
           let totalMoney =
