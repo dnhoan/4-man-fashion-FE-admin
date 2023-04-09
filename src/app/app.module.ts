@@ -25,6 +25,7 @@ import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { environment } from 'src/environments/environment';
 import { RequestInterceptor } from './request.interceptor';
 import { NZ_CONFIG, NzConfig } from 'ng-zorro-antd/core/config';
+import { OrderDetailStatusPipe } from './pipes/order-detail-status.pipe';
 
 registerLocaleData(en);
 const ngZorroConfig: NzConfig = {
@@ -33,7 +34,7 @@ const ngZorroConfig: NzConfig = {
   },
 };
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, OrderDetailStatusPipe],
   imports: [
     AppRoutingModule,
     BrowserModule,
@@ -65,5 +66,8 @@ const ngZorroConfig: NzConfig = {
     { provide: NZ_CONFIG, useValue: ngZorroConfig },
   ],
   bootstrap: [AppComponent],
+  exports: [
+    OrderDetailStatusPipe
+  ],
 })
 export class AppModule {}

@@ -40,6 +40,8 @@ export const ORDER_DETAIL_STATUS = {
   RETURN: 3,
   EXCHANGE_PENDING: 4,
   EXCHANGE: 5,
+  REJECT_RETURN: 6,
+  REJECT_EXCHANGE: 7,
 };
 export const APPLY_ALL = [
   { code: null, value: 'Tất cả', mapClass: '' },

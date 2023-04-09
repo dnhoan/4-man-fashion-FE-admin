@@ -6,6 +6,7 @@ export interface OrderDetail {
   orderId?: number;
   price?: number;
   quantity?: number;
+  quantityOrigin: number;
   productDetailId?: string;
   exchangeId?: string;
   statusExchange?: string;
@@ -19,6 +20,7 @@ export interface OrderDetailDTO {
   orderId?: number;
   price?: number;
   quantity?: number;
+  quantityOrigin?: number;
   productDetailId?: string;
   exchangeId?: string;
   statusExchange?: string;

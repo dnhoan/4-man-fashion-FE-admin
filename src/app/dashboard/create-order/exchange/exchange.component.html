@@ -1,0 +1,128 @@
+<h6>Ảnh lỗi</h6>
+<div class="d-flex mb-3">
+  <ng-container *ngFor="let item of orderDetail.exchange!.exchangeImages">
+    <div class="p-2 me-1" style="border: 1px solid #b9b7b7">
+      <img nz-image width="100px" height="100px" [nzSrc]="item.image" alt="" />
+    </div>
+  </ng-container>
+</div>
+<h6>Lý do đổi trả</h6>
+<div>
+  <p>{{ orderDetail.exchange!.reason }}</p>
+</div>
+<h6>Thời gian tạo</h6>
+<div>
+  <p>
+    {{ orderDetail.exchange!.ctime | date : "hh:mm dd/MM/yyyy" }}
+  </p>
+</div>
+<div class="mb-3">
+  <h6>Ghi chú</h6>
+  <textarea
+    [disabled]="
+      !(
+        orderDetail.statusOrderDetail == ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+        orderDetail.statusOrderDetail == ORDER_DETAIL_STATUS.RETURN_PENDING
+      )
+    "
+    nz-input
+    [(ngModel)]="orderDetail.exchange!.note"
+    placeholder="Nhập ghi chú"
+    [nzAutosize]="{ minRows: 2, maxRows: 6 }"
+  ></textarea>
+</div>
+<div class="mb-3">
+  <nz-table [nzNoResult]="noResult">
+    <thead>
+      <tr>
+        <th>Ảnh</th>
+        <th>Tên SP</th>
+        <th>Đơn giá</th>
+        <th>SL</th>
+        <th>Thành tiền</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <img
+            [src]="
+              'https://firebasestorage.googleapis.com/v0/b/fashion-d9d81.appspot.com/o/product_images%2F1677893040676?alt=media&token=245d060c-6d91-438b-b9ec-529ab5980aa0'
+            "
+            [alt]="orderDetail.productDetail!.productDetailName"
+            class="product-image"
+            width="50px"
+          />
+        </td>
+        <td>
+          <b>{{ orderDetail.productDetail!.productDetailName }}</b>
+        </td>
+        <td>{{ orderDetail.price | number }}đ</td>
+        <td>
+          <nz-input-number
+            [disabled]="
+              !(
+                orderDetail.statusOrderDetail ==
+                  ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+                orderDetail.statusOrderDetail ==
+                  ORDER_DETAIL_STATUS.RETURN_PENDING
+              )
+            "
+            [(ngModel)]="orderDetail.quantity"
+            [nzMin]="
+              orderDetail.statusOrderDetail ==
+              ORDER_DETAIL_STATUS.EXCHANGE_PENDING
+                ? 1
+                : orderDetail.quantityOrigin!
+            "
+            [nzMax]="
+              orderDetail.statusOrderDetail ==
+              ORDER_DETAIL_STATUS.EXCHANGE_PENDING
+                ? orderDetail.quantityOrigin!
+                : -1
+            "
+            [nzStep]="1"
+          ></nz-input-number>
+        </td>
+        <td>
+          {{
+            orderDetail.productDetail!.price! * orderDetail.quantity! | number
+          }}đ
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<div
+  class="d-flex justify-content-end"
+  *ngIf="
+    orderDetail.statusOrderDetail == ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+    orderDetail.statusOrderDetail == ORDER_DETAIL_STATUS.RETURN_PENDING
+  "
+>
+  <button
+    nz-button
+    nzType="default"
+    class="me-2"
+    (click)="
+      reject(
+        orderDetail.statusOrderDetail == ORDER_DETAIL_STATUS.EXCHANGE_PENDING
+      )
+    "
+  >
+    Từ chối
+  </button>
+  <button
+    nz-button
+    nzType="primary"
+    (click)="
+      confirm(
+        orderDetail.statusOrderDetail == ORDER_DETAIL_STATUS.EXCHANGE_PENDING
+      )
+    "
+  >
+    Xác nhận
+  </button>
+</div>
+<ng-template #noResult> </ng-template>
