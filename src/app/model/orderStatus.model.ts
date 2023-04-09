@@ -8,3 +8,9 @@ export interface OrderStatus {
   code?: string;
   note?: string;
 }
+
+export interface OrderDetailStatus {
+  status: number;
+  title: string;
+  color: string;
+}

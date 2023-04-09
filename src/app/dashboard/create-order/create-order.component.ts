@@ -30,6 +30,7 @@ import {
 import { OrderDetailService } from '../order/orderDetail/order-detail.service';
 import { CommonConstants } from 'src/app/constants/common-constants';
 import { Exchange } from 'src/app/model/exchange.model';
+import { ExchangeComponent } from './exchange/exchange.component';
 
 @Component({
   selector: 'app-create-order',
@@ -157,6 +158,7 @@ export class CreateOrderComponent implements OnInit {
       id: 0,
       orderId: this.order.id,
       price: productDetail?.price,
+      quantityOrigin: product.amount,
       quantity: product.amount,
       productDetail,
     };
@@ -275,14 +277,22 @@ export class CreateOrderComponent implements OnInit {
     }));
   }
   noteChange(event: any) {}
-  isShowExchangeReason = false;
-  currentExchangeReason!: Exchange;
-  showExchangeReason(exchange: Exchange) {
-    this.currentExchangeReason = exchange;
-    this.isShowExchangeReason = true;
-  }
-  destroyExchangeReason() {
-    this.isShowExchangeReason = false;
+  showExchangeReason(orderDetail: OrderDetailDTO) {
+    const modal = this.modal.create({
+      nzTitle: 'Lý do đổi trả',
+      nzContent: ExchangeComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzFooter: null,
+      nzWidth: '50%',
+      nzComponentParams: {
+        orderDetail,
+      },
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        
+      }
+    });
   }
   save() {
     this.ordersService.updateOrder(this.order).subscribe((res) => {

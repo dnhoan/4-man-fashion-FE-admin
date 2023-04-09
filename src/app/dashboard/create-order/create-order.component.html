@@ -39,21 +39,47 @@
               <td>anh</td>
               <td>
                 <b>{{ orderDetail.productDetail!.productDetailName }}</b>
+                <br />
                 <ng-container
                   *ngIf="
                     orderDetail.statusOrderDetail ==
-                    ORDER_DETAIL_STATUS.RETURN_PENDING
+                      ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+                    orderDetail.statusOrderDetail ==
+                      ORDER_DETAIL_STATUS.RETURN_PENDING
                   "
                 >
-                  <br />
                   <button
                     class="d-flex align-items-center"
                     nz-button
                     nzType="primary"
+                    [style]="{ 'background-color': '#1890ff', border: 'none' }"
                     nzSize="small"
-                    (click)="showExchangeReason(orderDetail.exchange!)"
+                    (click)="showExchangeReason(orderDetail)"
                   >
-                    Xem đơn hoàn
+                    {{
+                      orderDetail.statusOrderDetail ==
+                      ORDER_DETAIL_STATUS.EXCHANGE_PENDING
+                        ? "Xem đơn đổi trả"
+                        : "Xem đơn hoàn"
+                    }}
+                    <span nz-icon nzType="eye" nzTheme="outline"></span>
+                  </button>
+                </ng-container>
+                <ng-container
+                  *ngFor="let status of commonService.orderDetailStatuses"
+                  ><button
+                    *ngIf="orderDetail.statusOrderDetail == status.status"
+                    [style]="{
+                      'background-color': status.color,
+                      border: 'none'
+                    }"
+                    class="d-flex align-items-center"
+                    nz-button
+                    nzType="primary"
+                    nzSize="small"
+                    (click)="showExchangeReason(orderDetail)"
+                  >
+                    {{ status.title }}
                     <span nz-icon nzType="eye" nzTheme="outline"></span>
                   </button>
                 </ng-container>
@@ -78,8 +104,8 @@
                   class="{{
                     orderDetail.quantity! > 0 ? 'text-primary' : 'text-danger'
                   }}"
-                  >{{ orderDetail.quantity }}</b
-                >
+                  >{{ orderDetail.quantity }} | {{ orderDetail.quantityOrigin }}
+                </b>
               </td>
               <td>
                 {{ orderDetail.price! * orderDetail.quantity! | number }}đ
@@ -372,39 +398,6 @@
       placeholder="Nhập lý do hủy đơn hàng"
       [nzAutosize]="{ minRows: 2, maxRows: 6 }"
     ></textarea>
-  </ng-container>
-</nz-modal>
-<nz-modal
-  [(nzVisible)]="isShowExchangeReason"
-  nzTitle="Lý do đổi trả"
-  [nzFooter]="null"
-  (nzOnCancel)="destroyExchangeReason()"
->
-  <ng-container *nzModalContent>
-    <h6>Ảnh lỗi</h6>
-    <div class="d-flex mb-3">
-      <ng-container *ngFor="let item of currentExchangeReason.exchangeImages">
-        <div class="p-2 me-1" style="border: 1px solid #b9b7b7">
-          <img
-            nz-image
-            width="100px"
-            height="100px"
-            [nzSrc]="item.image"
-            alt=""
-          />
-        </div>
-      </ng-container>
-    </div>
-    <h6>Lý do đổi trả</h6>
-    <div>
-      <p>{{ currentExchangeReason.reason }}</p>
-    </div>
-    <h6>Thời gian tạo</h6>
-    <div>
-      <p>
-        {{ currentExchangeReason.ctime | date : "hh:mm dd/MM/yyyy" }}
-      </p>
-    </div>
   </ng-container>
 </nz-modal>
 <!-- ngxPrintItem printName="First one" -->

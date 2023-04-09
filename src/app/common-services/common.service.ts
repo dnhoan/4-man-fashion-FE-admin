@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ORDER_STATUS } from '../constants/constant.constant';
-import { OrderStatus } from '../model/orderStatus.model';
+import {
+  ORDER_DETAIL_STATUS,
+  ORDER_STATUS,
+} from '../constants/constant.constant';
+import { OrderDetailStatus, OrderStatus } from '../model/orderStatus.model';
 
 @Injectable({
   providedIn: 'root',
@@ -103,6 +106,28 @@ export class CommonService {
       statusName: 'Hủy',
       color: '#ff3300',
       icon: 'stop',
+    },
+  ];
+  orderDetailStatuses: OrderDetailStatus[] = [
+    {
+      status: ORDER_DETAIL_STATUS.EXCHANGE,
+      title: 'Đổi trả',
+      color: '#003366',
+    },
+    {
+      status: ORDER_DETAIL_STATUS.RETURN,
+      title: 'Trả hàng',
+      color: '#9966ff',
+    },
+    {
+      status: ORDER_DETAIL_STATUS.REJECT_RETURN,
+      title: 'Hủy trả hàng',
+      color: '#ff3300',
+    },
+    {
+      status: ORDER_DETAIL_STATUS.REJECT_EXCHANGE,
+      title: 'Hủy đổi trả',
+      color: '#ff3300',
     },
   ];
 }
