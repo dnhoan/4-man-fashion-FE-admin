@@ -25,7 +25,9 @@ import { CustomerInfoComponent } from './create-order/customer-info/customer-inf
 import { CustomerComponent } from './customer/customer.component';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 import { OrderStatusPipe } from '../pipes/order-status.pipe';
-import { ExchangeComponent } from './create-order/exchange/exchange.component';
+import { ExchangeOnlineComponent } from './create-order/exchange-online/exchange-online.component';
+import { ReturnOrderComponent } from './create-order/return-order/return-order.component';
+import { ExchangeStoreComponent } from './create-order/exchange-store/exchange-store.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,9 @@ import { ExchangeComponent } from './create-order/exchange/exchange.component';
     CustomerInfoComponent,
     CustomerComponent,
     OrderStatusPipe,
-    ExchangeComponent,
+    ExchangeOnlineComponent,
+    ReturnOrderComponent,
+    ExchangeStoreComponent,
   ],
   imports: [
     CommonModule,
@@ -64,4 +68,4 @@ import { ExchangeComponent } from './create-order/exchange/exchange.component';
 
   providers: [],
 })
-export class DashboardModule { }
+export class DashboardModule {}

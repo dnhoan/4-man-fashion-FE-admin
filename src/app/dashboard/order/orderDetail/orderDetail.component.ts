@@ -52,7 +52,13 @@ export class OrderDetailComponent implements OnInit {
   onIndexChange(event: any) {
     let newStatus = this.orderStatuses[event].status!;
     let currentStatus = this.currentOrder.orderStatus;
-    if (this.orderService.checkUpdateOrderStatus(currentStatus, newStatus)) {
+    if (
+      this.orderService.checkUpdateOrderStatus(
+        currentStatus,
+        newStatus,
+        this.currentOrder.delivery
+      )
+    ) {
       this.updateStatus(this.currentOrder.id, newStatus);
     }
   }

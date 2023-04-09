@@ -30,7 +30,9 @@ import {
 import { OrderDetailService } from '../order/orderDetail/order-detail.service';
 import { CommonConstants } from 'src/app/constants/common-constants';
 import { Exchange } from 'src/app/model/exchange.model';
-import { ExchangeComponent } from './exchange/exchange.component';
+import { ExchangeOnlineComponent } from './exchange-online/exchange-online.component';
+import { ReturnOrderComponent } from './return-order/return-order.component';
+import { ExchangeStoreComponent } from './exchange-store/exchange-store.component';
 
 @Component({
   selector: 'app-create-order',
@@ -214,7 +216,13 @@ export class CreateOrderComponent implements OnInit {
     let newStatus = this.orderStatuses[event].status;
     let currentStatus = this.order.orderStatus;
 
-    if (this.orderService.checkUpdateOrderStatus(currentStatus, newStatus)) {
+    if (
+      this.orderService.checkUpdateOrderStatus(
+        currentStatus,
+        newStatus,
+        this.order.delivery
+      )
+    ) {
       this.updateStatus(this.order.id, newStatus);
     }
   }
@@ -277,20 +285,53 @@ export class CreateOrderComponent implements OnInit {
     }));
   }
   noteChange(event: any) {}
-  showExchangeReason(orderDetail: OrderDetailDTO) {
+  showReturnOrder(orderDetail: OrderDetailDTO) {
     const modal = this.modal.create({
-      nzTitle: 'Lý do đổi trả',
-      nzContent: ExchangeComponent,
+      nzTitle: 'Trả hàng hoàn tiền',
+      nzContent: ReturnOrderComponent,
       nzViewContainerRef: this.viewContainerRef,
       nzFooter: null,
       nzWidth: '50%',
       nzComponentParams: {
-        orderDetail,
+        orderDetail: { ...orderDetail },
+        orderId: this.order.id,
       },
     });
     modal.afterClose.subscribe((result) => {
       if (result) {
-        
+      }
+    });
+  }
+  showExchangeOrder(orderDetail: OrderDetailDTO) {
+    const modal = this.modal.create({
+      nzTitle: 'Đổi trả hàng',
+      nzContent: ExchangeStoreComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzFooter: null,
+      nzWidth: '50%',
+      nzComponentParams: {
+        orderDetail: { ...orderDetail },
+        orderId: this.order.id,
+      },
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+      }
+    });
+  }
+  showExchangeReason(orderDetail: OrderDetailDTO) {
+    const modal = this.modal.create({
+      nzTitle: 'Lý do đổi trả',
+      nzContent: ExchangeOnlineComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzFooter: null,
+      nzWidth: '50%',
+      nzComponentParams: {
+        orderDetail: { ...orderDetail },
+      },
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
       }
     });
   }

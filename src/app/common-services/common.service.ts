@@ -4,12 +4,13 @@ import {
   ORDER_STATUS,
 } from '../constants/constant.constant';
 import { OrderDetailStatus, OrderStatus } from '../model/orderStatus.model';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CommonService {
-  constructor() {}
+  constructor(private modal: NzModalService) {}
   pageSizeOptions = [10, 20, 30, 50, 100];
   statuses = [
     { value: 1, label: 'Hoạt động' },
@@ -116,12 +117,12 @@ export class CommonService {
     },
     {
       status: ORDER_DETAIL_STATUS.RETURN,
-      title: 'Trả hàng',
+      title: 'Trả hàng hoàn tiền',
       color: '#9966ff',
     },
     {
       status: ORDER_DETAIL_STATUS.REJECT_RETURN,
-      title: 'Hủy trả hàng',
+      title: 'Hủy trả hàng hoàn tiền',
       color: '#ff3300',
     },
     {
@@ -130,4 +131,21 @@ export class CommonService {
       color: '#ff3300',
     },
   ];
+
+  confirm(title: string, content: string): boolean {
+    let bool = false;
+    this.modal.confirm({
+      nzTitle: `<i>${title}</i>`,
+      nzContent: `<b>${content}</b>`,
+      nzOkText: 'Ok',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+        bool = true;
+        console.log(bool);
+      },
+    });
+    console.log('end');
+
+    return bool;
+  }
 }
