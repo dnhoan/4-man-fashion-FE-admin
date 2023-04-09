@@ -180,7 +180,19 @@ export class OrdersService {
       );
   }
 
-  checkUpdateOrderStatus(currentStatus: number, newStatus: number) {
+  checkUpdateOrderStatus(
+    currentStatus: number,
+    newStatus: number,
+    isDelivery: number
+  ) {
+    if (
+      (newStatus == ORDER_STATUS.PACKAGING ||
+        newStatus == ORDER_STATUS.DELIVERING) &&
+      isDelivery == DELIVERY_STATUS.NON_DELIVERY
+    ) {
+      this.message.error('Vui lòng chọn giao hàng');
+      return false;
+    }
     if (
       currentStatus == ORDER_STATUS.DRAFT &&
       [

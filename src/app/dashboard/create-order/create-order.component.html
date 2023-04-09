@@ -25,6 +25,9 @@
               <th>Sản phẩm</th>
               <th>Đơn giá</th>
               <th>SL</th>
+              <th *ngIf="order.orderStatus == ORDER_STATUS.EXCHANGE">
+                SL ban đầu
+              </th>
               <th>Thành tiền</th>
               <th *ngIf="order.orderStatus < ORDER_STATUS.DELIVERING"></th>
             </tr>
@@ -83,6 +86,38 @@
                     <span nz-icon nzType="eye" nzTheme="outline"></span>
                   </button>
                 </ng-container>
+                <ng-container
+                  *ngIf="
+                    order.orderStatus == ORDER_STATUS.EXCHANGE &&
+                    orderDetail.statusOrderDetail ==
+                      ORDER_DETAIL_STATUS.ACTIVE &&
+                    orderDetail.quantity! > 0
+                  "
+                >
+                  <div class="mt-3 d-flex">
+                    <button
+                      class="d-flex align-items-center me-2"
+                      style="margin-right: 10px"
+                      nz-button
+                      nzType="primary"
+                      nzSize="small"
+                      (click)="showReturnOrder(orderDetail)"
+                    >
+                      <span nz-icon nzType="redo" nzTheme="outline"></span>Trả
+                      hàng hoàn tiền
+                    </button>
+                    <button
+                      class="d-flex align-items-center me-2"
+                      nz-button
+                      nzType="primary"
+                      nzSize="small"
+                      (click)="showExchangeOrder(orderDetail)"
+                    >
+                      <span nz-icon nzType="swap" nzTheme="outline"></span>Đổi
+                      trả
+                    </button>
+                  </div>
+                </ng-container>
               </td>
               <td>{{ orderDetail.price | number }}đ</td>
               <td>
@@ -104,8 +139,16 @@
                   class="{{
                     orderDetail.quantity! > 0 ? 'text-primary' : 'text-danger'
                   }}"
-                  >{{ orderDetail.quantity }} | {{ orderDetail.quantityOrigin }}
+                  >{{ orderDetail.quantity }}
                 </b>
+              </td>
+              <td *ngIf="order.orderStatus == ORDER_STATUS.EXCHANGE">
+                <b
+                  class="{{
+                    orderDetail.quantity! > 0 ? 'text-primary' : 'text-danger'
+                  }}"
+                  >{{ orderDetail.quantityOrigin }}</b
+                >
               </td>
               <td>
                 {{ orderDetail.price! * orderDetail.quantity! | number }}đ

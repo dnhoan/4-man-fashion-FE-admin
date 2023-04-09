@@ -1,7 +1,14 @@
-<nz-radio-group [(ngModel)]="delivery" (ngModelChange)="changeDelivery()">
-  <label nz-radio [nzValue]="0">Tại cửa hàng</label>
-  <label nz-radio [nzValue]="1">Giao hàng</label>
-</nz-radio-group>
+<ng-container
+  *ngIf="
+    order.orderStatus == ORDER_STATUS.DRAFT ||
+    order.orderStatus == ORDER_STATUS.PENDING
+  "
+>
+  <nz-radio-group [(ngModel)]="delivery" (ngModelChange)="changeDelivery()">
+    <label nz-radio [nzValue]="0">Tại cửa hàng</label>
+    <label nz-radio [nzValue]="1">Giao hàng</label>
+  </nz-radio-group>
+</ng-container>
 <ng-container *ngIf="delivery == 1">
   <form [formGroup]="formDeliveryInfo">
     <div class="row">
