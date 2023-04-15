@@ -12,6 +12,7 @@ import { ModelComponent } from './property/models/model.component';
 import { SizeComponent } from './property/size/size.component';
 import { VoucherComponent } from './voucher/voucher/voucher.component';
 import { EmployeeComponent } from './user/employee/employee.component';
+import { FavoriteProductComponent } from './favorite-product/favorite-product.component';
 
 const routes: Routes = [
   {
@@ -61,6 +62,10 @@ const routes: Routes = [
       {
         path: 'orders',
         component: OrderComponent,
+      },
+      {
+        path: 'favorite-product',
+        component: FavoriteProductComponent,
       },
     ],
   },

@@ -25,6 +25,7 @@ import { CustomerInfoComponent } from './create-order/customer-info/customer-inf
 import { CustomerComponent } from './customer/customer.component';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 import { OrderStatusPipe } from '../pipes/order-status.pipe';
+import { FavoriteProductComponent } from './favorite-product/favorite-product.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { OrderStatusPipe } from '../pipes/order-status.pipe';
     UpdateProductComponent,
     EmployeeComponent,
     OrderComponent,
+    FavoriteProductComponent,
     DeliveryComponent,
     AddressComponent,
     CreateOrderComponent,
