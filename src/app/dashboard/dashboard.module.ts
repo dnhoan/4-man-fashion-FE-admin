@@ -25,6 +25,7 @@ import { CustomerInfoComponent } from './create-order/customer-info/customer-inf
 import { CustomerComponent } from './customer/customer.component';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 import { OrderStatusPipe } from '../pipes/order-status.pipe';
+import { FavoriteProductComponent } from './favorite-product/favorite-product.component';
 import { ExchangeOnlineComponent } from './create-order/exchange-online/exchange-online.component';
 import { ReturnOrderComponent } from './create-order/return-order/return-order.component';
 import { ExchangeStoreComponent } from './create-order/exchange-store/exchange-store.component';
@@ -43,6 +44,7 @@ import { ExchangeStoreComponent } from './create-order/exchange-store/exchange-s
     UpdateProductComponent,
     EmployeeComponent,
     OrderComponent,
+    FavoriteProductComponent,
     DeliveryComponent,
     AddressComponent,
     CreateOrderComponent,
