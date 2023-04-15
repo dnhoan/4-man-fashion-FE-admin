@@ -26,6 +26,9 @@ import { CustomerComponent } from './customer/customer.component';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 import { OrderStatusPipe } from '../pipes/order-status.pipe';
 import { FavoriteProductComponent } from './favorite-product/favorite-product.component';
+import { ExchangeOnlineComponent } from './create-order/exchange-online/exchange-online.component';
+import { ReturnOrderComponent } from './create-order/return-order/return-order.component';
+import { ExchangeStoreComponent } from './create-order/exchange-store/exchange-store.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +52,9 @@ import { FavoriteProductComponent } from './favorite-product/favorite-product.co
     CustomerInfoComponent,
     CustomerComponent,
     OrderStatusPipe,
+    ExchangeOnlineComponent,
+    ReturnOrderComponent,
+    ExchangeStoreComponent,
   ],
   imports: [
     CommonModule,
@@ -64,4 +70,4 @@ import { FavoriteProductComponent } from './favorite-product/favorite-product.co
 
   providers: [],
 })
-export class DashboardModule { }
+export class DashboardModule {}

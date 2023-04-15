@@ -24,11 +24,17 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { environment } from 'src/environments/environment';
 import { RequestInterceptor } from './request.interceptor';
+import { NZ_CONFIG, NzConfig } from 'ng-zorro-antd/core/config';
+import { OrderDetailStatusPipe } from './pipes/order-detail-status.pipe';
 
 registerLocaleData(en);
-
+const ngZorroConfig: NzConfig = {
+  theme: {
+    primaryColor: '#fb5c42',
+  },
+};
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, OrderDetailStatusPipe],
   imports: [
     AppRoutingModule,
     BrowserModule,
@@ -57,7 +63,11 @@ registerLocaleData(en);
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
     { provide: NZ_I18N, useValue: en_US },
+    { provide: NZ_CONFIG, useValue: ngZorroConfig },
   ],
   bootstrap: [AppComponent],
+  exports: [
+    OrderDetailStatusPipe
+  ],
 })
 export class AppModule {}

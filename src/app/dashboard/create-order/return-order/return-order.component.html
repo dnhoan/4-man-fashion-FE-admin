@@ -1,0 +1,98 @@
+<div class="col-lg-12 p-0">
+  <div class="uploadImage">
+    <div class="clearfix">
+      <label>Ảnh</label> <br />
+      <div class="upload-btn-wrapper">
+        <button nz-button>Tải ảnh lên</button>
+        <input type="file" name="myfile" (change)="changeImage($event)" />
+      </div>
+      <br />
+      <div style="display: flex; justify-content: start">
+        <ng-container *ngFor="let img of images; let i = index">
+          <div
+            style="
+              margin: 5px;
+              padding: 2px;
+              border: #c35757;
+              border-style: dashed;
+              border-width: 2px;
+              position: relative;
+            "
+          >
+            <span
+              style="
+                background-color: white;
+                color: red;
+                position: absolute;
+                cursor: pointer;
+              "
+              nz-icon
+              nzType="close"
+              nzTheme="outline"
+              (click)="removeImage(i)"
+            ></span>
+            <img nz-image width="50px" height="50px" [nzSrc]="img" alt="" />
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-lg-12">
+  <div class="mb-4 p-0" style="padding: 0">
+    <div class="col-lg-12 p-0">
+      <label for="quantity">Số lượng</label> <br />
+      <nz-input-number
+        style="width: 100%"
+        [nzMin]="1"
+        [nzMax]="orderDetail.quantityOrigin!"
+        [nzStep]="1"
+        [(ngModel)]="quantity"
+      ></nz-input-number>
+    </div>
+    <div class="col-lg-12 p-0">
+      <div class="mb-4">
+        <label for="reason">Lý do</label>
+        <textarea
+          nz-input
+          [(ngModel)]="reason"
+          placeholder="Nhập lý do đổi trả"
+          [nzAutosize]="{ minRows: 2, maxRows: 6 }"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="product-item d-flex justify-content-between mb-3">
+  <div class="image-container d-flex">
+    <img
+      [src]="
+        'https://firebasestorage.googleapis.com/v0/b/fashion-d9d81.appspot.com/o/product_images%2F1677893040676?alt=media&token=245d060c-6d91-438b-b9ec-529ab5980aa0'
+      "
+      [alt]="orderDetail.productDetail!.productDetailName"
+      class="product-image"
+      width="80px"
+    />
+    <div class="product-list-detail ms-2">
+      <h6 class="mb-2">
+        {{ orderDetail.productDetail!.productDetailName }}
+      </h6>
+      <i class="pi pi-tag product-category-icon"></i>
+      <span class="product-category"
+        >{{ orderDetail.quantity }} x {{ orderDetail.price }}đ</span
+      >
+    </div>
+  </div>
+  <div class="product-list-action">
+    <h6 class="mb-2">
+      <b
+        >{{
+          orderDetail.productDetail!.price! * orderDetail.quantity! | number
+        }}đ</b
+      >
+    </h6>
+  </div>
+</div>
+<div class="d-flex justify-content-end">
+  <button nzType="primary" nz-button (click)="submit()">Trả hàng</button>
+</div>

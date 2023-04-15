@@ -42,7 +42,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let item of employees">
+            <tr *ngFor="let item of employees; index as i">
                 <td>{{ item.employeeCode }}</td>
                 <td>{{ item.employeeName }}</td>
                 <td>{{ item.phoneNumber }}</td>
@@ -55,12 +55,19 @@
                 <td *ngIf="item.status == 0">Đã nghỉ việc</td>
                 <td *ngIf="item.status == null"></td>
                 <td style="text-align: center">
-                    <button nz-button nzType="text" (click)="restoreEmployee(item.id)">
-                        <span nz-icon nzType="retweet" nzTheme="outline"></span>
-                    </button>
-
-                    <button nz-button nzType="text" (click)="deleteEmployee(item.id)">
-                        <span class="btnDelete" nz-icon nzType="delete" nzTheme="outline"></span>
+                    <button
+                        nz-button
+                        nzType="text"
+                        (click)="updateStatus(item, i, item.status == 1 ? 0 : 1)"
+                    >
+                        <span
+                        class="{{
+                            item.status == 1 ? 'text-danger' : 'text-secondary'
+                        }}"
+                                nz-icon
+                        [nzType]="item.status == 1 ? 'delete' : 'redo'"
+                        nzTheme="outline"
+                        ></span>
                     </button>
 
                     <button nz-button nzType="text" (click)="getInfoEmployee(item.id)">

@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { OrdersService } from 'src/app/service/order.service';
+import { OrdersService } from 'src/app/dashboard/order/order.service';
 import {
   EmailValidator,
   EmptyValidator,
@@ -11,6 +11,7 @@ import {
 import { OrderDTO } from '../../order/order.model';
 import { AddressComponent } from '../address/address.component';
 import { orderStore } from '../order.repository';
+import { ORDER_STATUS } from 'src/app/constants/constant.constant';
 @Component({
   selector: 'app-delivery',
   templateUrl: './delivery.component.html',
@@ -21,6 +22,7 @@ export class DeliveryComponent implements OnInit {
   @Input('delivery') delivery!: number;
   formDeliveryInfo!: FormGroup;
   @Input('order') order!: OrderDTO;
+  ORDER_STATUS = ORDER_STATUS;
   constructor(
     private orderService: OrdersService,
     private viewContainerRef: ViewContainerRef,
@@ -42,6 +44,15 @@ export class DeliveryComponent implements OnInit {
         Validators.compose([PhoneNumber()]),
       ],
     });
+  }
+  updateOrder() {
+    let value = this.formDeliveryInfo.value;
+    this.order.recipientEmail = value.recipientEmail;
+    this.order.recipientName = value.recipientName;
+    this.order.recipientPhone = value.recipientPhone;
+    orderStore.update((state) => ({
+      orderDto: this.order,
+    }));
   }
   showModal() {
     const modal = this.modal.create({
@@ -65,7 +76,7 @@ export class DeliveryComponent implements OnInit {
           delivery: this.delivery,
           totalMoney:
             state.orderDto.goodsValue +
-            (this.delivery == 1 ? state.shipFee : 0) -
+            (this.delivery == 1 ? (state.shipFee ? state.shipFee : 0) : 0) -
             state.orderDto.sale,
         },
       };

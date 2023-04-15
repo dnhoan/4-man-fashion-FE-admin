@@ -98,35 +98,20 @@ export class EmployeeService {
             );
     }
 
-    public restoreEmployee(id: any) {
+    updateStatus(employee: Employee) {
+        let action = employee.status == 0 ? 'Xóa' : 'Khôi phục';
         return this.requestService
-            .put(`${this.apiEmployee}/employee/restore/${id}`, id, 'phục hồi nhân viên')
-            .pipe(
-                map((res) => {
-                    if (res.code == '000') {
-                        this.message.success('Phục hồi viên thành công');
-                        return res.data;
-                    } else {
-                        this.message.error('Lỗi phục hồi nhân viên');
-                        return false;
-                    }
-                })
-            );
-    }
-
-    public deleteEmployee(id: any) {
-        return this.requestService
-            .put(`${this.apiEmployee}/employee/delete/${id}`, id, 'vô hiệu hóa nhân viên')
-            .pipe(
-                map((res) => {
-                    if (res.code == '000') {
-                        this.message.success('Vô hiệu hóa nhân viên thành công');
-                        return res.data;
-                    } else {
-                        this.message.error('Lỗi vô hiệu hóa nhân viên');
-                        return false;
-                    }
-                })
-            );
-    }
+          .put(`${this.apiEmployee}/employee/update`, employee, action + ' nhân viên')
+          .pipe(
+            map((res) => {
+              if ((res.code = '000')) {
+                this.message.success(action + ' nhân viên thành công');
+                return res.data;
+              } else {
+                this.message.error('Lỗi ' + action + ' nhân viên');
+                return false;
+              }
+            })
+          );
+      }
 }

@@ -1,7 +1,7 @@
-<div class="rounded-3 mb-3">
-  <nz-steps [nzCurrent]="currentOrder.orderStatus">
+<div class="row m-0 w-100 mt-4 p-2">
+  <div class="bg-white p-3 rounded-3 h-100">
     <nz-steps
-      [nzCurrent]="currentOrder.orderStatus"
+      [nzCurrent]="currentIndex"
       (nzIndexChange)="onIndexChange($event)"
     >
       <ng-container *ngFor="let orderStatus of orderStatuses">
@@ -12,7 +12,7 @@
         ></nz-step>
       </ng-container>
     </nz-steps>
-  </nz-steps>
+  </div>
 </div>
 <div class="rounded-3 mb-3">
   <div class="d-flex">

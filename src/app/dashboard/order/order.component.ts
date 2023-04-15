@@ -12,7 +12,7 @@ import { CommonService } from 'src/app/common-services/common.service';
 import { Order, OrderDTO } from 'src/app/dashboard/order/order.model';
 import { Page } from 'src/app/model/pageable.model';
 import { SearchOption } from 'src/app/model/search-option.model';
-import { OrdersService } from 'src/app/service/order.service';
+import { OrdersService } from 'src/app/dashboard/order/order.service';
 import { OrderDetailComponent } from './orderDetail/orderDetail.component';
 
 @Component({

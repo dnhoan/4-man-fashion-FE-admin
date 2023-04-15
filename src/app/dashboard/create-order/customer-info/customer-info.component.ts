@@ -68,6 +68,7 @@ export class CustomerInfoComponent implements OnInit {
         return {
           orderDto: {
             ...state.orderDto,
+            customerId: this.customer.id,
             customerDTO: this.customer,
             recipientEmail: this.customer!.email,
             recipientName: this.customer!.customerName,
@@ -80,6 +81,7 @@ export class CustomerInfoComponent implements OnInit {
         return {
           orderDto: {
             ...state.orderDto,
+            customerId: null,
             customerDTO: {},
             recipientEmail: '',
             recipientName: '',

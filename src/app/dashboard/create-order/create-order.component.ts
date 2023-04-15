@@ -11,7 +11,7 @@ import {
 } from 'rxjs';
 import { OrderDTO } from 'src/app/dashboard/order/order.model';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { OrdersService } from 'src/app/service/order.service';
+import { OrdersService } from 'src/app/dashboard/order/order.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from 'src/app/common-services/common.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -22,12 +22,17 @@ import { Page } from 'ngx-pagination';
 import { CreateOrderService } from './create-order.service';
 import { OrderDetailDTO } from '../order/orderDetails.model';
 import {
+  ORDER_DETAIL_STATUS,
   ORDER_STATUS,
   PURCHASE_TYPE,
   STATUS_INACTIVE,
 } from 'src/app/constants/constant.constant';
 import { OrderDetailService } from '../order/orderDetail/order-detail.service';
 import { CommonConstants } from 'src/app/constants/common-constants';
+import { Exchange } from 'src/app/model/exchange.model';
+import { ExchangeOnlineComponent } from './exchange-online/exchange-online.component';
+import { ReturnOrderComponent } from './return-order/return-order.component';
+import { ExchangeStoreComponent } from './exchange-store/exchange-store.component';
 
 @Component({
   selector: 'app-create-order',
@@ -59,6 +64,8 @@ export class CreateOrderComponent implements OnInit {
   orderStatuses: any[] = [];
   isShowStatusHistory = false;
   currentIndex!: number;
+  ORDER_STATUS = ORDER_STATUS;
+  ORDER_DETAIL_STATUS = ORDER_DETAIL_STATUS;
   constructor(
     private productsService: ProductsService,
     private modal: NzModalService,
@@ -69,7 +76,8 @@ export class CreateOrderComponent implements OnInit {
     private router: Router,
     public commonService: CommonService,
     private message: NzMessageService,
-    private orderDetailService: OrderDetailService
+    private orderDetailService: OrderDetailService,
+    private ordersService: OrdersService
   ) {}
 
   ngOnInit(): void {
@@ -152,6 +160,7 @@ export class CreateOrderComponent implements OnInit {
       id: 0,
       orderId: this.order.id,
       price: productDetail?.price,
+      quantityOrigin: product.amount,
       quantity: product.amount,
       productDetail,
     };
@@ -207,50 +216,14 @@ export class CreateOrderComponent implements OnInit {
     let newStatus = this.orderStatuses[event].status;
     let currentStatus = this.order.orderStatus;
 
-    switch (true) {
-      case currentStatus == ORDER_STATUS.DRAFT &&
-        [
-          ORDER_STATUS.PACKAGING,
-          ORDER_STATUS.DELIVERING,
-          ORDER_STATUS.COMPLETE,
-          ORDER_STATUS.CANCEL_ORDER,
-        ].includes(newStatus):
-        this.updateStatus(this.order.id, newStatus);
-        break;
-      case currentStatus == ORDER_STATUS.PENDING &&
-        [
-          ORDER_STATUS.CONFIRMED,
-          ORDER_STATUS.PACKAGING,
-          ORDER_STATUS.DELIVERING,
-          ORDER_STATUS.COMPLETE,
-          ORDER_STATUS.CANCEL_ORDER,
-        ].includes(newStatus):
-        this.updateStatus(this.order.id, newStatus);
-        break;
-      case currentStatus == ORDER_STATUS.PACKAGING &&
-        [
-          ORDER_STATUS.DRAFT,
-          ORDER_STATUS.DELIVERING,
-          ORDER_STATUS.COMPLETE,
-          ORDER_STATUS.CANCEL_ORDER,
-        ].includes(newStatus):
-        this.updateStatus(this.order.id, newStatus);
-        break;
-      case currentStatus == ORDER_STATUS.DELIVERING &&
-        [ORDER_STATUS.COMPLETE, ORDER_STATUS.CANCEL_ORDER].includes(newStatus):
-        this.updateStatus(this.order.id, newStatus);
-        break;
-      case currentStatus == ORDER_STATUS.COMPLETE &&
-        [ORDER_STATUS.EXCHANGE, ORDER_STATUS.CANCEL_ORDER].includes(newStatus):
-        this.updateStatus(this.order.id, newStatus);
-        break;
-      case currentStatus == ORDER_STATUS.EXCHANGE &&
-        [ORDER_STATUS.COMPLETE, ORDER_STATUS.CANCEL_ORDER].includes(newStatus):
-        this.updateStatus(this.order.id, newStatus);
-        break;
-      default:
-        this.message.error('Không thể chuyển trạng thái đơn hàng');
-        break;
+    if (
+      this.orderService.checkUpdateOrderStatus(
+        currentStatus,
+        newStatus,
+        this.order.delivery
+      )
+    ) {
+      this.updateStatus(this.order.id, newStatus);
     }
   }
   updateStatus(orderId: number, newStatus: number, note?: string) {
@@ -312,7 +285,64 @@ export class CreateOrderComponent implements OnInit {
     }));
   }
   noteChange(event: any) {}
-  save() {}
+  showReturnOrder(orderDetail: OrderDetailDTO) {
+    const modal = this.modal.create({
+      nzTitle: 'Trả hàng hoàn tiền',
+      nzContent: ReturnOrderComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzFooter: null,
+      nzWidth: '50%',
+      nzComponentParams: {
+        orderDetail: { ...orderDetail },
+        orderId: this.order.id,
+      },
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+      }
+    });
+  }
+  showExchangeOrder(orderDetail: OrderDetailDTO) {
+    const modal = this.modal.create({
+      nzTitle: 'Đổi trả hàng',
+      nzContent: ExchangeStoreComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzFooter: null,
+      nzWidth: '50%',
+      nzComponentParams: {
+        orderDetail: { ...orderDetail },
+        orderId: this.order.id,
+      },
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+      }
+    });
+  }
+  showExchangeReason(orderDetail: OrderDetailDTO) {
+    const modal = this.modal.create({
+      nzTitle: 'Lý do đổi trả',
+      nzContent: ExchangeOnlineComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzFooter: null,
+      nzWidth: '50%',
+      nzComponentParams: {
+        orderDetail: { ...orderDetail },
+      },
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+      }
+    });
+  }
+  save() {
+    this.ordersService.updateOrder(this.order).subscribe((res) => {
+      if (res) {
+        this.order = res;
+        this.saveOrderStore();
+      }
+    });
+  }
   handleCancel() {
     this.isShowConfirmCancelOrder = false;
     this.cancelNote = '';
