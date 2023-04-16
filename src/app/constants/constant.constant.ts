@@ -15,6 +15,10 @@ export const STATUS_ALL = [
   { code: 'INACTIVE', value: 'Dừng hoạt động' },
 ];
 
+export const VOUCHER_TYPE = {
+  PERCENT: 1,
+  MONEY: 0,
+};
 export const PURCHASE_TYPE = {
   ONLINE: 1,
   STORE: 0,

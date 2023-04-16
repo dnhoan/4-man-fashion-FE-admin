@@ -2,6 +2,7 @@ import { OrderDetailDTO } from './orderDetails.model';
 import { ProductImagesDTO } from '../../model/productImages.model';
 import { CustomerDto } from '../customer/customerDto.model';
 import { LogOrderStatus } from 'src/app/model/logOrderStatus.model';
+import { Voucher } from 'src/app/model/voucher.model';
 
 export interface Order {
   id: number;
@@ -50,4 +51,5 @@ export interface OrderDTO {
   mtime?: string;
   logsOrderStatus?: LogOrderStatus[];
   orderDetails?: OrderDetailDTO[];
+  voucher?: Voucher;
 }
