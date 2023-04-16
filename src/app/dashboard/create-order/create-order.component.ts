@@ -26,6 +26,7 @@ import {
   ORDER_STATUS,
   PURCHASE_TYPE,
   STATUS_INACTIVE,
+  VOUCHER_TYPE,
 } from 'src/app/constants/constant.constant';
 import { OrderDetailService } from '../order/orderDetail/order-detail.service';
 import { CommonConstants } from 'src/app/constants/common-constants';
@@ -65,6 +66,7 @@ export class CreateOrderComponent implements OnInit {
   isShowStatusHistory = false;
   currentIndex!: number;
   ORDER_STATUS = ORDER_STATUS;
+  VOUCHER_TYPE = VOUCHER_TYPE;
   ORDER_DETAIL_STATUS = ORDER_DETAIL_STATUS;
   constructor(
     private productsService: ProductsService,
@@ -276,10 +278,19 @@ export class CreateOrderComponent implements OnInit {
       0
     ) as number;
     this.order.goodsValue = goodsValue;
-    this.order.totalMoney = goodsValue + this.order.delivery! - this.order.sale;
+    this.order.totalMoney = goodsValue + this.order.shipFee! - this.order.sale;
     this.saveOrderStore();
   }
   saveOrderStore() {
+    if (
+      this.order.voucher &&
+      this.order.goodsValue < this.order.voucher.minimumInvoiceValue!
+    ) {
+      this.order.voucher = undefined;
+      this.order.sale = 0;
+      this.order.totalMoney =
+        this.order.goodsValue + this.order.shipFee! - this.order.sale;
+    }
     orderStore.update((state) => ({
       orderDto: this.order,
     }));

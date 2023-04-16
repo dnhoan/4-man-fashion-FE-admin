@@ -316,6 +316,12 @@
             <b>{{ order.shipFee | number }}đ</b>
           </p>
         </div>
+        <div class="d-flex justify-content-between" *ngIf="this.order.voucher">
+          <p nz-typography>Giảm giá</p>
+          <p nz-typography>
+            <b> -{{ this.order.sale | number }}đ</b>
+          </p>
+        </div>
         <div class="d-flex justify-content-between">
           <p nz-typography>Tổng tiền</p>
           <p nz-typography>
@@ -347,6 +353,14 @@
           [nzAutosize]="{ minRows: 2, maxRows: 6 }"
           (ngModelChange)="noteChange($event)"
         ></textarea>
+      </div>
+      <div class="mb-3 p-3 rounded-3 bg-white">
+        <ng-container>
+          <app-voucher-order
+            [goodValue]="order.goodsValue"
+            [voucherOrder]="order.voucher!"
+          ></app-voucher-order>
+        </ng-container>
       </div>
       <div class="mb-3 p-3 rounded-3 bg-white">
         <h6>Thông tin giao hàng</h6>
