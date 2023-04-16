@@ -1,0 +1,73 @@
+<div class="bg-white mt-4 p-3 h-100">
+  <div class="mb-3">
+    <button nz-button [nzType]="'primary'" (click)="showModal()">
+      <span>Thêm mới</span>
+    </button>
+  </div>
+  <div class="d-flex mb-3">
+    <div class="me-2" style="width: 300px">
+      <label class="mb-1">Tìm kiếm loại sản phẩm</label> <br />
+      <input
+        nz-input
+        type="text"
+        (ngModelChange)="search($event)"
+        [(ngModel)]="searchFavorite.searchTerm"
+        placeholder="Tìm kiếm theo loại sản phẩm"
+      />
+    </div>
+    <div style="width: 200px">
+      <label class="mb-1">Trạng thái</label> <br />
+      <nz-select
+        style="width: 100%"
+        nzAllowClear
+        class="selectStatus"
+        nzPlaceHolder="Lọc theo trạng thái"
+        (ngModelChange)="onChangeStatus($event)"
+        [nzAllowClear]="false"
+        [ngModel]="searchFavorite.status"
+      >
+        <nz-option
+          *ngFor="let item of commonService.statuses"
+          [nzValue]="item.value"
+          [nzLabel]="item.label"
+        ></nz-option>
+      </nz-select>
+    </div>
+  </div>
+  <!--  ---------------------------------  -->
+  <div>
+    <nz-table
+      nzShowSizeChanger
+      [nzFrontPagination]="false"
+      [nzPageSizeOptions]="commonService.pageSizeOptions"
+      [nzPageIndex]="searchFavorite.offset + 1"
+      [nzPageSize]="searchFavorite.limit"
+      [nzTotal]="page ? page.totalElement : 0"
+      nzNoResult="Không có dữ liệu"
+      [nzData]="products"
+      (nzPageIndexChange)="onChangeIndexPage($event)"
+      (nzPageSizeChange)="onChangeFavoriteProductPage($event)"
+    >
+      <thead>
+        <tr>
+          <th style="width: 50px">STT</th>
+          <th>Tên sản phẩm</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="products.length">
+          <tr *ngFor="let item of products; index as i">
+            <td style="width: 50
+            0px">{{ i + 1 }}</td>
+            <td>{{ item.productName || '' }}</td>
+            <!-- <td>
+              <nz-tag [nzColor]="item.status == 1 ? 'processing' : 'error'"
+                >{{ item.status == 1 ? "Hoạt động" : "Đã xóa" }}
+              </nz-tag>
+            </td> --></tr
+        ></ng-container>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+<ng-template #noResult></ng-template>
