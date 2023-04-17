@@ -26,7 +26,7 @@ export class ModelService {
       )
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             return res.data;
           } else {
             this.message.error('Lỗi lấy danh sách kiểu dáng');
@@ -64,7 +64,7 @@ export class ModelService {
       .put(`${this.apiModel}/model/update`, model, 'cập nhật kiểu dáng')
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             this.message.success('Cập nhật kiểu dáng thành công');
             return res.data;
           } else if (res.code == '409') {
@@ -84,7 +84,7 @@ export class ModelService {
       .put(`${this.apiModel}/model/update`, model, action + ' kiểu dáng')
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             this.message.success(action + ' kiểu dáng thành công');
             return res.data;
           } else {

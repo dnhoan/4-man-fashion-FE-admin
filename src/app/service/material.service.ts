@@ -26,7 +26,7 @@ export class MaterialService {
       )
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             return res.data;
           } else {
             this.message.error('Lỗi lấy danh sách chất liệu');
@@ -64,10 +64,14 @@ export class MaterialService {
   }
   updateMaterial(material: Material) {
     return this.requestService
-      .put(`${this.apiMaterial}/material/update`, material, 'cập nhật chất liệu')
+      .put(
+        `${this.apiMaterial}/material/update`,
+        material,
+        'cập nhật chất liệu'
+      )
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             this.message.success('Cập nhật chất liệu thành công');
             return res.data;
           } else if (res.code == '409') {
@@ -84,10 +88,14 @@ export class MaterialService {
   updateStatus(material: Material) {
     let action = material.status == 0 ? 'Xóa' : 'Khôi phục';
     return this.requestService
-      .put(`${this.apiMaterial}/material/update`, material, action + ' chất liệu')
+      .put(
+        `${this.apiMaterial}/material/update`,
+        material,
+        action + ' chất liệu'
+      )
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             this.message.success(action + ' chất liệu thành công');
             return res.data;
           } else {

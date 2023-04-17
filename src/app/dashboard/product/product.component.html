@@ -83,7 +83,7 @@
             <td>{{ item.materialName }}</td>
             <td>{{ item.modelName }}</td>
             <td>
-              <nz-tag [nzColor]="item.status == 1 ? 'processing' : 'error'"
+              <nz-tag [nzColor]="item.status == 1 ? 'blue' : 'red'"
                 >{{ item.status == 1 ? "Hoạt động" : "Đã xóa" }}
               </nz-tag>
             </td>
@@ -124,6 +124,7 @@
               <thead>
                 <tr>
                   <th width="50px">STT</th>
+                  <th>Ảnh</th>
                   <th>Tên phân loại</th>
                   <th>Tồn kho</th>
                   <th>Giá</th>
@@ -135,6 +136,9 @@
                   *ngFor="let productDetail of innerTable.data; let i = index"
                 >
                   <td>{{ i + 1 }}</td>
+                  <td>
+                    <img [src]="productDetail.image" width="50px" />
+                  </td>
                   <td>{{ productDetail.productDetailName }}</td>
                   <td class="text-success">
                     <b>{{ productDetail.stock }}</b>

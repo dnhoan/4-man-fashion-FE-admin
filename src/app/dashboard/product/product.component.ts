@@ -31,6 +31,8 @@ import {
 import { Page } from 'src/app/model/pageable.model';
 import { CreateProductComponent } from './create-product/create-product.component';
 import { UpdateProductComponent } from './update-product/update-product.component';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { CommonConstants } from 'src/app/constants/common-constants';
 
 @Component({
   selector: 'app-product',
@@ -55,6 +57,7 @@ export class ProductComponent implements OnInit {
     private drawerService: NzDrawerService,
     private productService: ProductsService,
     private materialService: MaterialService,
+    private modal: NzModalService,
     private message: NzMessageService,
     public commonService: CommonService
   ) {}
@@ -112,24 +115,22 @@ export class ProductComponent implements OnInit {
       }
     });
   }
-  updateStatus(size: Size, index: number, status: number) {
-    // this.modal.confirm({
-    //   nzTitle:
-    //     'Bạn có muốn ' +
-    //     (status == 0 ? 'xóa' : 'khôi phục') +
-    //     ' size này không?',
-    //   nzOnOk: () => {
-    //     this.sizeService.updateStatus({ ...size, status }).subscribe((res) => {
-    //       if (res) {
-    //         if (this.searchSize.status == -1) {
-    //           this.sizes[index] = res;
-    //         } else {
-    //           this.sizes.splice(index, 1);
-    //         }
-    //       }
-    //     });
-    //   },
-    // });
+  updateStatus(product: ProductDTO, index: number, status: number) {
+    this.modal.confirm({
+      nzTitle:
+        'Bạn có muốn ' +
+        (status == 0 ? 'xóa' : 'khôi phục') +
+        ' sản phẩm này không?',
+      nzOnOk: () => {
+        this.productService
+          .updateStatus(product.id, status)
+          .subscribe((res) => {
+            if (res) {
+              this.products.splice(index, 1);
+            }
+          });
+      },
+    });
   }
 
   search(value: any) {

@@ -6,6 +6,7 @@ import { Product, ProductDTO } from 'src/app/model/product.model';
 import { environment } from 'src/environments/environment';
 import { RequestService } from '../../common-services/request.service';
 import { SearchOption } from '../../model/search-option.model';
+import { CommonConstants } from 'src/app/constants/common-constants';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +28,7 @@ export class ProductsService {
       )
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             return res.data;
           } else {
             this.message.error('Lỗi lấy danh sách sản phẩm');
@@ -71,7 +72,30 @@ export class ProductsService {
         })
       );
   }
-
+  updateStatus(id: number, status: number) {
+    let action =
+      status == CommonConstants.STATUS.INACTIVE ? 'Xóa' : 'Khôi phục';
+    return this.requestService
+      .put(
+        `${this.apiProduct}/product/updateStatus`,
+        { id, status },
+        action + ' sản phẩm'
+      )
+      .pipe(
+        map((res) => {
+          if (res.code == '000') {
+            this.message.success(action + ' sản phẩm thành công');
+            return res.data;
+          } else if (res.code == '002') {
+            this.message.error('Lỗi ' + action + ' sản phẩm');
+            return false;
+          } else {
+            this.message.error('Lỗi ' + action + ' sản phẩm');
+            return false;
+          }
+        })
+      );
+  }
   public deleteProduct(id: any): Observable<any> {
     return this.httpClient.delete<any>(
       `${this.apiProduct}` + '/product/updateStatus/' + id

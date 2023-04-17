@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  distinctUntilChanged,
+  Subscription,
+  switchMap,
+} from 'rxjs';
 import { CommonService } from 'src/app/common-services/common.service';
 import { CommonConstants } from 'src/app/constants/common-constants';
 import { Color } from 'src/app/model/color.model';
@@ -75,14 +81,12 @@ export class ColorComponent implements OnInit {
 
   handleOk() {
     if (this.validateColor()) {
-      this.messageError = '';
       if (this.currentColor >= 0) {
         this.updateColor();
         return;
       }
       this.createColor();
     }
-    this.isVisibleModal = false;
   }
 
   handleCancel(): void {
@@ -95,6 +99,7 @@ export class ColorComponent implements OnInit {
 
   messageError = '';
   validateColor() {
+    this.messageError = '';
     if (this.inputColorCode.trim().length == 0) {
       this.messageError = 'Vui lòng nhập mã màu sắc';
       return false;
@@ -124,6 +129,8 @@ export class ColorComponent implements OnInit {
       })
       .subscribe((res) => {
         if (res) {
+          console.log(res);
+
           this.colors.unshift(res);
           this.isVisibleModal = false;
         }
@@ -132,13 +139,17 @@ export class ColorComponent implements OnInit {
 
   updateColor() {
     this.colorService
-      .updateColor({ ...this.colors[this.currentColor], colorCode: this.inputColorCode, colorName: this.inputColorName })
+      .updateColor({
+        ...this.colors[this.currentColor],
+        colorCode: this.inputColorCode,
+        colorName: this.inputColorName,
+      })
       .subscribe((res) => {
         if (res) {
           this.colors[this.currentColor] = res;
+          this.isVisibleModal = false;
         }
       });
-      this.isVisibleModal = false;
   }
 
   updateStatus(color: Color, index: number, status: number) {
@@ -148,23 +159,30 @@ export class ColorComponent implements OnInit {
         (status == 0 ? 'xóa' : 'khôi phục') +
         ' màu sắc này không?',
       nzOnOk: () => {
-        this.colorService.updateStatus({ ...color, status }).subscribe((res) => {
-          if (res) {
-            if (this.searchColor.status == -1) {
-              this.colors[index] = res;
-            } else {
-              this.colors.splice(index, 1);
+        this.colorService
+          .updateStatus({ ...color, status })
+          .subscribe((res) => {
+            if (res) {
+              if (this.searchColor.status == -1) {
+                this.colors[index] = res;
+              } else {
+                this.colors.splice(index, 1);
+              }
             }
-          }
-        });
+          });
       },
     });
   }
 
   showModalEdit(index: number) {
     this.currentColor = index;
-    this.inputColorCode = this.colors[this.currentColor].colorCode!;
-    this.inputColorName = this.colors[this.currentColor].colorName!;
+    if (index >= 0) {
+      this.inputColorCode = this.colors[this.currentColor].colorCode!;
+      this.inputColorName = this.colors[this.currentColor].colorName!;
+    } else {
+      this.inputColorCode = '';
+      this.inputColorName = '';
+    }
     this.showModal();
   }
 }

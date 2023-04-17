@@ -26,7 +26,7 @@ export class CategoryService {
       )
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             return res.data;
           } else {
             this.message.error('Lỗi lấy danh sách loại sản phẩm');
@@ -61,10 +61,14 @@ export class CategoryService {
 
   updateCategory(category: Category) {
     return this.requestService
-      .put(`${this.apiCategory}/category/update`, category, 'cập nhật loại sản phẩm')
+      .put(
+        `${this.apiCategory}/category/update`,
+        category,
+        'cập nhật loại sản phẩm'
+      )
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             this.message.success('Cập nhật loại sản phẩm thành công');
             return res.data;
           } else if (res.code == '409') {
@@ -81,10 +85,14 @@ export class CategoryService {
   updateStatus(category: Category) {
     let action = category.status == 0 ? 'Xóa' : 'Khôi phục';
     return this.requestService
-      .put(`${this.apiCategory}/category/update`, category, action + ' loại sản phẩm')
+      .put(
+        `${this.apiCategory}/category/update`,
+        category,
+        action + ' loại sản phẩm'
+      )
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             this.message.success(action + ' loại sản phẩm thành công');
             return res.data;
           } else {

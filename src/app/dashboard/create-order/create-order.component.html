@@ -21,7 +21,7 @@
         <nz-table [nzNoResult]="noResult">
           <thead>
             <tr>
-              <th>Anh</th>
+              <th>Ảnh</th>
               <th>Sản phẩm</th>
               <th>Đơn giá</th>
               <th>SL</th>
@@ -39,7 +39,14 @@
                 let i_order_detail = index
               "
             >
-              <td>anh</td>
+              <td>
+                <img
+                  nz-image
+                  width="50"
+                  [nzSrc]="orderDetail.productDetail!.image"
+                  alt=""
+                />
+              </td>
               <td>
                 <b>{{ orderDetail.productDetail!.productDetailName }}</b>
                 <br />
