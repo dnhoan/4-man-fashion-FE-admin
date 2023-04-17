@@ -26,7 +26,7 @@ export class SizeService {
       )
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             return res.data;
           } else {
             this.message.error('Lỗi lấy danh sách kích thước');
@@ -64,7 +64,7 @@ export class SizeService {
       .put(`${this.apiSize}/size/update`, size, 'cập nhật size')
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             this.message.success('Cập nhật size thành công');
             return res.data;
           } else if (res.code == '409') {
@@ -84,7 +84,7 @@ export class SizeService {
       .put(`${this.apiSize}/size/update`, size, action + ' size')
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             this.message.success(action + ' size thành công');
             return res.data;
           } else {

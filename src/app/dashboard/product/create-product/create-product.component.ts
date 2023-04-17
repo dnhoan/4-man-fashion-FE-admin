@@ -32,7 +32,7 @@ import { ProductsService } from '../product.service';
 })
 export class CreateProductComponent implements OnInit {
   formCreateProduct!: FormGroup;
-
+  isVisibleSelectImage = false;
   categories: Category[] = [];
   materials: Material[] = [];
   models: Models[] = [];
@@ -49,7 +49,8 @@ export class CreateProductComponent implements OnInit {
       price: 0,
       sizeName: '',
       colorName: '',
-      status: CommonConstants.STATUS.ACTIVE
+      image: '',
+      status: CommonConstants.STATUS.ACTIVE,
     },
   ];
   searchProperty: SearchOption = {
@@ -141,6 +142,7 @@ export class CreateProductComponent implements OnInit {
       colorName: '',
       productDetailCode: '',
       productDetailName: productName,
+      image: '',
     };
     this.productDetails = [];
     if (colorSelected.length && sizeSelected.length) {
@@ -342,7 +344,19 @@ export class CreateProductComponent implements OnInit {
       }
     });
   }
-
+  current_i_product_detai_select_image = 0;
+  cancelSelectImage() {
+    this.current_i_product_detai_select_image = 0;
+    this.isVisibleSelectImage = false;
+  }
+  openModalSelectImage(i_product_detail: number) {
+    this.current_i_product_detai_select_image = i_product_detail;
+    this.isVisibleSelectImage = true;
+  }
+  onSelectImage(img: string) {
+    this.productDetails[this.current_i_product_detai_select_image].image = img;
+    this.isVisibleSelectImage = false;
+  }
   getProperties() {
     this.categoryService
       .getAllCategory(this.searchProperty)

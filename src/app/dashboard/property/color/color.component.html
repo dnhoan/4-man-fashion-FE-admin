@@ -1,6 +1,6 @@
 <div class="bg-white mt-4 p-3 h-100">
   <div class="mb-3">
-    <button nz-button [nzType]="'primary'" (click)="showModal()">
+    <button nz-button [nzType]="'primary'" (click)="showModalEdit(-1)">
       <span>Thêm mới</span>
     </button>
   </div>
@@ -106,19 +106,19 @@
   nzOkText="Lưu"
 >
   <ng-container *nzModalContent>
+    <span class="text-danger" *ngIf="messageError">
+      {{ messageError }}
+    </span>
     <div>
       <label class="mb-1">Nhập mã màu sắc</label> <br />
       <input nz-input type="text" [(ngModel)]="inputColorCode" id="colorCode" />
-      <span class="text-danger" *ngIf="messageError">
+      <!-- <span class="text-danger" *ngIf="messageError">
         {{ messageError }}
-      </span>
+      </span> -->
     </div>
     <div>
-      <label class="mb-1">Nhập màu sắc</label> <br />
+      <label class="mb-1">Nhập tên màu sắc</label> <br />
       <input nz-input type="text" [(ngModel)]="inputColorName" id="colorName" />
-      <span class="text-danger" *ngIf="messageError">
-        {{ messageError }}
-      </span>
     </div>
   </ng-container>
 </nz-modal>

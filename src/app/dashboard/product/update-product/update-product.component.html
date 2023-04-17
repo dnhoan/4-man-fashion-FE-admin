@@ -230,6 +230,7 @@
           <thead>
             <tr>
               <th>STT</th>
+              <th>Ảnh</th>
               <th>Tên phân loại</th>
               <th>Giá</th>
               <th>Tồn kho</th>
@@ -239,6 +240,24 @@
           <tbody>
             <tr *ngFor="let productDetail of productDetails; index as i">
               <td>{{ i + 1 }}</td>
+              <td>
+                <ng-container *ngIf="productDetail.image">
+                  <img
+                    [src]="productDetail.image"
+                    width="50px"
+                    (click)="openModalSelectImage(i)"
+                  />
+                </ng-container>
+                <ng-container *ngIf="!productDetail.image">
+                  <button
+                    nz-button
+                    nzType="dashed"
+                    (click)="openModalSelectImage(i); $event.preventDefault()"
+                  >
+                    +
+                  </button>
+                </ng-container>
+              </td>
               <td>
                 {{ productDetail.productDetailName }}
               </td>
@@ -288,4 +307,39 @@
     </form>
   </div>
 </div>
+<nz-modal
+  [(nzVisible)]="isVisibleSelectImage"
+  nzTitle="Chọn ảnh"
+  [nzFooter]="null"
+  (nzOnCancel)="cancelSelectImage()"
+>
+  <ng-container *nzModalContent>
+    <div
+      style="
+        display: grid;
+        column-gap: 30px;
+        width: 100px;
+        grid-template-columns: auto auto auto;
+      "
+    >
+      <ng-container *ngFor="let img of images">
+        <div
+          style="
+            font-size: 30px;
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: dashed 3px red;
+          "
+        >
+          <img
+            [src]="img.image"
+            width="100"
+            (click)="onSelectImage(img.image)"
+          />
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+</nz-modal>
 <ng-template #noData></ng-template>

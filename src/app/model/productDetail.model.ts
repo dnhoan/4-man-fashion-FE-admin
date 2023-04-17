@@ -15,6 +15,7 @@ export interface ProductDetail {
   colorName?: string;
   expand?: boolean;
   status?: number;
+  image: string;
 }
 
 export interface ProductDetailDTO {
@@ -30,4 +31,5 @@ export interface ProductDetailDTO {
   sizeName?: string;
   expand?: boolean;
   status?: number;
+  image: string;
 }
