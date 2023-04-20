@@ -29,6 +29,7 @@ import { FavoriteProductComponent } from './favorite-product/favorite-product.co
 import { ExchangeOnlineComponent } from './create-order/exchange-online/exchange-online.component';
 import { ReturnOrderComponent } from './create-order/return-order/return-order.component';
 import { ExchangeStoreComponent } from './create-order/exchange-store/exchange-store.component';
+import { AccountComponent } from './account/account.component';
 import { VoucherOrderComponent } from './create-order/voucher-order/voucher-order.component';
 
 @NgModule({
@@ -43,6 +44,7 @@ import { VoucherOrderComponent } from './create-order/voucher-order/voucher-orde
     ModelComponent,
     CreateProductComponent,
     UpdateProductComponent,
+    AccountComponent,
     EmployeeComponent,
     OrderComponent,
     FavoriteProductComponent,
