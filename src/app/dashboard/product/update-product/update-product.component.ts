@@ -32,7 +32,7 @@ import { ProductsService } from '../product.service';
 export class UpdateProductComponent implements OnInit {
   @Input('product') product!: ProductDTO;
   formUpdateProduct!: FormGroup;
-
+  isVisibleSelectImage = false;
   categories: Category[] = [];
   materials: Material[] = [];
   models: Models[] = [];
@@ -40,18 +40,7 @@ export class UpdateProductComponent implements OnInit {
     id?: number;
     image: string;
   }[] = [];
-  productDetails: ProductDetailDTO[] = [
-    {
-      size: undefined,
-      color: undefined,
-      productDetailCode: '',
-      productDetailName: '',
-      stock: 0,
-      price: 0,
-      sizeName: '',
-      colorName: '',
-    },
-  ];
+  productDetails: ProductDetailDTO[] = [];
 
   compareSelectFn = (o1: any, o2: any): boolean =>
     o1 && o2 ? o1.id === o2.id : o1 === o2;
@@ -95,7 +84,9 @@ export class UpdateProductComponent implements OnInit {
 
   ngOnInit() {
     this.images = [...this.product.productImages!];
-    this.productDetails = [...this.product.productDetails];
+    this.productDetails = JSON.parse(
+      JSON.stringify(this.product.productDetails)
+    );
 
     this.getProperties();
 
@@ -155,7 +146,20 @@ export class UpdateProductComponent implements OnInit {
       sizeName ? ' - ' + sizeName : ''
     }`;
   }
-
+  current_i_product_detail_select_image = 0;
+  cancelSelectImage() {
+    this.current_i_product_detail_select_image = 0;
+    this.isVisibleSelectImage = false;
+  }
+  openModalSelectImage(i_product_detail: number) {
+    this.current_i_product_detail_select_image = i_product_detail;
+    this.isVisibleSelectImage = true;
+  }
+  onSelectImage(img: string) {
+    this.productDetails[this.current_i_product_detail_select_image].image = img;
+    this.isVisibleSelectImage = false;
+    console.log(this.product.productDetails);
+  }
   insertCategory() {
     if (this.categoryName.trim().length > 0) {
       this.categoryService

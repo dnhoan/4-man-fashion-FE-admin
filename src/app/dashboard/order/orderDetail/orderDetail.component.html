@@ -70,14 +70,14 @@
       </thead>
       <tbody>
         <tr *ngFor="let orderDetail of currentOrder.orderDetails">
-          <!-- <td>
+          <td>
             <img
-              [src]="orderDetail.productDetailCartDto.image"
-              alt=""
+              nz-image
               width="50"
+              [nzSrc]="orderDetail.productDetail!.image"
+              alt=""
             />
-          </td> -->
-          <td>{{ orderDetail.productDetail?.productDetailName }}</td>
+          </td>
           <td>{{ orderDetail.productDetail?.productDetailName }}</td>
           <td>{{ orderDetail.quantity }}</td>
           <td>{{ orderDetail.price | number }} đ</td>

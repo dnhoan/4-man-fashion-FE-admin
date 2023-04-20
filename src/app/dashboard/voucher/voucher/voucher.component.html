@@ -68,11 +68,11 @@
             <td>{{ i + 1 }}</td>
             <td>{{ item.voucherCode }}</td>
             <td>{{ item.voucherName }}</td>
-            <td>{{ item.startDate | date : "dd/MM/yyyy"}}</td>
-            <td>{{ item.endDate | date : "dd/MM/yyyy" + 1}}</td>
+            <td>{{ item.startDate | date : "dd/MM/yyyy" }}</td>
+            <td>{{ item.endDate | date : "dd/MM/yyyy" }}</td>
             <td>{{ item.voucherType == 1 ? "Phần trăm" : "VNĐ" }}</td>
-            <td *ngIf="item.voucherType == 1">{{ item.discount + "%"}}</td>
-            <td *ngIf="item.voucherType == 0">{{ item.discount + "đ"}}</td>
+            <td *ngIf="item.voucherType == 1">{{ item.discount + "%" }}</td>
+            <td *ngIf="item.voucherType == 0">{{ item.discount + "đ" }}</td>
             <td>{{ item.quantity }}</td>
             <td>
               <nz-tag [nzColor]="item.status == 1 ? 'processing' : 'error'"
@@ -102,8 +102,9 @@
                   nzTheme="outline"
                 ></span>
               </button>
-            </td></tr>
-          </ng-container>
+            </td>
+          </tr>
+        </ng-container>
       </tbody>
     </nz-table>
   </div>
@@ -144,39 +145,47 @@
     </div>
     <div>
       <label class="mb-1">Chọn ngày bắt đầu</label> <br />
-      <nz-date-picker style="width: 100%" [(ngModel)]="startDate"></nz-date-picker>
+      <nz-date-picker
+        style="width: 100%"
+        [(ngModel)]="startDate"
+      ></nz-date-picker>
     </div>
     <div>
       <label class="mb-1">Chọn ngày kết thúc</label> <br />
-      <nz-date-picker style="width: 100%" [(ngModel)]="endDate"></nz-date-picker>
+      <nz-date-picker
+        style="width: 100%"
+        [(ngModel)]="endDate"
+      ></nz-date-picker>
     </div>
     <div>
       <label class="mb-1">Loại voucher</label> <br />
-      <nz-select style="width: 100%"
-      nzPlaceHolder="Chọn loại voucher"
-      [(ngModel)]="voucherType"
-      nzAllowClear
-    >
-      <nz-option  style="width: 100%" *ngFor="let option of lstType" [nzValue]="option.id" [nzLabel]="option.label"></nz-option>
-    </nz-select>
+      <nz-select
+        style="width: 100%"
+        nzPlaceHolder="Chọn loại voucher"
+        [(ngModel)]="voucherType"
+        nzAllowClear
+      >
+        <nz-option
+          style="width: 100%"
+          *ngFor="let option of lstType"
+          [nzValue]="option.id"
+          [nzLabel]="option.label"
+        ></nz-option>
+      </nz-select>
       <span class="text-danger" *ngIf="messageError">
         {{ messageError }}
       </span>
     </div>
     <div>
       <label class="mb-1">Giá trị giảm</label> <br />
-      <input
-        nz-input
-        [(ngModel)]="discount"
-        type="text"
-        id="discount"
-      />
+      <input nz-input [(ngModel)]="discount" type="text" id="discount" />
       <span class="text-danger" *ngIf="messageError">
         {{ messageError }}
       </span>
     </div>
     <div>
-      <label class="mb-1">Áp dụng cho hóa có giá trị đơn tối thiểu</label> <br />
+      <label class="mb-1">Áp dụng cho hóa có giá trị đơn tối thiểu</label>
+      <br />
       <input
         nz-input
         [(ngModel)]="minimumInvoiceValue"
@@ -189,12 +198,7 @@
     </div>
     <div>
       <label class="mb-1">Số lượng</label> <br />
-      <input
-        nz-input
-        [(ngModel)]="quantity"
-        type="text"
-        id="quantity"
-      />
+      <input nz-input [(ngModel)]="quantity" type="text" id="quantity" />
       <span class="text-danger" *ngIf="messageError">
         {{ messageError }}
       </span>

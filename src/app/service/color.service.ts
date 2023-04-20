@@ -26,7 +26,7 @@ export class ColorService {
       )
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             return res.data;
           } else {
             this.message.error('Lỗi lấy danh sách màu sắc');
@@ -64,7 +64,7 @@ export class ColorService {
       .put(`${this.apiColor}/color/update`, color, 'cập nhật màu sắc')
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             this.message.success('Cập nhật màu sắc thành công');
             return res.data;
           } else if (res.code == '409') {
@@ -84,7 +84,7 @@ export class ColorService {
       .put(`${this.apiColor}/color/update`, color, action + ' màu sắc')
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
+          if (res.code == '000') {
             this.message.success(action + ' màu sắc thành công');
             return res.data;
           } else {

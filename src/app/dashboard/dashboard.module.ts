@@ -30,6 +30,7 @@ import { ExchangeOnlineComponent } from './create-order/exchange-online/exchange
 import { ReturnOrderComponent } from './create-order/return-order/return-order.component';
 import { ExchangeStoreComponent } from './create-order/exchange-store/exchange-store.component';
 import { AccountComponent } from './account/account.component';
+import { VoucherOrderComponent } from './create-order/voucher-order/voucher-order.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { AccountComponent } from './account/account.component';
     ExchangeOnlineComponent,
     ReturnOrderComponent,
     ExchangeStoreComponent,
+    VoucherOrderComponent,
   ],
   imports: [
     CommonModule,
