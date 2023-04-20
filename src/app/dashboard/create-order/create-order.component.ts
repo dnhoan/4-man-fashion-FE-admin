@@ -310,6 +310,7 @@ export class CreateOrderComponent implements OnInit {
     });
     modal.afterClose.subscribe((result) => {
       if (result) {
+        location.reload();
       }
     });
   }
@@ -327,6 +328,7 @@ export class CreateOrderComponent implements OnInit {
     });
     modal.afterClose.subscribe((result) => {
       if (result) {
+        location.reload();
       }
     });
   }
@@ -343,6 +345,7 @@ export class CreateOrderComponent implements OnInit {
     });
     modal.afterClose.subscribe((result) => {
       if (result) {
+        location.reload();
       }
     });
   }

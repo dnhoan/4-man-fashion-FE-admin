@@ -149,7 +149,9 @@ export class ExchangeStoreComponent implements OnInit {
           statusOrder: ORDER_STATUS.EXCHANGE,
         };
         this.exchangeStoreService.exchangeOrderDetail(data).subscribe((res) => {
-          if (res) this.modalRef.close(true);
+          if (res) {
+            this.modalRef.close(true);
+          }
         });
       },
     });

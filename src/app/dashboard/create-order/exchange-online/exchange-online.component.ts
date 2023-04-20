@@ -124,6 +124,7 @@ export class ExchangeOnlineComponent implements OnInit {
               if (res) {
                 this.orderDetail.statusOrderDetail =
                   ORDER_DETAIL_STATUS.EXCHANGE;
+                location.reload();
               }
             });
         else
@@ -132,6 +133,7 @@ export class ExchangeOnlineComponent implements OnInit {
             .subscribe((res) => {
               if (res) {
                 this.orderDetail.statusOrderDetail = ORDER_DETAIL_STATUS.RETURN;
+                location.reload();
               }
             });
       },
