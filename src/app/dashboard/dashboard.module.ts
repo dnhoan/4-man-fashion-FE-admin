@@ -29,6 +29,7 @@ import { FavoriteProductComponent } from './favorite-product/favorite-product.co
 import { ExchangeOnlineComponent } from './create-order/exchange-online/exchange-online.component';
 import { ReturnOrderComponent } from './create-order/return-order/return-order.component';
 import { ExchangeStoreComponent } from './create-order/exchange-store/exchange-store.component';
+import { AccountComponent } from './account/account.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { ExchangeStoreComponent } from './create-order/exchange-store/exchange-s
     ModelComponent,
     CreateProductComponent,
     UpdateProductComponent,
+    AccountComponent,
     EmployeeComponent,
     OrderComponent,
     FavoriteProductComponent,
