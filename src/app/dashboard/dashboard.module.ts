@@ -31,7 +31,8 @@ import { ReturnOrderComponent } from './create-order/return-order/return-order.c
 import { ExchangeStoreComponent } from './create-order/exchange-store/exchange-store.component';
 import { AccountComponent } from './account/account.component';
 import { VoucherOrderComponent } from './create-order/voucher-order/voucher-order.component';
-
+import { ReportComponent } from './report/report.component';
+import { ChartModule } from 'primeng/chart';
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -59,6 +60,7 @@ import { VoucherOrderComponent } from './create-order/voucher-order/voucher-orde
     ReturnOrderComponent,
     ExchangeStoreComponent,
     VoucherOrderComponent,
+    ReportComponent,
   ],
   imports: [
     CommonModule,
@@ -69,6 +71,7 @@ import { VoucherOrderComponent } from './create-order/voucher-order/voucher-orde
     NgZorroAntdModule,
     FormsModule,
     ReactiveFormsModule,
+    ChartModule,
     QuillModule.forRoot(),
   ],
 
