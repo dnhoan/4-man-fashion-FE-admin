@@ -56,7 +56,7 @@ export class CommonService {
       status: ORDER_STATUS.DRAFT,
       code: 'DRAFT',
       statusName: 'Đơn nháp',
-      color: '#9898a0',
+      color: '#ffe6cc',
       icon: 'plus-circle',
     },
     {
