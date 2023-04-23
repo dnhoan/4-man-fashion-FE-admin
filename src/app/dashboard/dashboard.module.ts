@@ -33,6 +33,8 @@ import { AccountComponent } from './account/account.component';
 import { VoucherOrderComponent } from './create-order/voucher-order/voucher-order.component';
 import { ReportComponent } from './report/report.component';
 import { ChartModule } from 'primeng/chart';
+import { PrintOrderComponent } from './create-order/print-order/print-order.component';
+import { NgxPrintModule } from 'ngx-print';
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -61,6 +63,7 @@ import { ChartModule } from 'primeng/chart';
     ExchangeStoreComponent,
     VoucherOrderComponent,
     ReportComponent,
+    PrintOrderComponent,
   ],
   imports: [
     CommonModule,
@@ -72,6 +75,7 @@ import { ChartModule } from 'primeng/chart';
     FormsModule,
     ReactiveFormsModule,
     ChartModule,
+    NgxPrintModule,
     QuillModule.forRoot(),
   ],
 

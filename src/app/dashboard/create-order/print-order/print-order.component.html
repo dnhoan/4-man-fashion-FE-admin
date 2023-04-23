@@ -1,0 +1,124 @@
+<div *ngIf="order" id="page" class="p-3" style="width: 500px">
+  <section>
+    <h2 class="text-center">
+      <b>Mobigenz Store</b>
+    </h2>
+    <h5 class="text-center">Hóa đơn mua hàng</h5>
+    <p class="text-center">{{ nowDate | date : "HH:mm dd/MM/yyyy" }}</p>
+    <div class="row">
+      <label class="col">Mã hóa đơn: {{ order.orderId }}</label>
+    </div>
+    <div class="row">
+      <label class="col">Tên khách hàng: {{ order.recipientName }}</label>
+    </div>
+    <div class="row">
+      <label class="col">Điện thoại: {{ order.recipientPhone }}</label>
+    </div>
+    <div class="row">
+      <label class="col">Email: {{ order.recipientEmail }}</label>
+    </div>
+    <div class="row">
+      <label class="col">SĐT: {{ order.recipientPhone }}</label>
+    </div>
+    <div class="row">
+      <label class="col">Địa chỉ: {{ order.address }}</label>
+    </div>
+    <div>
+      ---------------------------------------------------------------------------------------------
+    </div>
+    <div>
+      <table class="table table-borderless">
+        <thead>
+          <tr>
+            <th>Tên SP</th>
+            <th class="w-50">Thành tiền</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of order.orderDetails">
+            <td class="w-60">
+              {{ item.productDetail!.productDetailName! }} <br />
+              {{ item.price | number }}đ x {{ item.quantity }}
+              <br />
+              <ng-container
+                *ngIf="
+                  item.statusOrderDetail ==
+                    ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+                  item.statusOrderDetail == ORDER_DETAIL_STATUS.RETURN_PENDING
+                "
+              >
+                {{
+                  item.statusOrderDetail == ORDER_DETAIL_STATUS.EXCHANGE_PENDING
+                    ? "(Chờ đổi trả)"
+                    : "(Chờ hoàn)"
+                }}
+              </ng-container>
+              <ng-container
+                *ngFor="let status of commonService.orderDetailStatuses"
+              >
+                <span *ngIf="item.statusOrderDetail == status.status"
+                  >({{ status.title }})</span
+                >
+              </ng-container>
+            </td>
+            <td>{{ item.price! * item.quantity! | number }}đ</td>
+          </tr>
+          <tr>
+            <td><b>Tổng tiền hàng</b></td>
+            <td>{{ order.goodsValue | number }}đ</td>
+          </tr>
+          <tr>
+            <td><b>Phí giao hàng</b></td>
+            <td>{{ order.shipFee | number }}đ</td>
+          </tr>
+          <tr>
+            <td><b>Giảm giá</b></td>
+            <td>-{{ order.sale | number }}đ</td>
+          </tr>
+          <tr>
+            <td><b>Tổng thanh toán</b></td>
+            <td>{{ order.totalMoney | number }}đ</td>
+          </tr>
+          <tr>
+            <td><b>Khách thanh toán</b></td>
+            <td>{{ order.checkout | number }}đ</td>
+          </tr>
+          <tr>
+            <td><b>Dư nợ</b></td>
+            <td>{{ order.totalMoney! - order.checkout! | number }}đ</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      ---------------------------------------------------------------------------------------------
+    </div>
+    <div class="row">
+      <label class="col"
+        >Ngày tạo: {{ order.ctime | date : "HH:mm dd/MM/yyyy" }}</label
+      >
+    </div>
+    <div class="row">
+      <label class="col">Nhân viên bán hàng: 4ManFashion</label>
+    </div>
+    <div>
+      ---------------------------------------------------------------------------------------------
+    </div>
+    <div class="row text-center">
+      <label class="col"><b>Chính sách đổi trả</b></label>
+    </div>
+    <div class="row text-center">
+      <label class="col">
+        Cửa hàng hỗ trợ đổi trả trong vòng 14 ngày kể từ ngày khách nhận hàng
+        nếu có lỗi từ sản phẩm!</label
+      >
+    </div>
+    <div class="row text-center">
+      <label class="col"><b>CẢM ƠN QUÝ KHÁCH ĐÃ MUA HÀNG</b></label>
+    </div>
+    <div class="row text-center">
+      <label class="col"><b>HẸN GẶP LẠI!</b></label>
+    </div>
+  </section>
+</div>
