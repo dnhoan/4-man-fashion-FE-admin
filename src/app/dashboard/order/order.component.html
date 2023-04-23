@@ -1,44 +1,94 @@
-<div class="mt-4 bg-white">
-  <div class="d-flex justify-content-start p-3 row">
-    <div style="width: 200px">
-      <nz-select
-        style="width: 100%"
-        nzShowSearch
-        nzAllowClear
-        nzPlaceHolder="Lọc đơn hàng"
-      >
-        <!-- <nz-option
-          *ngFor="let status of commonService.orderStatuses"
-          [nzLabel]="status.statusName"
-          [nzValue]="status.status"
-        ></nz-option> -->
-      </nz-select>
-    </div>
-    <div style="width: 500px">
-      <nz-input-group
-        style="width: 100%"
-        class="col-4"
-        [nzSuffix]="suffixIconSearch"
-      >
-        <!-- <input
-          type="text"
-          nz-input
-          [(ngModel)]="searchTerm"
-          placeholder="Tìm kiếm theo tên, sđt, địa chỉ khách hàng"
-          (keyup.enter)="search()"
-        /> -->
-      </nz-input-group>
-      <ng-template #suffixIconSearch>
-        <span nz-icon nzType="search"></span>
-      </ng-template>
-    </div>
+<div class="mt-4 bg-white p-3">
+  <div class="row">
     <div>
       <button nz-button nzType="primary" (click)="createOrder()">
         Tạo đơn hàng
       </button>
     </div>
   </div>
-  <nz-table #basicTable [nzData]="orders">
+  <div class="d-flex justify-content-start pt-3 pe-3 row">
+    <div style="width: 200px">
+      <h6>Trạng thái đơn hàng</h6>
+      <nz-select
+        style="width: 100%"
+        [(ngModel)]="searchOrder.status"
+        nzShowSearch
+        nzPlaceHolder="Lọc đơn hàng"
+        (ngModelChange)="search()"
+      >
+        <nz-option [nzLabel]="'Tất cả'" [nzValue]="-1"> </nz-option>
+        <nz-option
+          *ngFor="let status of commonService.orderStatuses"
+          [nzLabel]="status.statusName!"
+          [nzValue]="status.status"
+        ></nz-option>
+      </nz-select>
+    </div>
+    <div style="width: 200px">
+      <h6>Mua tại</h6>
+      <nz-select
+        style="width: 100%"
+        [(ngModel)]="searchOrder.purchaseType"
+        nzShowSearch
+        nzPlaceHolder="Giao hàng"
+        (ngModelChange)="search()"
+      >
+        <nz-option [nzLabel]="'Tất cả'" [nzValue]="-1"> </nz-option>
+        <nz-option [nzLabel]="'Online'" [nzValue]="1"> </nz-option>
+        <nz-option [nzLabel]="'Cửa hàng'" [nzValue]="0"> </nz-option>
+      </nz-select>
+    </div>
+    <div style="width: 200px">
+      <h6>Giao hàng</h6>
+      <nz-select
+        style="width: 100%"
+        [(ngModel)]="searchOrder.delivery"
+        nzShowSearch
+        nzPlaceHolder="Giao hàng"
+        (ngModelChange)="search()"
+      >
+        <nz-option [nzLabel]="'Tất cả'" [nzValue]="-1"> </nz-option>
+        <nz-option [nzLabel]="'Tại cửa hàng'" [nzValue]="0"> </nz-option>
+        <nz-option [nzLabel]="'Giao hàng'" [nzValue]="1"> </nz-option>
+      </nz-select>
+    </div>
+    <!-- <div style="width: 300px">
+      <h6>Ngày tạo</h6>
+      <nz-range-picker [(ngModel)]="date"></nz-range-picker>
+    </div> -->
+    <div style="width: 500px">
+      <h6>Tìm kiếm</h6>
+      <nz-input-group
+        style="width: 100%"
+        class="col-4"
+        [nzSuffix]="suffixIconSearch"
+      >
+        <input
+          type="text"
+          nz-input
+          [(ngModel)]="searchOrder.searchTerm"
+          placeholder="Tìm kiếm theo tên, sđt, địa chỉ khách hàng"
+          (keyup.enter)="search()"
+        />
+      </nz-input-group>
+      <ng-template #suffixIconSearch>
+        <span nz-icon nzType="search"></span>
+      </ng-template>
+    </div>
+  </div>
+  <nz-table
+    nzShowSizeChanger
+    [nzFrontPagination]="false"
+    [nzPageSizeOptions]="commonService.pageSizeOptions"
+    [nzPageIndex]="searchOrder.offset + 1"
+    [nzPageSize]="searchOrder.limit"
+    [nzTotal]="page ? page.totalElement : 0"
+    nzNoResult="Không có dữ liệu"
+    (nzPageIndexChange)="onChangeIndexPage($event)"
+    (nzPageSizeChange)="onChangeSizePage($event)"
+    #basicTable
+    [nzData]="orders"
+  >
     <thead>
       <tr>
         <th>Mã đơn hàng</th>

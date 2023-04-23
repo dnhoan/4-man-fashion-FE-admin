@@ -57,7 +57,7 @@ export class CreateProductComponent implements OnInit {
     searchTerm: '',
     status: 1,
     offset: 0,
-    limit: 10,
+    limit: 9999,
   };
   categoryName = '';
   modelName = '';
@@ -377,18 +377,11 @@ export class CreateProductComponent implements OnInit {
         this.models = res.items;
       }
     });
-    this.sizeService
-      .getAllSize({
-        offset: 0,
-        limit: 9999,
-        searchTerm: '',
-        status: CommonConstants.STATUS.ACTIVE,
-      })
-      .subscribe((res) => {
-        if (res) {
-          this.sizes = res.items;
-        }
-      });
+    this.sizeService.getAllSize(this.searchProperty).subscribe((res) => {
+      if (res) {
+        this.sizes = res.items;
+      }
+    });
     this.colorService.getAllColor(this.searchProperty).subscribe((res) => {
       if (res) {
         this.colors = res.items;

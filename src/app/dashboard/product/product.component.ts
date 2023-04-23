@@ -145,6 +145,7 @@ export class ProductComponent implements OnInit {
   }
   onChangeSizePage(event: any) {
     this.searchProduct.limit = event;
+    this.searchProduct.offset = 0;
     this.searchChange$.next({ ...this.searchProduct });
   }
   onChangeIndexPage(event: any) {

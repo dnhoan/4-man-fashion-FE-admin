@@ -435,7 +435,14 @@
         >
       </div>
       <div class="p-3 rounded-3 d-flex justify-content-end bg-white">
-        <button nz-button nzType="default" nzSize="large">
+        <button
+          styleSheetFile="assets/css/print-order.css"
+          nz-button
+          nzType="default"
+          nzSize="large"
+          printSectionId="print-section"
+          ngxPrint
+        >
           <span nz-icon nzType="printer" nzTheme="outline"></span>
           In hóa đơn
         </button>
@@ -464,104 +471,7 @@
     ></textarea>
   </ng-container>
 </nz-modal>
-<!-- ngxPrintItem printName="First one" -->
-<!-- <div style="display: none">
-  <app-printer-order [order]="order"></app-printer-order>
-  <div id="printDiv">
-    <div id="page" class="p-3" style="width: 500px">
-      <section>
-        <h2 class="text-center"><b>Mobigenz Store</b></h2>
-        <h5 class="text-center">Hóa đơn mua hàng</h5>
-        <p class="text-center">{{ nowDate | date : "HH:mm dd/MM/yyyy" }}</p>
-        <div class="row">
-          <label class="col">Mã hóa đơn: {{ order.id }}</label>
-        </div>
-        <div class="row">
-          <label class="col">Tên khách hàng: {{ order.recipientName }}</label>
-        </div>
-        <div class="row">
-          <label class="col">Điện thoại: {{ order.recipientPhone }}</label>
-        </div>
-        <div class="row">
-          <label class="col">Email: {{ order.recipientEmail }}</label>
-        </div>
-        <div class="row">
-          <label class="col">SĐT: {{ order.recipientPhone }}</label>
-        </div>
-        <div class="row">
-          <label class="col">Địa chỉ: {{ order.address }}</label>
-        </div>
-        <div>
-          -------------------------------------------------------------------------
-        </div>
-        <div>
-          <table
-            class="table table-borderless"
-            *ngFor="let item of order.orderDetails"
-          >
-            <thead>
-              <tr>
-                <th class="w-50">Giá bán</th>
-                <th scope="col">Số lượng</th>
-                <th scope="col">Trạng thái đơn hàng</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="w-50">
-                  {{ item.price }} <br />
-                  {{ item.quantity }}
-                </td>
-                <td>{{ item.statusExchange }}</td>
-                <td>{{ item.price! * item.quantity! | number }}đ</td>
-              </tr>
-              <tr>
-                <td colspan="2"><b>Tổng tiền</b></td>
-                <td>{{ order.totalMoney | number }}đ</td>
-              </tr>
-              <tr>
-                <td colspan="2"><b>Khách thanh toán</b></td>
-                <td>{{ order.checkout | number }}đ</td>
-              </tr>
-              <tr>
-                <td colspan="2"><b>Dư nợ</b></td>
-                <td>{{ order.totalMoney! - order.checkout! | number }}đ</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
 
-        <div>
-          -------------------------------------------------------------------------
-        </div>
-        <div class="row" *ngFor="let item of order.orderDetails">
-        <label class="col"
-            >Ngày tạo: {{ order.ctime | date : "HH:mm dd/MM/yyyy" }}</label
-          >
-        </div>
-        <div class="row">
-          <label class="col">Nhân viên bán hàng: 4ManFashion</label>
-        </div>
-        <div>
-          -------------------------------------------------------------------------
-        </div>
-        <div class="row text-center">
-          <label class="col"><b>Chính sách đổi trả</b></label>
-        </div>
-        <div class="row text-center">
-          <label class="col">
-            Cửa hàng hỗ trợ 1 đổi 1 trong vòng 30 ngày kể từ ngày khách nhận
-            hàng nếu có lỗi từ nhà sản xuất!</label
-          >
-        </div>
-        <div class="row text-center">
-          <label class="col"><b>CẢM ƠN QUÝ KHÁCH ĐÃ MUA HÀNG</b></label>
-        </div>
-        <div class="row text-center">
-          <label class="col"><b>HẸN GẶP LẠI!</b></label>
-        </div>
-      </section>
-    </div>
-  </div>
-</div> -->
-<br />
+<div style="display: none" id="print-section">
+  <app-print-order [order]="order"></app-print-order>
+</div>
