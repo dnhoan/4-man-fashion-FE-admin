@@ -13,6 +13,7 @@ import {
   ORDER_STATUS,
   PURCHASE_TYPE,
 } from '../../constants/constant.constant';
+import { SearchOrder } from 'src/app/model/search-order';
 
 @Injectable({
   providedIn: 'root',
@@ -37,6 +38,20 @@ export class OrdersService {
             return res.data;
           } else {
             this.message.error('Lỗi lấy danh sách đơn hàng');
+            return false;
+          }
+        })
+      );
+  }
+  searchOrder(search: SearchOrder) {
+    return this.requestService
+      .post(`${this.apiOrder}/order/search`, search, 'tìm kiếm đơn hàng')
+      .pipe(
+        map((res) => {
+          if (res.code == '000') {
+            return res.data;
+          } else {
+            this.message.error('Lỗi tìm kiếm đơn hàng');
             return false;
           }
         })
@@ -150,7 +165,12 @@ export class OrdersService {
     };
   }
 
-  getFeeShip(province: string, district: string, address: string) {
+  getFeeShip(
+    province: string,
+    district: string,
+    address: string
+    // amount: number
+  ) {
     let data = {
       package_type: 'express',
       pick_province: 'Hà Nội',

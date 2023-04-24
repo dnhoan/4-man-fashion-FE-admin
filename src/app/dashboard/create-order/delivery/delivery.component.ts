@@ -99,6 +99,9 @@ export class DeliveryComponent implements OnInit {
     }
   }
   getShipFee(province: string, district: string, address: string) {
+    // let quantity = this.order
+    //   .orderDetails!.map((item) => item.quantity)
+    //   .reduce((prev, next) => prev! + next!);
     this.orderService
       .getFeeShip(province, district, address)
       .subscribe((res) => {

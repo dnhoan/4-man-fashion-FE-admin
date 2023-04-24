@@ -17,46 +17,12 @@ export class CommonService {
     { value: 0, label: 'Đã xóa' },
     { value: -1, label: 'Tất cả' },
   ];
-  // conditionToNewStatus = {
-  //   DRAFT: [
-  //     ORDER_STATUS.DRAFT,
-  //     ORDER_STATUS.PACKAGING,
-  //     ORDER_STATUS.DELIVERING,
-  //     ORDER_STATUS.COMPLETE,
-  //     ORDER_STATUS.CANCEL_ORDER,
-  //   ], // [đóng gói, vận chuyển, hoàn thành, hủy]
-  //   PENDING: [
-  //     ORDER_STATUS.CONFIRMED,
-  //     ORDER_STATUS.PACKAGING,
-  //     ORDER_STATUS.DELIVERING,
-  //     ORDER_STATUS.COMPLETE,
-  //     ORDER_STATUS.CANCEL_ORDER,
-  //   ], // [Xác nhận, đóng gói, vận chuyển, hoàn thành, hủy]
-  //   CONFIRMED: [
-  //     ORDER_STATUS.PENDING,
-  //     ORDER_STATUS.CONFIRMED,
-  //     ORDER_STATUS.PACKAGING,
-  //     ORDER_STATUS.DELIVERING,
-  //     ORDER_STATUS.COMPLETE,
-  //     ORDER_STATUS.CANCEL_ORDER,
-  //   ], // [Đóng gói, vận chuyển, hoàn thành, hủy]
-  //   PACKAGING: [
-  //     ORDER_STATUS.PACKAGING,
-  //     ORDER_STATUS.DELIVERING,
-  //     ORDER_STATUS.COMPLETE,
-  //     ORDER_STATUS.CANCEL_ORDER,
-  //   ], // [Vận chuyển, hoàn thành, hủy]
-  //   DELIVERING: [4, 6], // [Hoàn thành, Hủy]
-  //   COMPLETE: [5, 6], // [Đổi trả]
-  //   EXCHANGE: [],
-  //   CANCEL_ORDER: [],
-  // };
   orderStatuses: OrderStatus[] = [
     {
       status: ORDER_STATUS.DRAFT,
       code: 'DRAFT',
       statusName: 'Đơn nháp',
-      color: '#9898a0',
+      color: '#ffe6cc',
       icon: 'plus-circle',
     },
     {

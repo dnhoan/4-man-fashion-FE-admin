@@ -15,6 +15,7 @@ import { EmployeeComponent } from './user/employee/employee.component';
 import { FavoriteProductComponent } from './favorite-product/favorite-product.component';
 import { AccountComponent } from './account/account.component';
 import { CustomerComponent } from './customer/customer.component';
+import { ReportComponent } from './report/report.component';
 
 const routes: Routes = [
   {
@@ -72,6 +73,10 @@ const routes: Routes = [
       {
         path: 'customer',
         component: CustomerComponent,
+      },
+      {
+        path: 'report',
+        component: ReportComponent,
       },
     ],
   },

@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { en_US } from 'ng-zorro-antd/i18n';
-import { CommonModule, registerLocaleData } from '@angular/common';
+import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -26,7 +26,7 @@ import { environment } from 'src/environments/environment';
 import { RequestInterceptor } from './request.interceptor';
 import { NZ_CONFIG, NzConfig } from 'ng-zorro-antd/core/config';
 import { OrderDetailStatusPipe } from './pipes/order-detail-status.pipe';
-
+import { NgChartsConfiguration, NgChartsModule } from 'ng2-charts';
 registerLocaleData(en);
 const ngZorroConfig: NzConfig = {
   theme: {
@@ -64,10 +64,9 @@ const ngZorroConfig: NzConfig = {
     { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
     { provide: NZ_I18N, useValue: en_US },
     { provide: NZ_CONFIG, useValue: ngZorroConfig },
+    DatePipe,
   ],
   bootstrap: [AppComponent],
-  exports: [
-    OrderDetailStatusPipe
-  ],
+  exports: [OrderDetailStatusPipe],
 })
 export class AppModule {}
