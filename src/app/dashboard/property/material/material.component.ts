@@ -151,7 +151,11 @@ export class MaterialComponent implements OnInit {
 
   showModalEdit(index: number) {
     this.currentMaterial = index;
-    this.inputMaterial = this.materials[this.currentMaterial].materialName!;
+    if (index >= 0) {
+      this.inputMaterial = this.materials[this.currentMaterial].materialName!;
+    } else {
+      this.inputMaterial = '';
+    }
     this.showModal();
   }
 }

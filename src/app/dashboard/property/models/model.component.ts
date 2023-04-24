@@ -154,7 +154,11 @@ export class ModelComponent implements OnInit {
 
   showModalEdit(index: number) {
     this.currentModel = index;
-    this.inputModel = this.models[this.currentModel].modelsName!;
+    if (index >= 0) {
+      this.inputModel = this.models[this.currentModel].modelsName!;
+    } else {
+      this.inputModel = '';
+    }
     this.showModal();
   }
 }

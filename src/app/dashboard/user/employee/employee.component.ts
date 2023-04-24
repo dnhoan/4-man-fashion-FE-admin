@@ -80,7 +80,7 @@ export class EmployeeComponent implements OnInit {
       cccd: ['', [Validators.pattern('^[0-9]{12}$')]],
       salary: [''],
       timeOnboard: [''],
-      dayOff: [''],
+      // dayOff: [''],
       note: [''],
       status: [1],
       workType: [1]
@@ -129,16 +129,16 @@ export class EmployeeComponent implements OnInit {
   fillValueForm() {
     let birthdays;
     let timeOnboards;
-    let dayOffs;
+    // let dayOffs;
     if (this.employee.birthday)
       birthdays = this.formatDate(this.employee.birthday);
     else birthdays = null;
     if (this.employee.timeOnboard)
       timeOnboards = this.formatDate(this.employee.timeOnboard);
     else timeOnboards = null;
-    if (this.employee.dayOff)
-      dayOffs = this.formatDate(this.employee.dayOff);
-    else dayOffs = null;
+    // if (this.employee.dayOff)
+    //   dayOffs = this.formatDate(this.employee.dayOff);
+    // else dayOffs = null;
     this.formEmployee.patchValue({
       id: this.employee.id,
       employeeCode: this.employee.employeeCode,
@@ -152,7 +152,7 @@ export class EmployeeComponent implements OnInit {
       cccd: this.employee.cccd,
       salary: this.employee.salary,
       timeOnboard: timeOnboards,
-      dayOff: dayOffs,
+      // dayOff: dayOffs,
       note: this.employee.note,
       status: this.employee.status,
       workType: this.employee.workType

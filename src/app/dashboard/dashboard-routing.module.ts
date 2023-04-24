@@ -14,6 +14,7 @@ import { VoucherComponent } from './voucher/voucher/voucher.component';
 import { EmployeeComponent } from './user/employee/employee.component';
 import { FavoriteProductComponent } from './favorite-product/favorite-product.component';
 import { AccountComponent } from './account/account.component';
+import { CustomerComponent } from './customer/customer.component';
 
 const routes: Routes = [
   {
@@ -67,6 +68,10 @@ const routes: Routes = [
       {
         path: 'account',
         component: AccountComponent,
+      },
+      {
+        path: 'customer',
+        component: CustomerComponent,
       },
     ],
   },
