@@ -158,7 +158,7 @@ export class AccountComponent implements OnInit {
   }
 
   addAccount(account: AccountDTO) {
-    this.accountService.createAcoount(account).subscribe(
+    this.accountService.createAccount(account).subscribe(
       (res) => {
         if (res.code === '000') {
           this.isVisibleModal = false;

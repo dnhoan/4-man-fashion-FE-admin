@@ -33,7 +33,7 @@ export class CustomerComponent implements OnInit {
   page!: Page;
   formCustomer!: FormGroup;
   customers: Customer[] = [];
-  customer!: Customer;
+  customer: Customer = {};
   searchChange$ = new BehaviorSubject<SearchOption>(this.searchCustomer);
   isVisibleModal = false;
   currentCus!: number;
@@ -122,12 +122,19 @@ export class CustomerComponent implements OnInit {
     this.formCustomer.get('phoneNumber')?.disable();
   }
 
-  handleOk() {
-    if (this.customer) {
+  handleOk(): void {
+    this.submit = true;
+      this.saveCustomer();
+  }
+
+  saveCustomer() {
+    this.addValueCustomer();
+    if (this.formCustomer.value.id) {
       this.updateCustomer();
-      return;
     }
-    this.createCustomer(this.customer);
+    if (!this.formCustomer.value.id) {
+      this.addAccount(this.customer);
+    }
   }
 
   handleCancel(): void {
@@ -150,18 +157,20 @@ export class CustomerComponent implements OnInit {
       });
   }
 
-  createCustomer(customer: Customer) {
-    this.customerService.createCustomer(customer).subscribe((res) => {
-      if (res.code === '000') {
-        this.isVisibleModal = false;
-        this.message.success('Tạo khách hàng thành công!');
+  addAccount(customer: Customer) {
+    this.customerService.createCustomer(customer).subscribe(
+      (res) => {
+        if (res.code === '000') {
+          this.isVisibleModal = false;
+          this.message.success('Tạo Khách hàng thành công!');
+        } else {
+          this.isVisibleModal = true;
+          this.message.error(`${res.desc}`);
+        }
         this.getAllCustomer();
-      } else {
-        this.isVisibleModal = true;
-        this.message.error(`${res.desc}`);
+        return;
       }
-      return;
-    });
+    );
   }
 
   updateCustomer() {
@@ -207,7 +216,7 @@ export class CustomerComponent implements OnInit {
     // let bd;
     // if (this.customer.birthday) bd = this.reFormatDate(this.customer.birthday);
     // else bd = null;
-    this.customer.id = this.formCustomer.value.id;
+
     this.customer.customerName = this.formCustomer.value.customerName;
     this.customer.gender = this.formCustomer.value.gender;
     this.customer.phoneNumber = this.formCustomer.value.phoneNumber;
