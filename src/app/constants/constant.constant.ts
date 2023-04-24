@@ -66,7 +66,11 @@ export const JOB_STATUS = [
   { code: 'UNSUCCESSFUL', value: 'Không thành công' },
   { code: 'ERROR', value: 'Lỗi' },
 ];
-
+export const ROLE = {
+  ADMIN: 'ROLE_ADMIN',
+  EMPLOYEE: 'ROLE_EMPLOYEE',
+  CUSTOMER: 'ROLE_USER',
+};
 export const USER_TYPES = [
   { code: 'ADMIN', value: 'Quản lý' },
   { code: 'CUSTOMER', value: 'Khách hàng' },

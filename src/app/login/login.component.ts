@@ -5,6 +5,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../common-services/auth.service';
+import {
+  EmailOrPhoneNumber,
+  PasswordValidator,
+} from '../validators/input.validator';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +17,7 @@ import { AuthService } from '../common-services/auth.service';
 })
 export class LoginComponent implements OnInit {
   formLogin!: UntypedFormGroup;
-
+  submit = false;
   constructor(
     private fb: UntypedFormBuilder,
     private authService: AuthService
@@ -21,15 +25,15 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.formLogin = this.fb.group({
-      phoneOrEmail: [null, [Validators.required]],
-      password: [null, [Validators.required]],
+      phoneOrEmail: ['', Validators.compose([EmailOrPhoneNumber()])],
+      password: ['', Validators.compose([PasswordValidator()])],
       remember: [true],
     });
   }
 
   loginForm() {
+    this.submit = true;
     if (this.formLogin.valid) {
-      console.log('submit', this.formLogin.value);
       this.authService.login({
         phoneOrEmail: this.formLogin.value.phoneOrEmail,
         password: this.formLogin.value.password,

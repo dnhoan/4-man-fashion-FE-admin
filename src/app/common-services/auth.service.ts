@@ -30,7 +30,6 @@ export class AuthService {
       .subscribe((res) => {
         if (res.code == '000') {
           this.jwtService.setJwtToken(res.data.token);
-          this.router.navigate(['/dashboard']);
         } else this.message.error('Sai tài khoản hoặc mật khẩu');
       });
   }

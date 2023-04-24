@@ -1,10 +1,30 @@
 <div class="d-flex justify-content-between">
   <h6>Khuyến mãi</h6>
-  <a nz-button nzType="link" (click)="showModal()">{{
-    voucherOrder ? "Thay đổi Voucher" : "Chọn voucher"
-  }}</a>
+  <a
+    *ngIf="
+      !(
+        order.orderStatus == ORDER_STATUS.COMPLETE ||
+        order.orderStatus == ORDER_STATUS.CANCEL_ORDER ||
+        order.orderStatus == ORDER_STATUS.DELIVERING
+      )
+    "
+    nz-button
+    nzType="link"
+    (click)="showModal()"
+    >{{ voucherOrder ? "Thay đổi Voucher" : "Chọn voucher" }}</a
+  >
 </div>
-<ng-container *ngIf="!voucherOrder; else showVoucher">
+<ng-container
+  *ngIf="
+    !voucherOrder &&
+      !(
+        order.orderStatus == ORDER_STATUS.COMPLETE ||
+        order.orderStatus == ORDER_STATUS.CANCEL_ORDER ||
+        order.orderStatus == ORDER_STATUS.DELIVERING
+      );
+    else showVoucher
+  "
+>
   <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
     <input
       type="text"
@@ -20,7 +40,7 @@
   </ng-template>
 </ng-container>
 <ng-template #showVoucher>
-  <div class="d-flex align-items-center">
+  <div *ngIf="voucherOrder" class="d-flex align-items-center">
     <img
       src="../../../../assets/images/sale.png"
       alt=""
@@ -42,7 +62,19 @@
       </p>
       <p>Đơn tối thiểu: {{ voucherOrder.minimumInvoiceValue | number }}</p>
     </div>
-    <a nz-button nzType="link" (click)="removeVoucher()">Xóa</a>
+    <a
+      *ngIf="
+        !(
+          order.orderStatus == ORDER_STATUS.COMPLETE ||
+          order.orderStatus == ORDER_STATUS.CANCEL_ORDER ||
+          order.orderStatus == ORDER_STATUS.DELIVERING
+        )
+      "
+      nz-button
+      nzType="link"
+      (click)="removeVoucher()"
+      >Xóa</a
+    >
   </div>
 </ng-template>
 

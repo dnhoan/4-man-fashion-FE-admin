@@ -1,7 +1,9 @@
 <ng-container
   *ngIf="
     order.orderStatus == ORDER_STATUS.DRAFT ||
-    order.orderStatus == ORDER_STATUS.PENDING
+    order.orderStatus == ORDER_STATUS.PENDING ||
+    order.orderStatus == ORDER_STATUS.CONFIRMED ||
+    order.orderStatus == ORDER_STATUS.PACKAGING
   "
 >
   <nz-radio-group [(ngModel)]="delivery" (ngModelChange)="changeDelivery()">
