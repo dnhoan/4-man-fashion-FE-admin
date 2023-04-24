@@ -113,20 +113,20 @@
         >
         <nz-form-control [nzSm]="14" [nzXs]="24">
           <input nz-input type="email" formControlName="email" id="email" />
-          <small
-            class="col alert text-danger col-12"
+          <span
+            class="text-danger"
             role="alert"
             *ngIf="formAcc.get('email')?.errors?.['required'] && formAcc.get('email')?.touched || submit && formAcc.get('email')?.errors?.['required'] "
           >
             Email không được để trống !
-          </small>
-          <small
-            class="col alert text-danger col-12"
+          </span>
+          <span
+            class="text-danger"
             role="alert"
             *ngIf="!formAcc.get('email')?.errors?.['required'] && formAcc.get('email')?.errors?.['email']"
           >
             Email phải đúng định dạng !
-          </small>
+          </span>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item *ngIf="!formAcc.value.id">
@@ -140,20 +140,20 @@
             formControlName="password"
             id="password"
           />
-          <small
-            class="col alert text-danger col-12"
+          <span
+            class="text-danger"
             role="alert"
             *ngIf="formAcc.get('password')?.errors?.['required'] && formAcc.get('password')?.touched || submit && formAcc.get('password')?.errors?.['required'] "
           >
             Mật khẩu không được để trống !
-          </small>
-          <small
-            class="col alert text-danger col-12"
+          </span>
+          <span
+            class="text-danger"
             role="alert"
             *ngIf="!formAcc.get('password')?.errors?.['required'] && formAcc.get('password')?.errors?.['pattern']"
           >
             Mật khẩu phải có 6 ký tự trở lên, bao gồm cả chữ và số!
-          </small>
+          </span>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -167,19 +167,19 @@
             formControlName="phoneNumber"
             id="phoneNumber"
           />
-          <small
-            class="col alert text-danger col-12"
+          <span
+            class="text-danger"
             role="alert"
             *ngIf="formAcc.get('phoneNumber')?.errors?.['required'] && formAcc.get('phoneNumber')?.touched || submit && formAcc.get('phoneNumber')?.errors?.['required'] "
           >
             Số điện thoại không được để trống!
-          </small>
-          <small
+          </span>
+          <span
                   class="col alert text-danger"
                   role="alert"
                   *ngIf="!formAcc.get('phoneNumber')?.errors?.['required'] && formAcc.get('phoneNumber')?.errors?.['pattern']">
                   Số điện thoại phải là số và tối đa 10 kí tự!
-                </small>
+                </span>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -191,13 +191,13 @@
           <label nz-radio [nzValue]="2" *ngIf="this.accountDTO.role !=  3">Nhân viên</label>
           <label nz-radio [nzValue]="3" nzDisabled="">Khách hàng</label>
         </nz-radio-group>
-        <small
-                class="col alert text-danger col-12"
+        <span
+                class="text-danger"
                 role="alert"
                 *ngIf="formAcc.get('role')?.errors?.['required'] && submit"
               >
                 Bạn phải chọn quyền!
-              </small>
+              </span>
       </nz-form-item>
     </form>
   </ng-container>
