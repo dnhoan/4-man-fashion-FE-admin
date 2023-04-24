@@ -16,7 +16,7 @@
         <nz-option
           *ngIf="!isLoading"
           [nzValue]="o"
-          [nzLabel]="o.customerName! + ' - ' + o.phoneNumber"
+          [nzLabel]="o.customerName! + ' - ' + o.phoneNumber + ' - ' + o.email"
         ></nz-option>
       </ng-container>
       <nz-option *ngIf="isLoading" nzDisabled nzCustomContent>
@@ -26,6 +26,7 @@
     </nz-select>
   </div>
   <div class="col-2">
+    <button nz-button (click)="createCustomer()">Thêm KH</button>
     <!-- <app-add-customer></app-add-customer> -->
   </div>
 </div>
