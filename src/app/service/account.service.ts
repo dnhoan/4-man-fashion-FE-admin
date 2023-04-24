@@ -40,7 +40,7 @@ export class AccountService {
     return this.httpClient.get<any>(this.apiAccount + '/account/getList');
   }
 
-  createAcoount(account: AccountDTO) {
+  createAccount(account: AccountDTO) {
     return this.requestService
       .post(`${this.apiAccount}/account/create`, account, 'tạo mới tài khoản')
       .pipe(
