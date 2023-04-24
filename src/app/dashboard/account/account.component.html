@@ -187,9 +187,9 @@
           >Phân quyền</nz-form-label
         >
         <nz-radio-group class="mt-1" formControlName="role" nzName="role">
-          <label nz-radio [nzValue]="1">Quản lý</label>
-          <label nz-radio [nzValue]="2" *ngIf="this.accountDTO.role !=  3">Nhân viên</label>
-          <label nz-radio [nzValue]="3" nzDisabled="">Khách hàng</label>
+          <label nz-radio [nzValue]="1" [nzDisabled]="this.accountDTO.role?.id == 3 ? true : false">Quản lý</label>
+          <label nz-radio [nzValue]="2" [nzDisabled]="this.accountDTO.role?.id == 3 ? true : false">Nhân viên</label>
+          <label nz-radio [nzValue]="3" [nzDisabled]="true">Khách hàng</label>
         </nz-radio-group>
         <span
                 class="text-danger"
