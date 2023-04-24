@@ -40,6 +40,7 @@ export class AccountComponent implements OnInit {
   inputPassword: string = '';
   inputRole: number = 1;
   currentAccount!: number;
+  disable = true;
   accountDTO: AccountDTO = {};
   constructor(
     private accountService: AccountService,
