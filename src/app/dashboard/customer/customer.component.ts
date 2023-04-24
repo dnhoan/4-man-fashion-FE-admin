@@ -89,7 +89,7 @@ export class CustomerComponent implements OnInit {
           Validators.pattern('(84|0[3|5|7|8|9])+([0-9]{8})'),
         ],
       ],
-      address: ['', [Validators.required]],
+      address: [''],
       email: ['', [Validators.required, Validators.email]],
       note: [''],
     });
@@ -124,7 +124,9 @@ export class CustomerComponent implements OnInit {
 
   handleOk(): void {
     this.submit = true;
+    if(this.formCustomer.valid){
       this.saveCustomer();
+    }
   }
 
   saveCustomer() {
@@ -158,36 +160,40 @@ export class CustomerComponent implements OnInit {
   }
 
   addAccount(customer: Customer) {
-    this.customerService.createCustomer(customer).subscribe(
-      (res) => {
+    if(this.formCustomer.valid){
+      this.customerService.createCustomer(customer).subscribe(
+        (res) => {
+          if (res.code === '000') {
+            this.isVisibleModal = false;
+            this.message.success('Tạo Khách hàng thành công!');
+          } else {
+            this.isVisibleModal = true;
+            this.message.error(`${res.desc}`);
+          }
+          this.getAllCustomer();
+          return;
+        }
+      );
+    }
+  }
+
+  updateCustomer() {
+    if(this.formCustomer.valid){
+      this.formCustomer.get('email')?.enable();
+      this.formCustomer.get('phoneNumber')?.enable();
+      this.addValueCustomer();
+      this.customerService.updateCustomer(this.customer).subscribe((res) => {
         if (res.code === '000') {
           this.isVisibleModal = false;
-          this.message.success('Tạo Khách hàng thành công!');
+          this.message.success('Cập nhật tài khoản thành công!');
+          this.getAllCustomer();
         } else {
           this.isVisibleModal = true;
           this.message.error(`${res.desc}`);
         }
-        this.getAllCustomer();
         return;
-      }
-    );
-  }
-
-  updateCustomer() {
-    this.formCustomer.get('email')?.enable();
-    this.formCustomer.get('phoneNumber')?.enable();
-    this.addValueCustomer();
-    this.customerService.updateCustomer(this.customer).subscribe((res) => {
-      if (res.code === '000') {
-        this.isVisibleModal = false;
-        this.message.success('Cập nhật tài khoản thành công!');
-        this.getAllCustomer();
-      } else {
-        this.isVisibleModal = true;
-        this.message.error(`${res.desc}`);
-      }
-      return;
-    });
+      });
+    }
   }
 
   updateStatus(customer: Customer, index: number, status: number) {
