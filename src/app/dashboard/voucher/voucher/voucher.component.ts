@@ -42,8 +42,8 @@ export class VoucherComponent implements OnInit {
   quantity!: number;
   currentVoucher!: any;
   lstType = [
-    { id:1, label: 'Phần trăm', value: 'Phần trăm' },
-    { id:0, label: 'VNĐ', value: 'VNĐ' },
+    { id: 1, label: 'Phần trăm', value: 'Phần trăm' },
+    { id: 0, label: 'VNĐ', value: 'VNĐ' },
   ];
   compareFn = (o1: any, o2: any): boolean =>
     o1 && o2 ? o1.value === o2.value : o1 === o2;
@@ -146,7 +146,7 @@ export class VoucherComponent implements OnInit {
           this.isVisibleModal = false;
         }
       });
-      this.isVisibleModal = false;
+    this.isVisibleModal = false;
   }
 
   updateVoucher() {
@@ -167,7 +167,7 @@ export class VoucherComponent implements OnInit {
           this.vouchers[this.currentVoucher] = res;
         }
       });
-      this.isVisibleModal = false;
+    this.isVisibleModal = false;
   }
 
   updateStatus(voucher: Voucher, index: number, status: number) {
@@ -194,14 +194,25 @@ export class VoucherComponent implements OnInit {
 
   showModalEdit(index: number) {
     this.currentVoucher = index;
-    this.inputVoucherCode = this.vouchers[this.currentVoucher].voucherCode!;
-    this.inputVoucherName = this.vouchers[this.currentVoucher].voucherName!;
-    this.startDate = this.vouchers[this.currentVoucher].startDate!;
-    this.endDate = this.vouchers[this.currentVoucher].endDate!;
-    this.voucherType = this.vouchers[this.currentVoucher].voucherType!;
-    this.discount = this.vouchers[this.currentVoucher].discount!;
-    this.minimumInvoiceValue = this.vouchers[this.currentVoucher].minimumInvoiceValue!;
-    this.quantity = this.vouchers[this.currentVoucher].quantity!;
+    if (index >= 0) {
+      this.inputVoucherCode = this.vouchers[this.currentVoucher].voucherCode!;
+      this.inputVoucherName = this.vouchers[this.currentVoucher].voucherName!;
+      this.startDate = this.vouchers[this.currentVoucher].startDate!;
+      this.endDate = this.vouchers[this.currentVoucher].endDate!;
+      this.voucherType = this.vouchers[this.currentVoucher].voucherType!;
+      this.discount = this.vouchers[this.currentVoucher].discount!;
+      this.minimumInvoiceValue =
+        this.vouchers[this.currentVoucher].minimumInvoiceValue!;
+      this.quantity = this.vouchers[this.currentVoucher].quantity!;
+    } else {
+      this.inputVoucherCode = '';
+      this.inputVoucherName = '';
+      this.voucherType = 3;
+      this.discount = 0;
+      this.minimumInvoiceValue = 0;
+      this.quantity = 0;
+    }
+
     this.showModal();
   }
 }

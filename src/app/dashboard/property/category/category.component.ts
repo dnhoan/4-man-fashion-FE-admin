@@ -151,7 +151,11 @@ export class CategoryComponent implements OnInit {
 
   showModalEdit(index: number) {
     this.currentCategory = index;
-    this.inputCategory = this.categories[this.currentCategory].categoryName!;
+    if (index >= 0) {
+      this.inputCategory = this.categories[this.currentCategory].categoryName!;
+    } else {
+      this.inputCategory = '';
+    }
     this.showModal();
   }
 }

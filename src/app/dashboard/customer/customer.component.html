@@ -1,1 +1,260 @@
-<p>customer works!</p>
+<div class="bg-white mt-4 p-3 h-100">
+  <div class="mb-3">
+    <button nz-button [nzType]="'primary'" (click)="showModal()">
+      <span>Thêm mới</span>
+    </button>
+  </div>
+  <div class="d-flex mb-3">
+    <div class="me-2" style="width: 300px">
+      <label class="mb-1">Tìm kiếm khách hàng</label> <br />
+      <input
+        nz-input
+        type="text"
+        (ngModelChange)="search($event)"
+        [(ngModel)]="searchCustomer.searchTerm"
+        placeholder="Tìm kiếm theo tên hoặc số điện thoại"
+      />
+    </div>
+    <div style="width: 200px">
+      <label class="mb-1">Trạng thái</label> <br />
+      <nz-select
+        style="width: 100%"
+        nzAllowClear
+        class="selectStatus"
+        nzPlaceHolder="Lọc theo trạng thái"
+        (ngModelChange)="onChangeStatus($event)"
+        [nzAllowClear]="false"
+        [ngModel]="searchCustomer.status"
+      >
+        <nz-option
+          *ngFor="let item of commonService.statuses"
+          [nzValue]="item.value"
+          [nzLabel]="item.label"
+        ></nz-option>
+      </nz-select>
+    </div>
+  </div>
+  <!--  ---------------------------------  -->
+  <div>
+    <nz-table
+      nzShowSizeChanger
+      [nzFrontPagination]="false"
+      [nzPageSizeOptions]="commonService.pageSizeOptions"
+      [nzPageIndex]="searchCustomer.offset + 1"
+      [nzPageSize]="searchCustomer.limit"
+      [nzTotal]="page ? page.totalElement : 0"
+      nzNoResult="Không có dữ liệu"
+      [nzData]="customers"
+      (nzPageIndexChange)="onChangeIndexPage($event)"
+      (nzPageSizeChange)="onChangeCustomerPage($event)"
+    >
+      <thead>
+        <tr>
+          <th style="width: 50px">STT</th>
+          <th>Tên khách hàng</th>
+          <th>Giới tính</th>
+          <th>Ngày sinh</th>
+          <th>Số ĐT</th>
+          <th>Email</th>
+          <th>Trạng thái</th>
+          <th colSpan="2">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="customers.length">
+          <tr *ngFor="let item of customers; index as i">
+            <td style="width: 100px">{{ i + 1 }}</td>
+            <td>{{ item.customerName }}</td>
+            <td>{{ item.gender == 0 ? 'Nữ' : 'Nam' }}</td>
+            <td>{{ item.birthday | date : "dd/MM/yyyy" }}</td>
+            <td>{{ item.phoneNumber }}</td>
+            <td>{{ item.email }}</td>
+            <td>
+              <nz-tag [nzColor]="item.status == 1 ? 'processing' : 'error'"
+                >{{ item.status == 1 ? "Hoạt động" : "Đã xóa" }}
+              </nz-tag>
+            </td>
+            <td style="text-align: center; width: 100px">
+              <button nz-button nzType="text" (click)="getInfoCustomer(item)">
+                <span
+                  class="text-primary"
+                  nz-icon
+                  nzType="edit"
+                  nzTheme="outline"
+                ></span>
+              </button>
+              <button
+                nz-button
+                nzType="text"
+                (click)="updateStatus(item, i, item.status == 1 ? 0 : 1)"
+              >
+                <span
+                  class="{{
+                    item.status == 1 ? 'text-danger' : 'text-secondary'
+                  }}"
+                  nz-icon
+                  [nzType]="item.status == 1 ? 'delete' : 'redo'"
+                  nzTheme="outline"
+                ></span>
+              </button>
+            </td></tr
+        ></ng-container>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+<nz-modal
+        [(nzVisible)]="isVisibleModal"
+        (nzOnCancel)="handleCancel()"
+        (nzOnOk)="handleOk()"
+      >
+        <ng-container *nzModalContent>
+          <form nz-form [formGroup]="formCustomer">
+            <nz-form-item>
+              <nz-form-label
+                [nzSm]="6"
+                [nzXs]="24"
+                nzRequired
+                nzFor="customerName"
+                >Tên khách hàng</nz-form-label
+              >
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input
+                  nz-input
+                  type="text"
+                  formControlName="customerName"
+                  id="customerName"
+                />
+                <small
+                  class="col alert text-danger col-12"
+                  role="alert"
+                  *ngIf="formCustomer.get('customerName')?.errors?.['required'] && formCustomer.get('customerName')?.touched || submit && formCustomer.get('customerName')?.errors?.['required'] "
+                >
+                  Tên khách hàng không được để trống!
+                </small>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label
+                [nzSm]="6"
+                [nzXs]="24"
+                nzFor="phoneNumber"
+                nzRequired
+                >Số ĐT</nz-form-label
+              >
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input
+                  nz-input
+                  type="text"
+                  id="phoneNumber"
+                  formControlName="phoneNumber"
+                />
+                <small
+                  class="col alert text-danger col-12"
+                  role="alert"
+                  *ngIf="formCustomer.get('phoneNumber')?.errors?.['required'] && formCustomer.get('phoneNumber')?.touched || submit && formCustomer.get('phoneNumber')?.errors?.['required'] "
+                >
+                  Số điện thoại không được để trống!
+                </small>
+                <small
+                  class="col alert text-danger"
+                  role="alert"
+                  *ngIf="!formCustomer.get('phoneNumber')?.errors?.['required'] && formCustomer.get('phoneNumber')?.errors?.['pattern']"
+                >
+                  Số điện thoại phải là số, bắt đầu từ số 0 và tối đa 10 kí tự!
+                </small>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="birthday" nzRequired
+                >Ngày sinh</nz-form-label
+              >
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input
+                  nz-input
+                  type="date"
+                  formControlName="birthday"
+                  id="birthday"
+                />
+                <small
+                  class="col alert text-danger col-12"
+                  role="alert"
+                  *ngIf="formCustomer.get('birthday')?.errors?.['required'] && formCustomer.get('birthday')?.touched || submit && formCustomer.get('birthday')?.errors?.['required'] "
+                >
+                  Ngày sinh không được để trống!
+                </small>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="gender"
+                >Giới tính</nz-form-label
+              >
+              <nz-radio-group
+                class="mt-1"
+                formControlName="gender"
+                nzName="gender"
+              >
+                <label nz-radio [nzValue]="1" nzValue="1">Nam</label>
+                <label nz-radio [nzValue]="0" nzValue="0">Nữ</label>
+              </nz-radio-group>
+            </nz-form-item>
+            <nz-form-item
+            >
+              <nz-form-label [nzSm]="6"  [nzXs]="24" nzRequired nzFor="email"
+                >Email</nz-form-label
+              >
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input
+                  nz-input
+                  type="email"
+                  formControlName="email"
+                  id="email"
+                />
+                <small
+                  class="col alert text-danger col-12"
+                  role="alert"
+                  *ngIf="formCustomer.get('email')?.errors?.['required'] && formCustomer.get('email')?.touched || submit && formCustomer.get('email')?.errors?.['required'] "
+                >
+                  Email không được để trống !
+                </small>
+                <small
+                  class="col alert text-danger col-12"
+                  role="alert"
+                  *ngIf="!formCustomer.get('email')?.errors?.['required'] && formCustomer.get('email')?.errors?.['email']"
+                >
+                  Email phải đúng định dạng !
+                </small>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item
+            >
+              <nz-form-label [nzSm]="6"  [nzXs]="24" nzRequired nzFor="address"
+                >Địa chỉ</nz-form-label
+              >
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input
+                  nz-input
+                  type="text"
+                  formControlName="address"
+                  id="address"
+                />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="note"
+                >Ghi chú</nz-form-label
+              >
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input
+                  nz-input
+                  type="text"
+                  formControlName="note"
+                  id="note"
+                />
+              </nz-form-control>
+            </nz-form-item>
+          </form>
+        </ng-container>
+      </nz-modal>
+
+<ng-template #noResult></ng-template>

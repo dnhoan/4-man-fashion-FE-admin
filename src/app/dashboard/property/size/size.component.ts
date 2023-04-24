@@ -157,7 +157,11 @@ export class SizeComponent implements OnInit {
 
   showModalEdit(index: number) {
     this.currentSize = index;
-    this.inputSize = this.sizes[this.currentSize].sizeName!;
+    if (index >= 0) {
+      this.inputSize = this.sizes[this.currentSize].sizeName!;
+    } else {
+      this.inputSize = '';
+    }
     this.showModal();
   }
 }
