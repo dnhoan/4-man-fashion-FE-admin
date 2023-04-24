@@ -40,6 +40,7 @@ export class AccountComponent implements OnInit {
   inputPassword: string = '';
   inputRole: number = 1;
   currentAccount!: number;
+  disable = true;
   accountDTO: AccountDTO = {};
   constructor(
     private accountService: AccountService,
@@ -116,7 +117,9 @@ export class AccountComponent implements OnInit {
 
   handleOk() {
     this.submit = true;
-    this.saveAccount();
+    if (this.formAcc.valid) {
+      this.saveAccount();
+    }
   }
 
   saveAccount() {
@@ -158,8 +161,8 @@ export class AccountComponent implements OnInit {
   }
 
   addAccount(account: AccountDTO) {
-    this.accountService.createAccount(account).subscribe(
-      (res) => {
+    if (this.formAcc.valid) {
+      this.accountService.createAccount(account).subscribe((res) => {
         if (res.code === '000') {
           this.isVisibleModal = false;
           this.message.success('Tạo tài khoản thành công!');
@@ -169,30 +172,32 @@ export class AccountComponent implements OnInit {
         }
         this.getAllAccount();
         return;
-      }
-    );
+      });
+    }
   }
 
   updateAccount() {
-    let value = this.formAcc.value;
-    let data = (this.accountDTO = {
-      email: value.email,
-      phoneNumber: value.phoneNumber,
-      password: this.accountDTO.password,
-      role: value.role,
-    });
-    this.addValueAccount();
-    this.accountService.updateAccount(this.accountDTO).subscribe((res) => {
-      if (res.code === '000') {
-        this.isVisibleModal = false;
-        this.message.success('Cập nhật tài khoản thành công!');
-      } else {
-        this.isVisibleModal = true;
-        this.message.error(`${res.desc}`);
-      }
-      this.getAllAccount();
-      return;
-    });
+    if (this.formAcc.valid) {
+      let value = this.formAcc.value;
+      let data = (this.accountDTO = {
+        email: value.email,
+        phoneNumber: value.phoneNumber,
+        password: this.accountDTO.password,
+        role: value.role,
+      });
+      this.addValueAccount();
+      this.accountService.updateAccount(this.accountDTO).subscribe((res) => {
+        if (res.code === '000') {
+          this.isVisibleModal = false;
+          this.message.success('Cập nhật tài khoản thành công!');
+        } else {
+          this.isVisibleModal = true;
+          this.message.error(`${res.desc}`);
+        }
+        this.getAllAccount();
+        return;
+      });
+    }
   }
 
   fillValueForm() {
