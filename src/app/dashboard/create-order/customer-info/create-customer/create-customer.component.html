@@ -1,0 +1,114 @@
+<form nz-form [formGroup]="formCustomer" (ngSubmit)="handleOk()">
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="customerName"
+      >Tên khách hàng</nz-form-label
+    >
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input
+        nz-input
+        type="text"
+        formControlName="customerName"
+        id="customerName"
+      />
+      <span
+        class="text-danger"
+        *ngIf="formCustomer.get('customerName')?.errors?.['required'] && formCustomer.get('customerName')?.touched || submit && formCustomer.get('customerName')?.errors?.['required'] "
+      >
+        Tên khách hàng không được để trống!
+      </span>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phoneNumber" nzRequired
+      >Số ĐT</nz-form-label
+    >
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input
+        nz-input
+        type="text"
+        id="phoneNumber"
+        formControlName="phoneNumber"
+      />
+      <span
+        class="text-danger"
+        *ngIf="formCustomer.get('phoneNumber')?.errors?.['required'] && formCustomer.get('phoneNumber')?.touched || submit && formCustomer.get('phoneNumber')?.errors?.['required'] "
+      >
+        Số điện thoại không được để trống!
+      </span>
+      <span
+        class="text-danger"
+        *ngIf="!formCustomer.get('phoneNumber')?.errors?.['required'] && formCustomer.get('phoneNumber')?.errors?.['pattern']"
+      >
+        Số điện thoại phải là số, bắt đầu từ số 0 và tối đa 10 kí tự!
+      </span>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="birthday" nzRequired
+      >Ngày sinh</nz-form-label
+    >
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input nz-input type="date" formControlName="birthday" id="birthday" />
+      <span
+        class="text-danger"
+        *ngIf="formCustomer.get('birthday')?.errors?.['required'] && formCustomer.get('birthday')?.touched || submit && formCustomer.get('birthday')?.errors?.['required'] "
+      >
+        Ngày sinh không được để trống!
+      </span>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="gender"
+      >Giới tính</nz-form-label
+    >
+    <nz-radio-group class="mt-1" formControlName="gender" nzName="gender">
+      <label nz-radio [nzValue]="1" nzValue="1">Nam</label>
+      <label nz-radio [nzValue]="0" nzValue="0">Nữ</label>
+    </nz-radio-group>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email"
+      >Email</nz-form-label
+    >
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input nz-input type="email" formControlName="email" id="email" />
+      <span
+        class="text-danger"
+        *ngIf="formCustomer.get('email')?.errors?.['required'] && formCustomer.get('email')?.touched || submit && formCustomer.get('email')?.errors?.['required'] "
+      >
+        Email không được để trống !
+      </span>
+      <span
+        class="text-danger"
+        *ngIf="!formCustomer.get('email')?.errors?.['required'] && formCustomer.get('email')?.errors?.['email']"
+      >
+        Email phải đúng định dạng !
+      </span>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="address"
+      >Địa chỉ</nz-form-label
+    >
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input nz-input type="text" formControlName="address" id="address" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="note">Ghi chú</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input nz-input type="text" formControlName="note" id="note" />
+    </nz-form-control>
+  </nz-form-item>
+  <div class="d-flex justify-content-end">
+    <button
+      class="me-3"
+      nz-button
+      type="submit"
+      (click)="handleCancel(); $event.preventDefault()"
+    >
+      Hủy
+    </button>
+    <button nz-button type="submit" nzType="primary">Tạo</button>
+  </div>
+</form>

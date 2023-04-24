@@ -35,6 +35,7 @@ import { ReportComponent } from './report/report.component';
 import { ChartModule } from 'primeng/chart';
 import { PrintOrderComponent } from './create-order/print-order/print-order.component';
 import { NgxPrintModule } from 'ngx-print';
+import { CreateCustomerComponent } from './create-order/customer-info/create-customer/create-customer.component';
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -64,6 +65,7 @@ import { NgxPrintModule } from 'ngx-print';
     VoucherOrderComponent,
     ReportComponent,
     PrintOrderComponent,
+    CreateCustomerComponent,
   ],
   imports: [
     CommonModule,

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import {
   BehaviorSubject,
   catchError,
@@ -20,6 +20,9 @@ import { environment } from 'src/environments/environment';
 import { CustomerService } from '../../customer/customer.service';
 import { CustomerDto } from '../../customer/customerDto.model';
 import { orderStore } from '../order.repository';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { CreateCustomerComponent } from './create-customer/create-customer.component';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-customer-info',
@@ -44,7 +47,12 @@ export class CustomerInfoComponent implements OnInit {
     }
   }
 
-  constructor(private customerService: CustomerService) {}
+  constructor(
+    private customerService: CustomerService,
+    private modal: NzModalService,
+    private viewContainerRef: ViewContainerRef,
+    private message: NzMessageService
+  ) {}
 
   ngOnInit(): void {
     let customer_id = orderStore.getValue().orderDto.customerId;
@@ -61,6 +69,20 @@ export class CustomerInfoComponent implements OnInit {
         this.isLoading = false;
         this.customers = res;
       });
+  }
+  createCustomer() {
+    const modal = this.modal.create({
+      nzTitle: 'Thêm địa chỉ',
+      nzContent: CreateCustomerComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzFooter: null,
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        this.customers.unshift(result);
+        this.message.success('Thêm khách hàng thành công');
+      }
+    });
   }
   changeCustomer() {
     if (this.customer) {
