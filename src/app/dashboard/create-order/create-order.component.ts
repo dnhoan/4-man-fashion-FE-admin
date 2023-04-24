@@ -179,6 +179,8 @@ export class CreateOrderComponent implements OnInit {
         .createOrderDetailToOrder(this.order.orderId, orderDetail)
         .subscribe((res) => {
           if (res) {
+            console.log(res);
+
             orderStore.update((state) => ({
               orderDto: res,
             }));
@@ -273,6 +275,9 @@ export class CreateOrderComponent implements OnInit {
     });
   }
   updateOrderMoney() {
+    if (this.order.delivery === 0) {
+      this.order.shipFee = 0;
+    }
     let goodsValue = this.order.orderDetails?.reduce(
       (a, b) => a + b.price! * b.quantity!,
       0
@@ -349,13 +354,20 @@ export class CreateOrderComponent implements OnInit {
       }
     });
   }
+  checkout() {
+    this.order.checkout = this.order.totalMoney;
+    this.save();
+  }
   save() {
-    this.ordersService.updateOrder(this.order).subscribe((res) => {
-      if (res) {
-        this.order = res;
-        this.saveOrderStore();
-      }
-    });
+    if (this.order.delivery == 1 && !this.order.address)
+      this.message.info('Vui lòng thêm địa chỉ');
+    else
+      this.ordersService.updateOrder(this.order).subscribe((res) => {
+        if (res) {
+          this.order = res;
+          this.saveOrderStore();
+        }
+      });
   }
   handleCancel() {
     this.isShowConfirmCancelOrder = false;
@@ -371,6 +383,8 @@ export class CreateOrderComponent implements OnInit {
       .subscribe((res) => {
         if (res) {
           this.order.orderStatus = ORDER_STATUS.CANCEL_ORDER;
+          this.isShowConfirmCancelOrder = false;
+          this.cancelNote = '';
           this.currentIndex = this.orderStatuses.findIndex(
             (s) => s.status == this.order.orderStatus
           );

@@ -11,6 +11,7 @@ import { BrowserModule } from '@angular/platform-browser';
   declarations: [LoginComponent],
   imports: [
     FormsModule,
+    CommonModule,
     ReactiveFormsModule,
     LoginRoutingModule,
     NgZorroAntdModule,

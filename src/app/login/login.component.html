@@ -7,21 +7,39 @@
       (ngSubmit)="loginForm()"
     >
       <h1 class="juntify-content-center">Đăng nhập</h1>
-      <label class="mt-5">Email</label>
-      <input
-        type="text"
-        nz-input
-        formControlName="phoneOrEmail"
-        placeholder="Email or Phone number"
-      />
-      <label>Password</label>
-      <input
-        type="password"
-        nz-input
-        formControlName="password"
-        placeholder="Password"
-      />
-      <button class="mt-5">Đăng nhập</button>
+      <div>
+        <label class="mt-5">Email</label>
+        <input
+          type="text"
+          nz-input
+          formControlName="phoneOrEmail"
+          placeholder="Email or Phone number"
+        />
+        <ng-container *ngIf="formLogin.get('phoneOrEmail')!.invalid">
+          <span
+            class="mt-1 text-danger"
+            *ngIf="formLogin.get('phoneOrEmail')?.touched || submit"
+            >{{ (formLogin.get("phoneOrEmail")?.errors)!["account"] }}</span
+          >
+        </ng-container>
+      </div>
+      <div>
+        <label>Mật khẩu</label>
+        <input
+          type="password"
+          nz-input
+          formControlName="password"
+          placeholder="Password"
+        />
+        <ng-container *ngIf="formLogin.get('password')!.invalid">
+          <span
+            class="mt-1 text-danger"
+            *ngIf="formLogin.get('password')?.touched || submit"
+            >{{ (formLogin.get("password")?.errors)!["password"] }}</span
+          >
+        </ng-container>
+      </div>
+      <button class="mt-5" type="submit">Đăng nhập</button>
     </form>
   </div>
   <div class="overlay-container">

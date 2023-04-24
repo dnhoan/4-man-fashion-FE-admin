@@ -74,6 +74,7 @@ export class DeliveryComponent implements OnInit {
         orderDto: {
           ...state.orderDto,
           delivery: this.delivery,
+          shipFee: this.delivery == 0 ? 0 : state.shipFee,
           totalMoney:
             state.orderDto.goodsValue +
             (this.delivery == 1 ? (state.shipFee ? state.shipFee : 0) : 0) -
