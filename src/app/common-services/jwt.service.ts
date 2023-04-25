@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CommonConstants } from '../constants/common-constants';
+import jwt_decode from 'jwt-decode';
 import { ROLE } from '../constants/constant.constant';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Router } from '@angular/router';
@@ -46,5 +47,14 @@ export class JwtService {
     const token = localStorage.getItem(CommonConstants.TOKEN_KEY);
 
     return token && !this.isTokenExpired() ? true : false;
+  }
+
+  getDecodedAccessToken(): any {
+    const token = localStorage.getItem(CommonConstants.TOKEN_KEY);
+    try {
+      return jwt_decode(token!);
+    } catch (Error) {
+      return null;
+    }
   }
 }
