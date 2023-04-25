@@ -59,8 +59,18 @@ export class CreateOrderComponent implements OnInit {
     limit: 10,
   };
   product: ProductDTO[] = [];
+  updateOrderDetail: {
+    isDisable: boolean;
+    orderDetail: OrderDetailDTO;
+  } = {
+    isDisable: false,
+    orderDetail: {},
+  };
   searchChange$ = new BehaviorSubject<SearchOption>(this.searchProduct);
-  updateOrderDetail$ = new BehaviorSubject<OrderDetailDTO>({});
+  updateOrderDetail$ = new BehaviorSubject<{
+    isDisable: boolean;
+    orderDetail: OrderDetailDTO;
+  }>(this.updateOrderDetail);
   isGetOrderDetail = false;
   orderStatuses: any[] = [];
   isShowStatusHistory = false;
@@ -119,7 +129,7 @@ export class CreateOrderComponent implements OnInit {
           switchMap((res) => {
             return this.orderDetailService.updateOrderDetail(
               this.order.orderId,
-              res
+              { ...res.orderDetail, quantityOrigin: res.orderDetail.quantity }
             );
           })
         )
@@ -128,6 +138,7 @@ export class CreateOrderComponent implements OnInit {
             this.order.orderDetails = res.orderDetails;
             this.order.goodsValue = res.goodsValue;
             this.updateOrderMoney();
+            this.updateOrderDetail.isDisable = false;
           }
         });
       this.orderService.getOrderByOrderId(order_id).subscribe((res) => {
@@ -179,8 +190,6 @@ export class CreateOrderComponent implements OnInit {
         .createOrderDetailToOrder(this.order.orderId, orderDetail)
         .subscribe((res) => {
           if (res) {
-            console.log(res);
-
             orderStore.update((state) => ({
               orderDto: res,
             }));
@@ -260,7 +269,7 @@ export class CreateOrderComponent implements OnInit {
   }
   updateQuantityOrderDetail(orderDetail: OrderDetailDTO) {
     orderDetail.orderId = this.order.id;
-    this.updateOrderDetail$.next(orderDetail);
+    this.updateOrderDetail$.next({ orderDetail, isDisable: true });
   }
   deleteProductToOrderDetail(orderDetail: OrderDetailDTO) {
     this.modal.confirm({
@@ -270,7 +279,7 @@ export class CreateOrderComponent implements OnInit {
       nzCancelText: 'Hủy',
       nzOnOk: () => {
         orderDetail.statusOrderDetail = CommonConstants.STATUS.INACTIVE;
-        this.updateOrderDetail$.next(orderDetail);
+        this.updateOrderDetail$.next({ orderDetail, isDisable: true });
       },
     });
   }

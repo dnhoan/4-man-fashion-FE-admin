@@ -72,7 +72,7 @@ export class CustomerInfoComponent implements OnInit {
   }
   createCustomer() {
     const modal = this.modal.create({
-      nzTitle: 'Thêm địa chỉ',
+      nzTitle: 'Thêm khách hàng',
       nzContent: CreateCustomerComponent,
       nzViewContainerRef: this.viewContainerRef,
       nzFooter: null,

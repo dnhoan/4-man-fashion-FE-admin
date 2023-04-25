@@ -135,9 +135,10 @@
                   [nzStep]="1"
                   [nzMax]="
                     orderDetail.productDetail
-                      ? orderDetail.productDetail.stock
+                      ? orderDetail.productDetail.stock + orderDetail.quantity!
                       : 0
                   "
+                  [disabled]="updateOrderDetail.isDisable"
                   (ngModelChange)="updateQuantityOrderDetail(orderDetail)"
                 ></nz-input-number>
 
