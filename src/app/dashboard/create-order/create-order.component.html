@@ -135,9 +135,10 @@
                   [nzStep]="1"
                   [nzMax]="
                     orderDetail.productDetail
-                      ? orderDetail.productDetail.stock
+                      ? orderDetail.productDetail.stock + orderDetail.quantity!
                       : 0
                   "
+                  [disabled]="updateOrderDetail.isDisable"
                   (ngModelChange)="updateQuantityOrderDetail(orderDetail)"
                 ></nz-input-number>
 
@@ -335,18 +336,36 @@
             <b>{{ order.totalMoney | number }}đ</b>
           </p>
         </div>
-        <div class="row d-flex justify-content-between">
-          <p nz-typography class="col-6">Khách thanh toán</p>
-          <div class="col-6">
-            <nz-input-number
-              style="width: 100%"
-              [(ngModel)]="order.checkout"
-              [nzMin]="1"
-              [nzStep]="1"
-              (ngModelChange)="saveOrderStore()"
-            ></nz-input-number>
-          </div>
-        </div>
+        <ng-container
+          *ngIf="
+            !(
+              order.orderStatus == ORDER_STATUS.COMPLETE ||
+              order.orderStatus == ORDER_STATUS.CANCEL_ORDER ||
+              order.orderStatus == ORDER_STATUS.DELIVERING
+            );
+            else showCheckout
+          "
+        >
+          <div class="row d-flex justify-content-between">
+            <p nz-typography class="col-6">Khách thanh toán</p>
+            <div class="col-6">
+              <nz-input-number
+                style="width: 100%"
+                [(ngModel)]="order.checkout"
+                [nzMin]="1"
+                [nzStep]="1"
+                (ngModelChange)="saveOrderStore()"
+              ></nz-input-number>
+            </div></div
+        ></ng-container>
+        <ng-template #showCheckout>
+          <div #show class="d-flex justify-content-between">
+            <p nz-typography>Khách thanh toán</p>
+            <p nz-typography>
+              <b>{{ order.checkout | number }}đ</b>
+            </p>
+          </div></ng-template
+        >
         <div class="d-flex justify-content-between">
           <p nz-typography>Còn thiếu</p>
           <p nz-typography>
@@ -366,6 +385,7 @@
           <app-voucher-order
             [goodValue]="order.goodsValue"
             [voucherOrder]="order.voucher!"
+            [order]="order"
           ></app-voucher-order>
         </ng-container>
       </div>
@@ -449,6 +469,16 @@
         <button nz-button nzType="primary" nzSize="large" (click)="save()">
           <span nz-icon nzType="save" nzTheme="outline"></span>
           Lưu
+        </button>
+        <button
+          *ngIf="order.totalMoney != order.checkout"
+          nz-button
+          style="background-color: #23c714; color: white"
+          nzSize="large"
+          (click)="checkout()"
+        >
+          <span nz-icon nzType="check" nzTheme="outline"></span>
+          Thanh toán
         </button>
       </div>
     </div>

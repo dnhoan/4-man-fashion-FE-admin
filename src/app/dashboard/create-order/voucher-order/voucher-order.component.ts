@@ -2,8 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { VoucherOrderService } from './voucher-order.service';
 import { Voucher } from 'src/app/model/voucher.model';
 import { orderStore } from '../order.repository';
-import { VOUCHER_TYPE } from 'src/app/constants/constant.constant';
+import { ORDER_STATUS, VOUCHER_TYPE } from 'src/app/constants/constant.constant';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { OrderDTO } from '../../order/order.model';
 
 @Component({
   selector: 'app-voucher-order',
@@ -12,11 +13,13 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 })
 export class VoucherOrderComponent implements OnInit {
   @Input() goodValue!: number;
+  @Input() order!: OrderDTO
   radioValue = 'A';
   vouchers: Voucher[] = [];
   @Input() voucherOrder!: Voucher;
   voucher!: Voucher;
   VOUCHER_TYPE = VOUCHER_TYPE;
+  ORDER_STATUS = ORDER_STATUS;
   isShowModalVoucher = false;
   voucherCode = '';
   constructor(
