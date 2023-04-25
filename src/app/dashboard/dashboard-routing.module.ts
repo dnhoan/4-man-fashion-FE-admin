@@ -16,6 +16,8 @@ import { FavoriteProductComponent } from './favorite-product/favorite-product.co
 import { AccountComponent } from './account/account.component';
 import { CustomerComponent } from './customer/customer.component';
 import { ReportComponent } from './report/report.component';
+import { AuthGuard } from '../guards/auth.guard';
+import { AdminGuard } from '../guards/admin.guard';
 
 const routes: Routes = [
   {
@@ -25,58 +27,72 @@ const routes: Routes = [
       {
         path: 'product',
         component: ProductComponent,
+        canActivate: [AdminGuard]
       },
       {
         path: 'create-product',
         component: CreateProductComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'color',
         component: ColorComponent,
+        canActivate: [AdminGuard]
       },
       {
         path: 'size',
         component: SizeComponent,
+        canActivate: [AdminGuard]
       },
       {
         path: 'category',
         component: CategoryComponent,
+        canActivate: [AdminGuard]
       },
       {
         path: 'material',
         component: MaterialComponent,
+        canActivate: [AdminGuard]
       },
       {
         path: 'model',
         component: ModelComponent,
+        canActivate: [AdminGuard]
       },
       {
         path: 'voucher',
         component: VoucherComponent,
+        canActivate: [AdminGuard]
       },
       {
         path: 'employee',
         component: EmployeeComponent,
+        canActivate: [AdminGuard]
       },
       {
         path: 'order/:order_id',
         component: CreateOrderComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'orders',
         component: OrderComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'account',
         component: AccountComponent,
+        canActivate: [AdminGuard]
       },
       {
         path: 'customer',
         component: CustomerComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'report',
         component: ReportComponent,
+        canActivate: [AdminGuard]
       },
     ],
   },
